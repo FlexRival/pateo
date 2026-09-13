@@ -1,0 +1,644 @@
+<!doctype html>
+<!--
+  Landing pública de Prooffit.
+
+  HTML estático a propósito: es lo que mejor posiciona (el robot recibe el
+  contenido ya renderizado, sin coste de JavaScript) y lo que menos se pelea
+  con el repo, que es un proyecto Expo. Sin build, sin dependencias, sin
+  node_modules: se sube la carpeta `landing/` a cualquier hosting y funciona.
+
+  ⚠️ ANTES DE PUBLICAR hay que sustituir el dominio de ejemplo
+  `https://prooffit.app` en: <link rel="canonical">, las etiquetas og:/twitter:,
+  el JSON-LD, `robots.txt` y `sitemap.xml`. Es el mismo dominio que hay que
+  rellenar en `LEGAL_CONTACT.site` (src/lib/legal/types.ts, KAN-74). Ver
+  landing/README.md.
+-->
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- ── SEO ─────────────────────────────────────────────────────────── -->
+    <title>Prooffit: duelos 1v1 de pasos contra tus amigos</title>
+    <meta
+      name="description"
+      content="Prooffit convierte tus pasos reales en duelos 1v1 contra tus amigos. Sin pulsera, sin apuntar nada: gana quien más anda. Descarga gratis en Android."
+    />
+    <link rel="canonical" href="https://prooffit.app/" />
+    <meta name="theme-color" content="#08090C" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+
+    <!-- Tarjeta al compartir. La imagen la genera landing/scripts/render-og.sh -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Prooffit" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:url" content="https://prooffit.app/" />
+    <meta property="og:title" content="Prooffit: duelos 1v1 de pasos contra tus amigos" />
+    <meta
+      property="og:description"
+      content="Tus pasos reales, convertidos en duelos 1v1. Gana quien más anda."
+    />
+    <meta property="og:image" content="https://prooffit.app/assets/brand/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Prooffit. Tus pasos deciden quién gana." />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" href="assets/brand/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="assets/brand/app-icon.png" />
+
+    <!--
+      Las dos fuentes de marca van precargadas: son lo primero que pinta el
+      titular, y sin esto el LCP espera a que el CSS las descubra.
+    -->
+    <link
+      rel="preload"
+      href="assets/fonts/ChakraPetch_700Bold.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="assets/fonts/SpaceGrotesk_400Regular.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin
+    />
+
+    <!--
+      Marca el documento como "con movimiento" antes del primer pintado. Va
+      en línea y en el <head> a propósito: `motion.js` lleva `defer` y se
+      ejecuta cuando el HTML ya está parseado, así que si el estado oculto
+      dependiera de él se vería un parpadeo del contenido apareciendo y
+      escondiéndose. Sin JavaScript este atributo no llega a ponerse y la
+      página se sirve entera y quieta, que es justo lo que debe pasar.
+    -->
+    <script>
+      document.documentElement.setAttribute('data-motion', '');
+    </script>
+
+    <link rel="stylesheet" href="styles/tokens.css" />
+    <link rel="stylesheet" href="styles/theme.css" />
+    <link rel="stylesheet" href="styles/base.css" />
+    <link rel="stylesheet" href="styles/components.css" />
+    <link rel="stylesheet" href="styles/sections.css" />
+    <link rel="stylesheet" href="styles/motion.css" />
+
+    <!--
+      Datos estructurados. Sin `aggregateRating`: la app todavía no tiene
+      valoraciones y Google penaliza (con razón) inventárselas.
+    -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "MobileApplication",
+            "@id": "https://prooffit.app/#app",
+            "name": "Prooffit",
+            "applicationCategory": "HealthApplication",
+            "applicationSubCategory": "Fitness",
+            "operatingSystem": "Android 8.0 o superior",
+            "url": "https://prooffit.app/",
+            "installUrl": "https://play.google.com/store/apps/details?id=com.prooffit.app",
+            "inLanguage": ["es", "en"],
+            "description": "App de pasos con duelos 1v1 contra amigos. Los pasos reales del día deciden quién gana y dan XP para subir de nivel.",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "EUR"
+            }
+          },
+          {
+            "@type": "FAQPage",
+            "@id": "https://prooffit.app/#faq",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "¿Prooffit es gratis?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Sí. Descargar y jugar es gratis: pasos, amigos, rachas, niveles y láminas para compartir no cuestan nada. La cuenta gratuita puede crear un duelo nuevo al día; la suscripción Pro quita ese límite."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "¿Necesito una pulsera o un reloj?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. Prooffit lee los pasos que tu teléfono ya está contando. Si además tienes una pulsera o un reloj que escriba en Health Connect, esos pasos también cuentan."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "¿De dónde saca los pasos?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "En Android, de Health Connect, el almacén de salud del propio sistema. Tú le das permiso de lectura de pasos y puedes retirarlo cuando quieras desde los ajustes del teléfono."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "¿Se puede hacer trampa agitando el móvil?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "El recuento que vale es el del servidor, no el del teléfono. El servidor aplica un tope diario y descarta lo que llega por encima, así que sacudir el móvil una hora no mueve el marcador del duelo."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "¿Funciona en iPhone?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Todavía no. La primera versión sale solo en Android. La versión de iOS está en camino y no tiene fecha pública."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "¿Puedo borrar mi cuenta y mis datos?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Sí, desde la propia app: Ajustes, Cuenta, Borrar cuenta. El borrado es definitivo y se lleva por delante tu perfil, tus pasos guardados y tus duelos."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+  </head>
+
+  <body>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+    <!--
+      Centinela del dock. El observador de `motion.js` mira este div para
+      saber si la página está arriba del todo, en vez de escuchar el scroll
+      frame a frame.
+    -->
+    <div id="top-sentinel" aria-hidden="true"></div>
+
+    <header class="nav" id="nav">
+      <div class="shell nav__inner">
+        <a class="nav__brand" href="#contenido" aria-label="Prooffit, inicio">
+          <!--
+            La marca: el anillo partido en Power y Rival (la barra del duelo
+            curvada) con la P dentro. Geometría copiada de
+            scripts/app-icons.html para que sea la misma marca y no una
+            parecida. Va en línea y no como <img> porque la P es un glifo de
+            Chakra Petch y un SVG externo no hereda la fuente de la página.
+          -->
+          <svg
+            class="mark mark--draw"
+            viewBox="0 0 1080 1080"
+            role="img"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <g transform="rotate(-90 540 540)" fill="none" stroke-linecap="butt">
+              <circle
+                class="mark__arc mark__arc--power"
+                cx="540"
+                cy="540"
+                r="418"
+                stroke="var(--color-primary)"
+                stroke-width="86"
+                stroke-dasharray="1470.9 2626.4"
+              />
+              <circle
+                class="mark__arc mark__arc--rival"
+                cx="540"
+                cy="540"
+                r="418"
+                stroke="var(--color-defeat)"
+                stroke-width="86"
+                stroke-dasharray="1050.6 2626.4"
+                stroke-dashoffset="-1523.3"
+              />
+            </g>
+            <text
+              x="540"
+              y="540"
+              fill="var(--color-text)"
+              font-family="Chakra Petch, sans-serif"
+              font-weight="700"
+              font-size="400"
+              text-anchor="middle"
+              dominant-baseline="central"
+            >
+              P
+            </text>
+          </svg>
+          <span class="nav__wordmark">Prooffit</span>
+        </a>
+
+        <nav class="nav__links" aria-label="Secciones">
+          <a href="#como-funciona">Cómo funciona</a>
+          <a href="#duelo">El duelo</a>
+          <a href="#precio">Precio</a>
+          <a href="#faq">Preguntas</a>
+        </nav>
+
+        <a
+          class="button button--primary nav__cta"
+          href="https://play.google.com/store/apps/details?id=com.prooffit.app"
+        >
+          Descargar en Google Play
+        </a>
+      </div>
+
+      <!--
+        Barra de progreso de lectura. Es la misma barra del duelo aplicada a
+        la página: dice cuánto queda. Se mueve con `animation-timeline`, o
+        sea con CSS puro atado al scroll, sin un solo listener. Donde el
+        navegador no lo soporta, simplemente no aparece.
+      -->
+      <div class="nav__progress" aria-hidden="true"></div>
+    </header>
+
+    <main id="contenido">
+      <!-- ═══ Hero ═══════════════════════════════════════════════════════ -->
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="shell hero__grid">
+          <div class="hero__copy">
+            <!--
+              El titular va partido en dos líneas explícitas para que entren
+              escalonadas: primero la premisa, después el remate. Los <span>
+              son de bloque, así que el texto sigue siendo una sola frase
+              para un lector de pantalla y para Google.
+            -->
+            <h1 id="hero-title">
+              <span class="hero__line" data-reveal>Tus pasos deciden</span>
+              <span class="hero__line" data-reveal data-reveal-delay="1">quién gana</span>
+            </h1>
+            <p class="lead" data-reveal data-reveal-delay="2">
+              Prooffit convierte tus pasos reales en duelos 1v1 contra tus amigos. Gana el que más
+              anda.
+            </p>
+            <div class="hero__actions" data-reveal data-reveal-delay="3">
+              <a
+                class="button button--primary"
+                href="https://play.google.com/store/apps/details?id=com.prooffit.app"
+              >
+                Descargar en Google Play
+              </a>
+              <span class="button button--pending" role="note">Pronto en iOS</span>
+            </div>
+          </div>
+
+          <div class="hero__art" data-reveal data-reveal-delay="2">
+            <div class="phone">
+              <div class="phone__screen">
+                <!--
+                  `width` y `height` no son opcionales: sin ellos el navegador
+                  no reserva el hueco, la página pega un salto al cargar la
+                  imagen y el CLS se dispara. `fetchpriority="high"` porque
+                  esta imagen es el LCP del hero.
+
+                  La imagen se genera con `bash landing/scripts/render-screens.sh`
+                  y es una reproducción con los tokens del sistema de diseño,
+                  no una captura del dispositivo. Ver
+                  landing/assets/screenshots/README.md.
+                -->
+                <img
+                  src="assets/screenshots/home.png"
+                  width="1080"
+                  height="2400"
+                  alt="Pantalla principal de Prooffit: 8.742 pasos de hoy, nivel 12 y un duelo en curso contra nereasoler"
+                  fetchpriority="high"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ Cómo funciona ══════════════════════════════════════════════ -->
+      <section id="como-funciona" class="beats" aria-labelledby="beats-title">
+        <div class="shell">
+          <h2 id="beats-title" data-reveal>Andar ya cuenta para algo</h2>
+
+          <ol class="beats__list">
+            <li class="beat" data-reveal>
+              <h3 class="beat__verb">Camina</h3>
+              <p class="body-muted">
+                La app lee los pasos que tu teléfono ya cuenta. Sin pulsera, sin apuntar nada y sin
+                tener que abrirla cada dos horas.
+              </p>
+            </li>
+            <li class="beat beat--offset-1" data-reveal>
+              <h3 class="beat__verb">Reta</h3>
+              <p class="body-muted">
+                Eliges a un amigo y un plazo. Los dos empezáis de cero en el mismo instante, así que
+                nadie llega con ventaja.
+              </p>
+            </li>
+            <li class="beat beat--offset-2" data-reveal>
+              <h3 class="beat__verb">Gana</h3>
+              <p class="body-muted">
+                Cuando vence el plazo gana quien más pasos ha dado. El ganador se lleva el XP y la
+                lámina para restregarla.
+              </p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- ═══ El duelo ═══════════════════════════════════════════════════ -->
+      <section id="duelo" class="duel" aria-labelledby="duel-title">
+        <div class="shell duel__inner">
+          <h2 id="duel-title" data-reveal>El duelo se cierra solo</h2>
+          <p class="body-muted duel__intro" data-reveal data-reveal-delay="1">
+            No hay que confirmar nada ni acordarse de entrar. Al vencer el plazo el servidor cuenta
+            los pasos de los dos, reparte el XP y te avisa.
+          </p>
+
+          <!--
+            Figura del mecanismo, no una captura de la app. Las dos barras son
+            el mismo MeterBar de la app: tú en Power, el rival en Rival. Las
+            cifras son un ejemplo y así lo dice el pie.
+          -->
+          <figure class="duel__board card card--highlight" data-reveal data-reveal-delay="2">
+            <div class="duel__side">
+              <div class="duel__who">
+                <span class="chip chip--primary">Tú</span>
+                <!--
+                  La cifra va escrita en el HTML: sin JavaScript se lee el
+                  número, no un cero. motion.js la pone a cero y la sube al
+                  entrar en pantalla.
+                -->
+                <span class="duel__steps stat text-power" data-count-to="8742">8.742</span>
+              </div>
+              <div class="meter" data-meter="1">
+                <div class="meter__fill meter__fill--power"></div>
+              </div>
+            </div>
+
+            <div class="duel__side">
+              <div class="duel__who">
+                <span class="chip chip--rival">Nerea</span>
+                <span class="duel__steps stat text-rival" data-count-to="7538">7.538</span>
+              </div>
+              <div class="meter" data-meter="0.862">
+                <div class="meter__fill meter__fill--rival"></div>
+              </div>
+            </div>
+
+            <figcaption class="label duel__caption">
+              Ejemplo de un duelo a 24 horas. Cifras de muestra.
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- ═══ Funciones (bento) ══════════════════════════════════════════ -->
+      <section id="funciones" class="features" aria-labelledby="features-title">
+        <div class="shell">
+          <h2 id="features-title" data-reveal>Lo que hay dentro</h2>
+
+          <div class="bento">
+            <article class="bento__cell bento__cell--streak card" data-reveal>
+              <h3>La racha se rompe sola</h3>
+              <p class="body-muted">
+                Cada día que cumples tu objetivo suma uno. Un día sin andar y vuelve a cero, sin
+                perdón y sin segundas oportunidades.
+              </p>
+              <p class="bento__flame" aria-hidden="true" data-count-to="9">9</p>
+            </article>
+
+            <article class="bento__cell bento__cell--xp card" data-reveal data-reveal-delay="1">
+              <h3>Niveles</h3>
+              <p class="body-muted">Cada duelo ganado empuja la barra un poco más.</p>
+              <div class="bento__xp">
+                <div class="meter" data-meter="0.82">
+                  <div class="meter__fill meter__fill--xp"></div>
+                </div>
+                <span class="chip chip--primary">LV 12</span>
+              </div>
+            </article>
+
+            <article class="bento__cell bento__cell--friends card" data-reveal data-reveal-delay="2">
+              <h3>Amigos</h3>
+              <p class="body-muted">
+                Los buscas por nombre, mandas la solicitud y en cuanto la aceptan ya os podéis
+                retar.
+              </p>
+            </article>
+
+            <article class="bento__cell bento__cell--share card" data-reveal data-reveal-delay="3">
+              <h3>Una lámina por cada duelo</h3>
+              <p class="body-muted">
+                Al terminar, la app te deja una imagen vertical con el resultado, lista para tu
+                historia.
+              </p>
+              <div class="bento__frame" aria-hidden="true">
+                <span>1080</span>
+                <span>1350</span>
+              </div>
+            </article>
+
+            <article class="bento__cell bento__cell--fair card card--sunken" data-reveal data-reveal-delay="4">
+              <h3>Agitar el móvil no sirve</h3>
+              <p class="body-muted">
+                El marcador que cuenta es el del servidor, y el servidor corta por un tope diario
+                antes de guardar nada.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ La regla del XP ════════════════════════════════════════════ -->
+      <section id="xp" class="rule" aria-labelledby="rule-title">
+        <div class="shell rule__grid">
+          <div class="rule__copy">
+            <h2 id="rule-title" data-reveal>El XP solo se gana ganando</h2>
+            <p class="body-muted" data-reveal data-reveal-delay="1">
+              Andar mucho no te sube de nivel por sí solo. Lo que sube de nivel es ganar el duelo, y
+              el premio sale de los pasos con los que lo ganaste. El que pierde se queda como
+              estaba.
+            </p>
+          </div>
+
+          <div class="rule__formula card card--sunken" data-reveal data-reveal-delay="2">
+            <span class="label">La fórmula entera</span>
+            <code>XP = floor(pasos_del_ganador / 10)</code>
+            <p class="body-muted">
+              Ganar con 8.742 pasos son 874 de XP. No hay multiplicadores escondidos ni bonus por
+              pagar.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ Precio ═════════════════════════════════════════════════════ -->
+      <section id="precio" class="plans" aria-labelledby="plans-title">
+        <div class="shell">
+          <h2 id="plans-title" data-reveal>Gratis de verdad. Pro si te pica</h2>
+
+          <div class="plans__grid">
+            <article class="plan card" data-reveal>
+              <h3 class="plan__name">Gratis</h3>
+              <p class="plan__line">Un duelo nuevo al día.</p>
+              <p class="body-muted">
+                Los pasos, los amigos, la racha, los niveles y las láminas para compartir entran
+                aquí. Los duelos que te reten a ti no gastan tu cupo.
+              </p>
+              <a
+                class="button button--primary button--block plan__cta"
+                href="https://play.google.com/store/apps/details?id=com.prooffit.app"
+              >
+                Descargar en Google Play
+              </a>
+            </article>
+
+            <article class="plan plan--pro card card--highlight" data-reveal data-reveal-delay="1">
+              <h3 class="plan__name">Pro</h3>
+              <p class="plan__line">Duelos sin límite.</p>
+              <p class="body-muted">
+                Quita el cupo diario. El precio te lo dice la tienda en tu moneda, y se contrata
+                desde dentro de la app.
+              </p>
+              <p class="plan__note label">Se puede cancelar desde Google Play</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ FAQ ════════════════════════════════════════════════════════ -->
+      <section id="faq" class="faq" aria-labelledby="faq-title">
+        <div class="shell faq__inner">
+          <h2 id="faq-title" data-reveal>Preguntas</h2>
+
+          <div class="faq__list">
+            <details class="faq__item" data-reveal>
+              <summary>¿Prooffit es gratis?</summary>
+              <p class="faq__answer">
+                Sí. Descargar y jugar no cuesta nada: pasos, amigos, rachas, niveles y láminas para
+                compartir van incluidos. La cuenta gratuita puede crear un duelo nuevo al día, y la
+                suscripción Pro quita ese límite.
+              </p>
+            </details>
+
+            <details class="faq__item" data-reveal>
+              <summary>¿Necesito una pulsera o un reloj?</summary>
+              <p class="faq__answer">
+                No. Prooffit usa los pasos que tu teléfono ya está contando. Si además tienes una
+                pulsera o un reloj que escriba en Health Connect, esos pasos también cuentan.
+              </p>
+            </details>
+
+            <details class="faq__item" data-reveal>
+              <summary>¿De dónde saca los pasos?</summary>
+              <p class="faq__answer">
+                En Android, de Health Connect, que es el almacén de salud del propio sistema. Tú le
+                das permiso para leer los pasos y puedes retirárselo cuando quieras desde los
+                ajustes del teléfono.
+              </p>
+            </details>
+
+            <details class="faq__item" data-reveal>
+              <summary>¿Se puede hacer trampa agitando el móvil?</summary>
+              <p class="faq__answer">
+                El recuento que vale es el del servidor, no el del teléfono. El servidor aplica un
+                tope diario y descarta lo que llega por encima, así que pasarse una hora sacudiendo
+                el móvil no mueve el marcador del duelo.
+              </p>
+            </details>
+
+            <details class="faq__item" data-reveal>
+              <summary>¿Funciona en iPhone?</summary>
+              <p class="faq__answer">
+                Todavía no. Esta primera versión sale solo en Android. La de iOS está en camino y no
+                tiene fecha pública.
+              </p>
+            </details>
+
+            <details class="faq__item" data-reveal>
+              <summary>¿Puedo borrar mi cuenta y mis datos?</summary>
+              <p class="faq__answer">
+                Sí, desde la propia app: Ajustes, Cuenta, Borrar cuenta. El borrado es definitivo y
+                se lleva tu perfil, los pasos guardados y los duelos. Si ya has desinstalado la app,
+                escribe a
+                <a class="link" href="mailto:porz4.shipaton@gmail.com">porz4.shipaton@gmail.com</a>.
+              </p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ Cierre ═════════════════════════════════════════════════════ -->
+      <section class="closing" aria-labelledby="closing-title">
+        <div class="shell closing__inner">
+          <h2 id="closing-title" data-reveal>Mañana alguien va a andar más que tú</h2>
+          <a
+            class="button button--primary closing__cta"
+            data-reveal
+            data-reveal-delay="1"
+            href="https://play.google.com/store/apps/details?id=com.prooffit.app"
+          >
+            Descargar en Google Play
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="shell footer__inner">
+        <div class="footer__brand">
+          <svg class="mark" viewBox="0 0 1080 1080" role="img" aria-hidden="true" focusable="false">
+            <g transform="rotate(-90 540 540)" fill="none" stroke-linecap="butt">
+              <circle
+                cx="540"
+                cy="540"
+                r="418"
+                stroke="var(--color-primary)"
+                stroke-width="86"
+                stroke-dasharray="1470.9 2626.4"
+              />
+              <circle
+                cx="540"
+                cy="540"
+                r="418"
+                stroke="var(--color-defeat)"
+                stroke-width="86"
+                stroke-dasharray="1050.6 2626.4"
+                stroke-dashoffset="-1523.3"
+              />
+            </g>
+            <text
+              x="540"
+              y="540"
+              fill="var(--color-text)"
+              font-family="Chakra Petch, sans-serif"
+              font-weight="700"
+              font-size="400"
+              text-anchor="middle"
+              dominant-baseline="central"
+            >
+              P
+            </text>
+          </svg>
+          <span class="nav__wordmark">Prooffit</span>
+        </div>
+
+        <nav class="footer__links" aria-label="Legal y contacto">
+          <!--
+            TODO(legal): estas dos páginas todavía no existen en esta carpeta.
+            Se generan a partir de src/lib/legal/ (privacy-policy.ts y
+            terms.ts), que ya guarda los textos como datos justo para esto.
+            Las dos tiendas exigen que sean públicas. Ver landing/README.md.
+          -->
+          <a href="privacy.html">Privacidad</a>
+          <a href="terms.html">Términos</a>
+          <a href="mailto:porz4.shipaton@gmail.com">Contacto</a>
+        </nav>
+
+        <p class="footer__legal label">Prooffit 2026. Hecho para la gente que no sabe perder.</p>
+      </div>
+    </footer>
+
+    <script src="scripts/motion.js" defer></script>
+  </body>
+</html>

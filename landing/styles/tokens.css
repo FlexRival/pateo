@@ -1,0 +1,107 @@
+/**
+ * Tokens de color de Prooffit para web. FICHERO GENERADO.
+ *
+ * Fuente: src/constants/colors.ts (la misma que corre en la app).
+ * Referencia legible: docs/design.md.
+ *
+ * No lo edites a mano. Para cambiar un color:
+ *   1. tocas src/constants/colors.ts
+ *   2. actualizas docs/design.md en el mismo commit
+ *   3. pnpm check:contrast
+ *   4. node --no-warnings=MODULE_TYPELESS_PACKAGE_JSON landing/scripts/build-tokens.mjs
+ *
+ * Tres familias de variables:
+ *   --color-*     tokens semánticos (Colors.dark). Es lo que usa la landing.
+ *   --palette-*   valores en bruto (Palette). Solo para casos sin token.
+ *   --gradient-*  rellenos con degradado (Gradients).
+ *
+ * Prooffit es de tema único y oscuro (docs/design.md): no hay bloque para
+ * prefers-color-scheme: light a propósito, no es un olvido.
+ */
+
+:root {
+  /* Semánticos. Un componente pide --color-surface, nunca --palette-card. */
+  --color-text: #F1F2F6;
+  --color-text-secondary: #B7BCC8;
+  --color-text-muted: #808594;
+  --color-text-dim: #4E545F;
+  --color-nav-idle: #8A90A0;
+  --color-background: #08090C;
+  --color-surface: #13151C;
+  --color-surface-raised: #1B1E27;
+  --color-surface-sunken: #101219;
+  --color-locked: #0E1017;
+  --color-primary-surface: rgba(198, 255, 74, 0.12);
+  --color-rival-surface: rgba(255, 92, 56, 0.12);
+  --color-neutral-surface: rgba(255, 255, 255, 0.05);
+  --color-dock: rgba(17, 19, 26, 0.94);
+  --color-border: rgba(255, 255, 255, 0.07);
+  --color-border-strong: rgba(255, 255, 255, 0.14);
+  --color-primary-edge: rgba(198, 255, 74, 0.24);
+  --color-primary-edge-strong: rgba(198, 255, 74, 0.40);
+  --color-rival-edge: rgba(255, 92, 56, 0.24);
+  --color-primary: #C6FF4A;
+  --color-primary-solid: #B4F02E;
+  --color-on-primary: #0A0C05;
+  --color-xp: #C6FF4A;
+  --color-xp-solid: #8CE03C;
+  --color-on-xp: #0A0C05;
+  --color-xp-track: rgba(255, 255, 255, 0.07);
+  --color-steps: #F1F2F6;
+  --color-meter-track: rgba(255, 255, 255, 0.10);
+  --color-streak: #FF5C38;
+  --color-victory: #C6FF4A;
+  --color-defeat: #FF5C38;
+  --color-info: #808594;
+  --color-overlay: rgba(5, 6, 10, 0.72);
+  --color-background-element: #101219;
+  --color-background-selected: #1B1E27;
+
+  /* En bruto. Bájate aquí solo si no hay token semántico para el rol. */
+  --palette-void: #05060A;
+  --palette-frame: #08090C;
+  --palette-surface: #101219;
+  --palette-card: #13151C;
+  --palette-raised: #1B1E27;
+  --palette-dock: rgba(17, 19, 26, 0.94);
+  --palette-locked: #0E1017;
+  --palette-power: #C6FF4A;
+  --palette-power-bright: #E4FF95;
+  --palette-power-bright-alt: #E2FF8E;
+  --palette-power-deep: #B4F02E;
+  --palette-power-mid: #8CE03C;
+  --palette-power-flash: #EEFFB8;
+  --palette-on-power: #0A0C05;
+  --palette-rival: #FF5C38;
+  --palette-text: #F1F2F6;
+  --palette-text-soft: #B7BCC8;
+  --palette-text-muted: #808594;
+  --palette-text-dim: #4E545F;
+  --palette-nav-idle: #8A90A0;
+  --palette-hairline: rgba(255, 255, 255, 0.07);
+  --palette-hairline-strong: rgba(255, 255, 255, 0.14);
+  --palette-power-edge: rgba(198, 255, 74, 0.24);
+  --palette-power-edge-strong: rgba(198, 255, 74, 0.40);
+  --palette-rival-edge: rgba(255, 92, 56, 0.24);
+  --palette-power-tint: rgba(198, 255, 74, 0.12);
+  --palette-rival-tint: rgba(255, 92, 56, 0.12);
+  --palette-neutral-tint: rgba(255, 255, 255, 0.05);
+  --palette-neutral-track: rgba(255, 255, 255, 0.10);
+  --palette-scrim: rgba(5, 6, 10, 0.72);
+
+  /* Degradados. */
+  --gradient-power: linear-gradient(90deg, #B4F02E, #E4FF95);
+  --gradient-power-1: #B4F02E;
+  --gradient-power-2: #E4FF95;
+  --gradient-xp: linear-gradient(90deg, #8CE03C, #C6FF4A);
+  --gradient-xp-1: #8CE03C;
+  --gradient-xp-2: #C6FF4A;
+  --gradient-frame-bronze: linear-gradient(90deg, #F0C79A, #C97A3D, #6B3C1B);
+  --gradient-frame-bronze-1: #F0C79A;
+  --gradient-frame-bronze-2: #C97A3D;
+  --gradient-frame-bronze-3: #6B3C1B;
+  --gradient-frame-silver: linear-gradient(90deg, #F8FAFD, #B9C2D0, #5B6472);
+  --gradient-frame-silver-1: #F8FAFD;
+  --gradient-frame-silver-2: #B9C2D0;
+  --gradient-frame-silver-3: #5B6472;
+}

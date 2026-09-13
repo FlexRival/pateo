@@ -10,6 +10,24 @@ valor en uno, cambia el otro en el mismo commit. Después de tocar
 texto/fondo no cumple WCAG 2.1, o si añadiste un token y no lo clasificaste
 en el script.
 
+### La landing consume esto mismo
+
+`landing/` (la página pública de descarga) usa este sistema, no uno paralelo:
+
+- **Color.** `landing/styles/tokens.css` es un fichero **generado** desde
+  `src/constants/colors.ts` por `landing/scripts/build-tokens.mjs`. No se
+  edita a mano. Al cambiar un color, el orden completo es: `colors.ts` →
+  este documento → `pnpm check:contrast` → regenerar `tokens.css` con
+  `node --no-warnings=MODULE_TYPELESS_PACKAGE_JSON landing/scripts/build-tokens.mjs`.
+- **Escala** (tipografía, radios, espaciado, motion). Espejada a mano en
+  `landing/styles/theme.css`, porque `theme.ts` importa `react-native` y Node
+  no puede cargarlo suelto. Si tocas `Typography`, `Radius`, `Spacing`,
+  `Elevation` o `Motion`, cámbialo también ahí en el mismo commit.
+
+La landing añade tres cosas que la app no necesita y que por tanto no viven
+aquí: pasos de tipografía de escritorio, ritmo vertical entre secciones y
+ancho máximo de página. Están documentados en `landing/README.md`.
+
 ## Regla para quien escribe código (humano o IA)
 
 **Ningún componente hardcodea un color.** Ni un hex, ni un `rgba(...)`, ni

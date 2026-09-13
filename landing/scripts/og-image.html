@@ -1,0 +1,171 @@
+<!doctype html>
+<!--
+  Fuente de `landing/assets/brand/og-image.png`, la tarjeta que se ve cuando
+  alguien pega el enlace de la landing en WhatsApp, X o LinkedIn.
+
+  Se renderiza con `bash landing/scripts/render-og.sh`. Mismo patrón que
+  `scripts/app-icons.html`: el PNG es un fichero generado y quien manda es
+  este HTML. Nunca se retoca el PNG a mano.
+
+  1200x630 es el tamaño que piden Open Graph y Twitter para la tarjeta
+  grande. Ojo con el recorte: algunas plataformas la enseñan a 2:1 o
+  redondean las esquinas, así que nada importante toca los bordes.
+-->
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../styles/tokens.css" />
+    <link rel="stylesheet" href="../styles/theme.css" />
+    <style>
+      /*
+       * Sin base.css: esto no es una página, es un lienzo. Pero el
+       * `box-sizing: border-box` sí hace falta, y no es cosmético: con el
+       * valor por defecto el padding se suma al `height`, el lienzo se va a
+       * 774px y el recorte de 630 se come la barra del duelo.
+       */
+      *,
+      *::before {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      .canvas {
+        position: relative;
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 32px;
+        padding: 72px 80px;
+        background-color: var(--color-background);
+        color: var(--color-text);
+        font-family: var(--font-body);
+      }
+
+      /* El mismo ambiente de dos focos que lleva la landing. */
+      .canvas::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(700px 460px at 8% -14%, rgb(198 255 74 / 0.12), transparent 62%),
+          radial-gradient(560px 420px at 104% 116%, rgb(255 92 56 / 0.1), transparent 62%);
+      }
+
+      .row {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .mark {
+        width: 72px;
+        height: 72px;
+      }
+
+      .wordmark {
+        font-family: var(--font-display);
+        font-size: 44px;
+        letter-spacing: 0.01em;
+      }
+
+      .headline {
+        position: relative;
+        margin: 0;
+        font-family: var(--font-display);
+        font-size: 92px;
+        line-height: 1.02;
+        letter-spacing: -0.02em;
+        max-width: 15ch;
+      }
+
+      .headline em {
+        font-style: normal;
+        color: var(--color-primary);
+      }
+
+      .sub {
+        position: relative;
+        margin: 0;
+        font-size: 30px;
+        line-height: 1.4;
+        color: var(--color-text-secondary);
+        max-width: 34ch;
+      }
+
+      /* La barra del duelo, cortada a lo ancho del lienzo. */
+      .bar {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 20px;
+        display: flex;
+      }
+
+      .bar span:first-child {
+        flex: 8742;
+        background-color: var(--color-primary);
+      }
+
+      .bar span:last-child {
+        flex: 7538;
+        background-color: var(--color-defeat);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="canvas">
+      <div class="row">
+        <svg class="mark" viewBox="0 0 1080 1080" aria-label="Prooffit">
+          <g transform="rotate(-90 540 540)" fill="none" stroke-linecap="butt">
+            <circle
+              cx="540"
+              cy="540"
+              r="418"
+              stroke="var(--color-primary)"
+              stroke-width="86"
+              stroke-dasharray="1470.9 2626.4"
+            />
+            <circle
+              cx="540"
+              cy="540"
+              r="418"
+              stroke="var(--color-defeat)"
+              stroke-width="86"
+              stroke-dasharray="1050.6 2626.4"
+              stroke-dashoffset="-1523.3"
+            />
+          </g>
+          <text
+            x="540"
+            y="540"
+            fill="var(--color-text)"
+            font-family="Chakra Petch, sans-serif"
+            font-weight="700"
+            font-size="400"
+            text-anchor="middle"
+            dominant-baseline="central"
+          >
+            P
+          </text>
+        </svg>
+        <span class="wordmark">Prooffit</span>
+      </div>
+
+      <h1 class="headline">Tus pasos deciden <em>quién gana</em></h1>
+      <p class="sub">Duelos 1v1 contra tus amigos. Gana el que más anda.</p>
+
+      <div class="bar" aria-hidden="true"><span></span><span></span></div>
+    </div>
+  </body>
+</html>

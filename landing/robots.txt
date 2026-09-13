@@ -1,0 +1,7 @@
+# Prooffit. Todo lo que hay aquí es público y queremos que se indexe.
+# ⚠️ Cambia el dominio de Sitemap por el real antes de publicar.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://prooffit.app/sitemap.xml

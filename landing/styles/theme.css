@@ -1,0 +1,138 @@
+/**
+ * Escala del sistema de diseño de Prooffit para web: tipografía, radios,
+ * espaciado, elevación y motion.
+ *
+ * Espejo a mano de `src/constants/theme.ts`. No se genera como `tokens.css`
+ * porque `theme.ts` importa `react-native` y Node no puede cargarlo suelto
+ * (ver la cabecera de `landing/scripts/build-tokens.mjs`). Si cambias la
+ * escala en `theme.ts`, cámbiala aquí en el mismo commit.
+ *
+ * Regla que se hereda de docs/design.md y que manda sobre todo lo demás:
+ * **en este diseño la familia es el peso.** No existe Space Grotesk Bold. Lo
+ * que en otro sistema sería "poner esto en negrita" aquí es "subir esto a
+ * Chakra Petch 700". Por eso ninguna regla de aquí declara `font-weight`
+ * junto a una familia de marca.
+ */
+
+/* ── Tipografía ─────────────────────────────────────────────────────────── */
+
+/*
+ * Las tres familias que carga la app, servidas desde el propio dominio. Los
+ * .ttf son copia literal de los que empaqueta Expo:
+ *   node_modules/@expo-google-fonts/{chakra-petch,space-grotesk}/…
+ *
+ * `font-display: swap` para que el texto se lea desde el primer frame: la
+ * landing vive del LCP y una fuente bloqueante lo tira abajo.
+ */
+@font-face {
+  font-family: 'Chakra Petch';
+  src: url('../assets/fonts/ChakraPetch_700Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Space Grotesk';
+  src: url('../assets/fonts/SpaceGrotesk_400Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Space Grotesk';
+  src: url('../assets/fonts/SpaceGrotesk_500Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* Las dos familias del sistema, más la mono del sistema operativo. */
+  --font-display: 'Chakra Petch', 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Space Grotesk', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Mono', 'SF Mono', Menlo, monospace;
+
+  /*
+   * Escala de la app, tal cual la declara `Typography` en theme.ts. La usa
+   * cualquier pieza de la landing que sea una traducción directa de un
+   * componente de la app (chips, barras, tarjetas).
+   */
+  --type-heading: 24px;
+  --type-subheading: 20px;
+  --type-numeric: 20px;
+  --type-body: 16px;
+  --type-small: 14px;
+  --type-caption: 12px;
+  --type-label: 11px;
+
+  /*
+   * Pasos que solo existen en web. Una pantalla de móvil tope a 48px de
+   * título (`Typography.title`); un titular de landing a 1440px de ancho
+   * necesita más. Se construyen con clamp() para que el salto sea fluido y
+   * no una cascada de media queries, y siguen la misma regla de familia:
+   * todo esto es Chakra Petch 700.
+   */
+  /*
+   * El techo está calibrado, no elegido a ojo: a 4.5rem el titular del hero
+   * cabe en dos líneas dentro de su columna. Subirlo lo parte en tres y el
+   * hero deja de leerse de un golpe.
+   */
+  --type-hero: clamp(2.5rem, 1.5rem + 4.4vw, 4.5rem);
+  --type-section: clamp(2rem, 1.3rem + 3vw, 3.5rem);
+  --type-stat: clamp(2.5rem, 1.5rem + 4vw, 4.25rem);
+
+  /* Interlineados. Los titulares van apretados, el cuerpo respira. */
+  --leading-tight: 1.02;
+  --leading-snug: 1.2;
+  --leading-body: 1.6;
+
+  /* Tracking. `label` y `button` de theme.ts van abiertos y en mayúsculas. */
+  --tracking-label: 0.08em;
+  --tracking-button: 1.2px;
+  --tracking-hero: -0.02em;
+
+  /* ── Radios (`Radius` en theme.ts) ────────────────────────────────────── */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 999px;
+
+  /* ── Espaciado (`Spacing` en theme.ts) ────────────────────────────────── */
+  --space-half: 2px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --space-6: 64px;
+
+  /* Ritmo vertical de sección. Solo web: la app no apila secciones así. */
+  --section-y: clamp(5rem, 3rem + 8vw, 9rem);
+  --page-max: 1200px;
+  --page-gutter: clamp(1.25rem, 0.5rem + 3vw, 3rem);
+
+  /* ── Elevación (`Elevation` en theme.ts) ──────────────────────────────── */
+  --elevation-low: 0 1px 4px rgb(5 6 10 / 0.12);
+  --elevation-medium: 0 4px 12px rgb(5 6 10 / 0.18);
+  --elevation-high: 0 10px 24px rgb(5 6 10 / 0.26);
+
+  /* ── Motion (`Motion` en theme.ts) ────────────────────────────────────── */
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-slow: 400ms;
+  --duration-celebrate: 800ms;
+
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-decelerate: cubic-bezier(0, 0, 0, 1);
+  --ease-accelerate: cubic-bezier(0.3, 0, 1, 1);
+
+  /*
+   * Capas. Tres y para de contar: el dock, el velo y nada más. Un z-index
+   * suelto en un componente es un bug esperando a pasar.
+   */
+  --z-nav: 100;
+  --z-overlay: 200;
+}

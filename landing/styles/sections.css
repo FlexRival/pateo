@@ -1,0 +1,544 @@
+/**
+ * Composición de cada sección de la landing.
+ *
+ * `components.css` define las piezas; esto las coloca. Ninguna regla de aquí
+ * escribe un color a pelo: todo sale de `tokens.css`.
+ *
+ * Mobile first. Cada rejilla declara explícitamente qué hace por debajo de
+ * 768px, que es donde se ve esto de verdad: la landing de una app de móvil
+ * se lee desde un móvil.
+ */
+
+/* ── Marca ──────────────────────────────────────────────────────────────── */
+
+.mark {
+  width: 34px;
+  height: 34px;
+  flex: none;
+}
+
+.nav__wordmark {
+  font-family: var(--font-display);
+  font-size: var(--type-subheading);
+  letter-spacing: 0.01em;
+}
+
+/* ── Dock superior ──────────────────────────────────────────────────────── */
+
+#top-sentinel {
+  position: absolute;
+  top: 0;
+  height: 1px;
+  width: 1px;
+}
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-nav);
+  background-color: transparent;
+  transition:
+    background-color var(--duration-base) var(--ease-standard),
+    border-color var(--duration-base) var(--ease-standard);
+  border-bottom: 1px solid transparent;
+}
+
+/*
+ * `motion.js` pone este atributo cuando el centinela de arriba sale de la
+ * pantalla. Así el dock solo se tiñe cuando hay contenido pasando por
+ * debajo, sin escuchar el scroll en cada frame.
+ */
+.nav[data-stuck] {
+  background-color: var(--color-dock);
+  backdrop-filter: blur(16px);
+  border-bottom-color: var(--color-border);
+}
+
+.nav__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  height: 68px;
+}
+
+/*
+ * Barra de progreso de lectura, pegada al borde inferior del dock. Nace
+ * oculta: solo la enciende el bloque `@supports (animation-timeline)` de
+ * motion.css, porque sin esa animación sería una raya verde fija y sin
+ * sentido.
+ */
+.nav__progress {
+  display: none;
+  height: 2px;
+  background-color: var(--color-primary);
+  transform-origin: left center;
+}
+
+.nav__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-right: auto;
+}
+
+.nav__links {
+  display: none;
+  gap: var(--space-4);
+  font-size: var(--type-small);
+  font-weight: 500;
+  color: var(--color-nav-idle);
+}
+
+.nav__links a {
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.nav__links a:hover {
+  color: var(--color-text);
+}
+
+/* El botón del dock es más bajo que el de la página: tiene 68px de caja. */
+.nav__cta {
+  display: none;
+  padding-block: 10px;
+  font-size: var(--type-caption);
+}
+
+@media (min-width: 900px) {
+  .nav__links,
+  .nav__cta {
+    display: inline-flex;
+  }
+}
+
+/* ── Hero ───────────────────────────────────────────────────────────────── */
+
+/*
+ * El tope de padding superior es deliberado: con más, el titular se va al
+ * centro de la pantalla y parece un fallo de maquetación en vez de aire.
+ */
+.hero {
+  padding-top: clamp(2.5rem, 1rem + 5vw, 5rem);
+  padding-bottom: calc(var(--section-y) / 2);
+}
+
+.hero__grid {
+  display: grid;
+  gap: clamp(2.5rem, 5vw, 4rem);
+  align-items: center;
+}
+
+.hero__copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/*
+ * 16ch deja el titular en dos líneas ("Tus pasos deciden / quién gana") en
+ * todo el rango de escritorio. Con menos se parte en tres y el hero deja de
+ * leerse de un vistazo, que es lo único que tiene que hacer.
+ */
+.hero h1 {
+  max-width: 16ch;
+}
+
+/* Cada línea del titular es un bloque para poder entrar por separado. */
+.hero__line {
+  display: block;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.hero__art {
+  justify-self: center;
+  width: min(300px, 78vw);
+}
+
+@media (min-width: 900px) {
+  .hero__grid {
+    /* Asimétrica: el texto manda y la pantalla acompaña. */
+    grid-template-columns: 1.2fr 0.8fr;
+  }
+
+  .hero__art {
+    justify-self: end;
+    width: min(320px, 100%);
+  }
+}
+
+/* ── Cómo funciona ──────────────────────────────────────────────────────── */
+
+.beats__list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2.5rem, 5vw, 4rem);
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+}
+
+/*
+ * La línea de la izquierda es un pseudo-elemento y no un `border-left`
+ * porque hay que poder trazarla de arriba abajo al entrar (ver motion.css):
+ * un `border-width` no se anima sin repintar, un `scaleY` sí.
+ */
+.beat {
+  position: relative;
+  display: grid;
+  gap: var(--space-2);
+  padding-left: var(--space-4);
+}
+
+.beat::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-color: var(--color-border);
+  transform-origin: top center;
+}
+
+.beat__verb {
+  font-size: clamp(1.75rem, 1.2rem + 2.2vw, 2.75rem);
+  line-height: 1.1;
+  color: var(--color-primary);
+}
+
+/*
+ * La escalera. Cada tiempo del relato entra un poco más a la derecha, que es
+ * lo que rompe la simetría de tres bloques iguales. Solo a partir de 900px:
+ * en móvil la escalera se comería el ancho de lectura.
+ */
+@media (min-width: 900px) {
+  .beat {
+    grid-template-columns: 12rem 1fr;
+    gap: var(--space-5);
+    align-items: baseline;
+  }
+
+  .beat--offset-1 {
+    margin-left: 8%;
+  }
+
+  .beat--offset-2 {
+    margin-left: 16%;
+  }
+}
+
+/* ── El duelo ───────────────────────────────────────────────────────────── */
+
+.duel__inner {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+  text-align: center;
+}
+
+.duel__intro {
+  max-width: 52ch;
+}
+
+.duel__board {
+  display: grid;
+  gap: var(--space-5);
+  width: min(720px, 100%);
+  margin-top: var(--space-4);
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  text-align: left;
+}
+
+.duel__side {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.duel__who {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.duel__steps {
+  font-size: clamp(2rem, 1.2rem + 3vw, 3rem);
+}
+
+.duel__caption {
+  justify-self: center;
+  color: var(--color-text-dim);
+}
+
+/* ── Funciones (bento) ──────────────────────────────────────────────────── */
+
+.bento {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+}
+
+.bento__cell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: clamp(1.25rem, 3vw, 2rem);
+}
+
+.bento__cell h3 {
+  font-size: var(--type-heading);
+}
+
+/*
+ * Variación de fondo, que es lo que separa un bento de una fila de tarjetas
+ * blancas. Cada tinte usa el token de su rol, no un degradado inventado: la
+ * racha es Rival porque en la app la racha va en Rival (docs/design.md).
+ */
+.bento__cell--streak {
+  background-image: linear-gradient(160deg, var(--color-rival-surface), transparent 62%);
+  border-color: var(--color-rival-edge);
+  justify-content: space-between;
+}
+
+.bento__cell--xp {
+  background-image: linear-gradient(200deg, var(--color-primary-surface), transparent 58%);
+  border-color: var(--color-primary-edge);
+  justify-content: space-between;
+}
+
+.bento__cell--share {
+  justify-content: space-between;
+}
+
+/* La cifra de racha, del tamaño de un cartel. */
+.bento__flame {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 3rem + 8vw, 8rem);
+  line-height: 0.9;
+  color: var(--color-streak);
+  font-variant-numeric: tabular-nums;
+  margin-top: var(--space-4);
+}
+
+.bento__xp {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.bento__xp .meter {
+  flex: 1;
+}
+
+/* Marco 4:5 de la lámina, con sus medidas reales de exportación. */
+.bento__frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  aspect-ratio: 4 / 5;
+  max-height: 150px;
+  align-self: flex-start;
+  margin-top: var(--space-4);
+  padding: var(--space-3);
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-md);
+  font-family: var(--font-display);
+  font-size: var(--type-caption);
+  color: var(--color-text-dim);
+}
+
+.bento__frame span:first-child::after {
+  content: ' x';
+}
+
+@media (min-width: 768px) {
+  .bento {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  /*
+   * Cinco funciones, cinco celdas y ni un hueco vacío. La racha ocupa dos
+   * filas porque su cifra pide altura, y la lámina otras dos porque su marco
+   * es vertical.
+   */
+  .bento {
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-areas:
+      'streak streak xp     xp'
+      'streak streak amigos share'
+      'fair   fair   fair   share';
+  }
+
+  .bento__cell--streak {
+    grid-area: streak;
+  }
+  .bento__cell--xp {
+    grid-area: xp;
+  }
+  .bento__cell--share {
+    grid-area: share;
+  }
+  .bento__cell--fair {
+    grid-area: fair;
+  }
+  .bento__cell--friends {
+    grid-area: amigos;
+  }
+}
+
+/* ── La regla del XP ────────────────────────────────────────────────────── */
+
+.rule__grid {
+  display: grid;
+  gap: clamp(2rem, 4vw, 3.5rem);
+  align-items: center;
+}
+
+.rule__copy {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.rule__formula {
+  display: grid;
+  gap: var(--space-3);
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+.rule__formula code {
+  font-size: clamp(0.9375rem, 0.7rem + 1vw, 1.375rem);
+  color: var(--color-primary);
+  word-break: break-word;
+}
+
+@media (min-width: 900px) {
+  .rule__grid {
+    grid-template-columns: 1fr 0.9fr;
+  }
+}
+
+/* ── Precio ─────────────────────────────────────────────────────────────── */
+
+.plans__grid {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+}
+
+.plan {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+.plan__name {
+  font-size: var(--type-heading);
+  color: var(--color-text-muted);
+}
+
+.plan--pro .plan__name {
+  color: var(--color-primary);
+}
+
+.plan__line {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2rem);
+  line-height: 1.15;
+}
+
+.plan__cta {
+  margin-top: auto;
+}
+
+.plan__note {
+  margin-top: auto;
+  color: var(--color-text-dim);
+}
+
+@media (min-width: 768px) {
+  .plans__grid {
+    grid-template-columns: repeat(2, 1fr);
+    align-items: stretch;
+  }
+}
+
+/* ── FAQ ────────────────────────────────────────────────────────────────── */
+
+.faq__inner {
+  max-width: 820px;
+}
+
+.faq__list {
+  margin-top: clamp(1.5rem, 3vw, 2.5rem);
+  border-top: 1px solid var(--color-border);
+}
+
+.faq__answer .link {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ── Cierre ─────────────────────────────────────────────────────────────── */
+
+.closing__inner {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-4);
+  text-align: center;
+}
+
+.closing h2 {
+  max-width: 18ch;
+}
+
+/* ── Footer ─────────────────────────────────────────────────────────────── */
+
+.footer {
+  border-top: 1px solid var(--color-border);
+  padding-block: var(--space-5);
+}
+
+.footer__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+}
+
+.footer__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-right: auto;
+}
+
+.footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  font-size: var(--type-small);
+  color: var(--color-text-secondary);
+}
+
+.footer__links a {
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.footer__links a:hover {
+  color: var(--color-primary);
+}
+
+.footer__legal {
+  flex-basis: 100%;
+  color: var(--color-text-dim);
+}

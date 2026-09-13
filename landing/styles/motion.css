@@ -1,0 +1,303 @@
+/**
+ * Capa de movimiento.
+ *
+ * Regla que se aplica a todo lo de abajo: **una animación entra aquí solo si
+ * se puede explicar en una frase.** Si la explicación es "queda bien", no
+ * entra. Esta es la lista completa, con su motivo:
+ *
+ *   1. Marca que se dibuja   -> el anillo ES la barra del duelo llenándose.
+ *                               Al cargar, la marca cuenta de qué va la app.
+ *   2. Entrada escalonada    -> jerarquía. Marca en qué orden hay que leer.
+ *   3. Teléfono que sube     -> jerarquía. El producto es el premio del hero.
+ *   4. Línea de los tiempos  -> relato. Camina, reta, gana es una secuencia,
+ *                               y la línea la recorre de arriba abajo.
+ *   5. Relleno de las barras -> el mecanismo. La barra del duelo llenándose
+ *                               es el producto; verla quieta no explica nada.
+ *   6. Cifras que suben      -> lo mismo: los pasos y la racha en marcha.
+ *   7. Chip de nivel         -> transición de estado. La barra se llena y el
+ *                               nivel aparece detrás, que es lo que pasa.
+ *   8. Elevación al pasar    -> feedback. Dice qué bloques son una unidad.
+ *   9. Progreso de lectura   -> orientación. Cuánto queda de página.
+ *  10. Respuesta de la FAQ   -> feedback. Confirma que el clic hizo algo.
+ *
+ * No hay bucles infinitos, ni parallax, ni cursor propio, ni secuestro del
+ * scroll. Salvo el trazo de la marca (una vez, en un icono de 34px), todo se
+ * anima con `transform` y `opacity`, que es lo único que la GPU compone sin
+ * repintar.
+ *
+ * Las duraciones y las curvas salen de `Motion` (src/constants/theme.ts), no
+ * de números sueltos: la landing se mueve como se mueve la app.
+ */
+
+/* ── 1. La marca se dibuja ──────────────────────────────────────────────── */
+
+/*
+ * Los dos arcos crecen desde su punto de partida. Se anima
+ * `stroke-dasharray` y no `stroke-dashoffset` porque el offset DESPLAZA el
+ * trazo a lo largo del círculo y aquí hace falta que CREZCA. Los valores
+ * finales son los mismos que trae el atributo en el HTML, que a su vez viene
+ * de scripts/app-icons.html.
+ *
+ * Única animación de la página que repinta en vez de componer. Se acepta
+ * porque ocurre una sola vez, al cargar, sobre un icono de 34px.
+ */
+@keyframes mark-draw-power {
+  from {
+    stroke-dasharray: 0 2626.4;
+  }
+  to {
+    stroke-dasharray: 1470.9 2626.4;
+  }
+}
+
+@keyframes mark-draw-rival {
+  from {
+    stroke-dasharray: 0 2626.4;
+  }
+  to {
+    stroke-dasharray: 1050.6 2626.4;
+  }
+}
+
+[data-motion] .mark--draw .mark__arc--power {
+  animation: mark-draw-power var(--duration-celebrate) var(--ease-decelerate) both;
+}
+
+[data-motion] .mark--draw .mark__arc--rival {
+  /* El rival entra detrás: primero vas tú, después aparece quien te reta. */
+  animation: mark-draw-rival var(--duration-celebrate) var(--ease-decelerate) 180ms both;
+}
+
+/* ── 2. Entrada escalonada ──────────────────────────────────────────────── */
+
+/*
+ * El estado oculto solo se aplica si hay JavaScript vivo (`motion.js` marca
+ * el <html>). Sin él, el contenido se ve tal cual: una landing que se queda
+ * en blanco porque no cargó un script no es una landing.
+ */
+[data-motion] [data-reveal] {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+[data-motion] [data-reveal][data-revealed] {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--duration-slow) var(--ease-decelerate),
+    transform var(--duration-slow) var(--ease-decelerate);
+  /* El escalón lo pone `data-reveal-delay` en el HTML, vía motion.js. */
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+/* ── 3. El teléfono ─────────────────────────────────────────────────────── */
+
+/*
+ * Entrada propia, más larga y con un punto de escala: es la pieza que cierra
+ * el hero y merece llegar la última y asentarse, no aparecer de golpe con
+ * todo lo demás.
+ */
+[data-motion] .hero__art[data-reveal] {
+  transform: translateY(32px) scale(0.97);
+}
+
+[data-motion] .hero__art[data-reveal][data-revealed] {
+  transform: none;
+  transition-duration: 700ms;
+}
+
+/* ── 4. La línea de los tiempos ─────────────────────────────────────────── */
+
+/*
+ * La línea de cada tiempo del relato se traza de arriba abajo al entrar. El
+ * borde real está en `sections.css`; aquí se sustituye por un pseudo-elemento
+ * que se puede escalar, porque un `border-width` no se anima sin repintar.
+ */
+[data-motion] .beat::before {
+  transform: scaleY(0);
+}
+
+[data-motion] .beat[data-revealed]::before {
+  transform: scaleY(1);
+  transition: transform var(--duration-celebrate) var(--ease-decelerate);
+}
+
+/* ── 5. Relleno de las barras ───────────────────────────────────────────── */
+
+/*
+ * La barra arranca vacía y se llena al entrar en pantalla. `--meter-value`
+ * lo escribe motion.js desde el atributo `data-meter` del contenedor, que es
+ * donde vive el dato.
+ */
+[data-motion] .meter__fill {
+  transform: scaleX(0);
+  transition: transform var(--duration-celebrate) var(--ease-decelerate);
+}
+
+[data-motion] .meter[data-meter-active] .meter__fill {
+  transform: scaleX(var(--meter-value, 1));
+}
+
+/* ── 6. Cifras ──────────────────────────────────────────────────────────── */
+
+/*
+ * La cifra la escribe motion.js frame a frame. Aquí solo se reserva el ancho
+ * con `tabular-nums` (ya viene de `.stat`) para que el contador no empuje el
+ * layout mientras sube. Sin esto, cada dígito cambiaría el ancho del bloque
+ * y la barra de al lado daría un salto.
+ */
+
+/* ── 7. El chip de nivel ────────────────────────────────────────────────── */
+
+/*
+ * `Motion.spring.bouncy` de la app, traducido a una bezier con rebote: el
+ * chip llega un pelo pasado y vuelve. Sale detrás de su barra, cuando ya se
+ * ha llenado, porque es la consecuencia de que se llene.
+ */
+[data-motion] .bento__xp .chip {
+  opacity: 0;
+  transform: scale(0.7);
+}
+
+[data-motion] .bento__xp .meter[data-meter-active] ~ .chip {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--duration-base) var(--ease-standard) var(--duration-celebrate),
+    transform var(--duration-slow) cubic-bezier(0.34, 1.56, 0.64, 1) var(--duration-celebrate);
+}
+
+/* ── 8. Elevación al pasar por encima ───────────────────────────────────── */
+
+.bento__cell,
+.plan {
+  transition:
+    transform var(--duration-base) var(--ease-standard),
+    border-color var(--duration-base) var(--ease-standard);
+}
+
+.bento__cell:hover,
+.plan:hover {
+  transform: translateY(-3px);
+  border-color: var(--color-border-strong);
+}
+
+/* Las dos celdas de marca conservan su borde teñido al elevarse. */
+.bento__cell--xp:hover {
+  border-color: var(--color-primary-edge-strong);
+}
+
+.bento__cell--streak:hover {
+  border-color: var(--color-rival-edge);
+}
+
+/* ── 9. Progreso de lectura ─────────────────────────────────────────────── */
+
+/*
+ * CSS puro atado al scroll del documento: ni un listener, ni un frame de
+ * JavaScript. Donde `animation-timeline` no existe todavía, la barra
+ * simplemente no se pinta.
+ */
+@supports (animation-timeline: scroll()) {
+  @keyframes read-progress {
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  .nav__progress {
+    display: block;
+    transform: scaleX(0);
+    animation: read-progress linear both;
+    animation-timeline: scroll(root block);
+  }
+}
+
+/* ── 10. La respuesta de la FAQ ─────────────────────────────────────────── */
+
+/*
+ * El alto de un <details> no se puede animar sin trucos que se pelean con el
+ * layout, así que lo que entra es el texto: aparece y sube un par de píxeles
+ * al abrirse. Es suficiente para que el clic se note.
+ */
+.faq__item[open] .faq__answer {
+  animation: faq-open var(--duration-base) var(--ease-decelerate) both;
+}
+
+@keyframes faq-open {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ── Respeto por «reducir movimiento» ───────────────────────────────────── */
+
+/*
+ * Con la preferencia del sistema activada no queda ni una animación: todo
+ * aparece ya asentado. Es la misma regla que cumple `LevelUpBadge` dentro de
+ * la app.
+ *
+ * Ojo al orden: esto va al final del archivo a propósito, para ganarle a las
+ * reglas de arriba sin subir la especificidad.
+ */
+@media (prefers-reduced-motion: reduce) {
+  [data-motion] [data-reveal],
+  [data-motion] [data-reveal][data-revealed],
+  [data-motion] .hero__art[data-reveal],
+  [data-motion] .hero__art[data-reveal][data-revealed] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  [data-motion] .meter__fill {
+    transform: scaleX(var(--meter-value, 1));
+    transition: none;
+  }
+
+  [data-motion] .beat::before,
+  [data-motion] .beat[data-revealed]::before {
+    transform: none;
+    transition: none;
+  }
+
+  [data-motion] .bento__xp .chip,
+  [data-motion] .bento__xp .meter[data-meter-active] ~ .chip {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  [data-motion] .mark--draw .mark__arc--power,
+  [data-motion] .mark--draw .mark__arc--rival,
+  .faq__item[open] .faq__answer {
+    animation: none;
+  }
+
+  .nav__progress {
+    display: none;
+  }
+
+  .bento__cell:hover,
+  .plan:hover {
+    transform: none;
+  }
+
+  .button,
+  .bento__cell,
+  .plan,
+  .faq__item summary,
+  .faq__item summary::after,
+  .nav {
+    transition: none;
+  }
+
+  .button:active {
+    transform: none;
+  }
+}

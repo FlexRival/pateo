@@ -1,0 +1,288 @@
+/**
+ * Primitivos de la landing.
+ *
+ * Traducción a web de los primitivos de `src/components/atoms` y
+ * `molecules`: `Button`, `Card`, `Chip`, `MeterBar`. Mismos nombres, mismas
+ * variantes y mismos tokens, para que quien venga de la app reconozca la
+ * pieza y para que un cambio de marca no haya que perseguirlo en dos
+ * vocabularios distintos.
+ *
+ * REGLA DE FORMA (una sola, y se cumple en toda la página):
+ *   - lo que se pulsa va en píldora  -> --radius-pill
+ *   - lo que contiene va en 16px     -> --radius-lg
+ *   - lo que va dentro de algo va en 10px -> --radius-md
+ *
+ * REGLA DE COLOR: el acento de la página es Power y solo Power. Rival no es
+ * un segundo acento decorativo: es el color del rival, y solo aparece donde
+ * hay un rival (la barra del duelo, la cifra del oponente). Esto es
+ * exactamente lo que dice docs/design.md, y por eso no hay ni un botón, ni
+ * un borde, ni un subrayado en Rival.
+ */
+
+/* ── Botón ──────────────────────────────────────────────────────────────── */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 14px var(--space-4);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-size: 15px;
+  line-height: 20px;
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition:
+    transform var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+/*
+ * Primario: relleno plano de Power. Plano y no degradado porque está medido
+ * así en el diseño (docs/design.md, § Degradados), aunque `Gradients.power`
+ * exista.
+ */
+.button--primary {
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.button--primary:hover {
+  background-color: var(--palette-power-bright);
+}
+
+/* Empuje físico al pulsar. */
+.button:active {
+  transform: translateY(1px) scale(0.99);
+}
+
+/*
+ * Secundario: relleno neutro además del contorno. El relleno no es
+ * decoración: con bordes translúcidos no hay forma de garantizar el 3:1 de
+ * WCAG 1.4.11 solo con el borde, así que la afordancia la tiene que poner
+ * la superficie (docs/design.md, § Bordes).
+ */
+.button--secondary {
+  background-color: var(--color-neutral-surface);
+  border: 1px solid var(--color-border-strong);
+  color: var(--color-text);
+}
+
+.button--secondary:hover {
+  background-color: var(--color-surface-raised);
+}
+
+/*
+ * Botón de una acción que todavía no existe. No se puede pulsar y lo dice.
+ *
+ * Única excepción a la regla de "label de botón siempre en mayúsculas" de
+ * docs/design.md, y por un motivo concreto: `text-transform: uppercase`
+ * convierte "iOS" en "IOS", que no es como se escribe la marca. Además esto
+ * no es un botón, es una nota (`role="note"`): no lleva a ningún sitio.
+ */
+.button--pending {
+  background-color: transparent;
+  border: 1px dashed var(--color-border-strong);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.button--pending:active {
+  transform: none;
+}
+
+.button--block {
+  width: 100%;
+}
+
+/* ── Card ───────────────────────────────────────────────────────────────── */
+
+.card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+}
+
+.card--raised {
+  background-color: var(--color-surface-raised);
+}
+
+.card--sunken {
+  background-color: var(--color-surface-sunken);
+}
+
+/* Card destacada: borde de marca, sin glow y sin sombra de color. */
+.card--highlight {
+  border-color: var(--color-primary-edge);
+  background-color: var(--color-surface-raised);
+}
+
+/* ── Chip ───────────────────────────────────────────────────────────────── */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-size: var(--type-caption);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background-color: var(--color-neutral-surface);
+  color: var(--color-text-secondary);
+}
+
+.chip--primary {
+  background-color: var(--color-primary-surface);
+  color: var(--color-primary);
+}
+
+.chip--rival {
+  background-color: var(--color-rival-surface);
+  color: var(--color-defeat);
+}
+
+/* ── MeterBar ───────────────────────────────────────────────────────────── */
+
+/*
+ * La barra lisa de la app. La pista es blanco al 10 % medido sobre el
+ * diseño, no un gris opaco (`meterTrack` en docs/design.md).
+ */
+.meter {
+  height: 10px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-meter-track);
+  overflow: hidden;
+}
+
+.meter__fill {
+  height: 100%;
+  border-radius: inherit;
+  /*
+   * El relleno se anima con scaleX y no con width: width repinta el layout
+   * en cada frame, transform lo hace la GPU. El origen a la izquierda para
+   * que crezca desde el principio de la pista.
+   */
+  transform-origin: left center;
+  transform: scaleX(var(--meter-value, 1));
+}
+
+.meter__fill--power {
+  background-color: var(--color-primary);
+}
+
+.meter__fill--rival {
+  background-color: var(--color-defeat);
+}
+
+/* Barra de XP: la única con degradado, de Power Mid a Power. */
+.meter__fill--xp {
+  background-image: var(--gradient-xp);
+}
+
+/* ── Marco de teléfono ──────────────────────────────────────────────────── */
+
+/*
+ * Contenedor para una captura real de la app. La captura va dentro como
+ * <img>: aquí no se dibuja ninguna interfaz falsa a base de divs.
+ * La proporción la pone la PANTALLA, no el marco: 9:20, la misma que el PNG
+ * de 1080x2400 que va dentro, así que la imagen entra entera y no hay nada
+ * que recortar. Si el marco llevara el `aspect-ratio` y la pantalla un
+ * `height: 100%`, el porcentaje se mediría contra una altura que todavía no
+ * está resuelta y la imagen se quedaría sin alto.
+ */
+.phone {
+  position: relative;
+  border-radius: 38px;
+  padding: 10px;
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-border-strong);
+  box-shadow: var(--elevation-high);
+}
+
+.phone__screen {
+  width: 100%;
+  aspect-ratio: 9 / 20;
+  border-radius: 28px;
+  overflow: hidden;
+  background-color: var(--color-background);
+}
+
+/*
+ * La imagen repite el `aspect-ratio` en vez de pedir `height: 100%`: un
+ * porcentaje contra un padre cuya altura la decide otro `aspect-ratio` no se
+ * resuelve, y la captura se quedaba sin alto (o sea, invisible). Con esto
+ * entra cualquier captura, tenga la proporción que tenga, y `cover` recorta
+ * lo que sobre.
+ *
+ * `height: auto` NO es opcional. El `<img>` lleva `width`/`height` en el
+ * HTML (hacen falta para que el navegador reserve el hueco y no haya salto
+ * de layout), y mientras la altura declarada no sea `auto` el navegador se
+ * queda con los 2400px del atributo e ignora el `aspect-ratio`: la captura
+ * salía estirada a 2400px de alto y recortada por el marco.
+ */
+.phone__screen img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 9 / 20;
+  object-fit: cover;
+}
+
+/* ── Detalle desplegable (FAQ) ──────────────────────────────────────────── */
+
+.faq__item {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.faq__item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-block: var(--space-4);
+  font-family: var(--font-display);
+  font-size: var(--type-subheading);
+  cursor: pointer;
+  list-style: none;
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.faq__item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq__item summary:hover {
+  color: var(--color-primary);
+}
+
+/*
+ * El signo de abrir/cerrar es un glifo de texto, no un SVG dibujado a mano.
+ * Gira 45 grados al abrirse y se convierte en una equis.
+ */
+.faq__item summary::after {
+  content: '+';
+  font-family: var(--font-display);
+  font-size: var(--type-heading);
+  line-height: 1;
+  color: var(--color-primary);
+  flex: none;
+  transition: transform var(--duration-base) var(--ease-standard);
+}
+
+.faq__item[open] summary::after {
+  transform: rotate(45deg);
+}
+
+.faq__answer {
+  padding-bottom: var(--space-4);
+  color: var(--color-text-secondary);
+  max-width: 62ch;
+}
