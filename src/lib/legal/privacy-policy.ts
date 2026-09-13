@@ -95,7 +95,11 @@ export const privacyPolicy: LocalizedLegalDocument = {
         heading: '8. Cómo borrar tu cuenta',
         body: [
           'Desde la app: Ajustes → Cuenta → Borrar cuenta. Te pediremos una confirmación y, al aceptarla, se borra todo: tu perfil, tus pasos, tus duelos, tus amistades y tu foto.',
-          `Sin la app instalada: escríbenos a ${LEGAL_CONTACT.email} desde el correo de tu cuenta, o usa el formulario de ${LEGAL_CONTACT.site}. Resolveremos la solicitud en un plazo máximo de 30 días.`,
+          // TODO(site): en cuanto exista LEGAL_CONTACT.site, añadir aquí "o
+          // visita ${LEGAL_CONTACT.site}/delete-account" — esa ruta ya existe
+          // en la app (src/app/delete-account.tsx) y solo falta un dominio
+          // real que la publique fuera de la app. Ver docs/legal.md.
+          `Sin la app instalada: escríbenos a ${LEGAL_CONTACT.email} desde el correo de tu cuenta. Resolveremos la solicitud en un plazo máximo de 30 días.`,
           'Si eras líder de un clan, el mando pasa automáticamente a otro miembro antes de borrarte, para que el clan de los demás no desaparezca contigo.',
           'El borrado es inmediato e irreversible. No hay periodo de gracia ni forma de recuperar la cuenta después.',
         ],
@@ -195,7 +199,11 @@ export const privacyPolicy: LocalizedLegalDocument = {
         heading: '8. How to delete your account',
         body: [
           'In the app: Settings → Account → Delete account. We ask you to confirm, and once you do everything goes: your profile, your steps, your duels, your friendships and your photo.',
-          `Without the app installed: write to ${LEGAL_CONTACT.email} from your account email, or use the form at ${LEGAL_CONTACT.site}. We will resolve the request within 30 days at most.`,
+          // TODO(site): once LEGAL_CONTACT.site exists, add "or visit
+          // ${LEGAL_CONTACT.site}/delete-account" here — that route already
+          // exists in the app (src/app/delete-account.tsx), it just needs a
+          // real domain publishing it outside the app. See docs/legal.md.
+          `Without the app installed: write to ${LEGAL_CONTACT.email} from your account email. We will resolve the request within 30 days at most.`,
           'If you led a clan, leadership passes automatically to another member before you are deleted, so that other people’s clan does not disappear with you.',
           'Deletion is immediate and irreversible. There is no grace period and no way to recover the account afterwards.',
         ],

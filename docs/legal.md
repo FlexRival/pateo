@@ -1,8 +1,18 @@
 # Lo legal: borrado de cuenta, textos y trámites de tienda
 
-Cubre KAN-53 (borrado de cuenta), KAN-56 (textos públicos) y KAN-54 (los tres
-formularios). Está en un solo sitio porque las tres cosas se contestan con la
-misma información y contradecirse entre ellas es motivo de rechazo.
+Cubre KAN-53 (borrado de cuenta), KAN-56 (textos públicos), KAN-54 (los tres
+formularios) y KAN-84 (cerrar lo que de todo esto bloqueaba publicar). Está en
+un solo sitio porque las cuatro cosas se contestan con la misma información y
+contradecirse entre ellas es motivo de rechazo.
+
+> ⚠️ **Publicar sigue bloqueado, y no por código.** KAN-84 cerró todo lo que se
+> podía cerrar sin un dominio: `LEGAL_CONTACT.entity` está relleno, el intent
+> de Health Connect ya enruta a `/privacy`, y existe `/delete-account`. Pero
+> `LEGAL_CONTACT.site` sigue sin valor real porque **no hay ningún dominio
+> comprado todavía**, y sin él no hay URL pública donde alojar `/privacy`,
+> `/terms` ni `/delete-account` fuera de la app — las dos tiendas la exigen.
+> Comprar el dominio y desplegar ese build web (KAN-56) es lo único que queda
+> antes de poder enviar la app a revisión.
 
 **Regla que lo ordena todo:** lo que dice el código, lo que dice la política de
 privacidad y lo que se marca en los formularios tiene que ser **la misma
@@ -57,49 +67,67 @@ Decisiones que conviene no revertir sin pensarlo:
 Fuente única en `src/lib/legal/`, en español e inglés:
 
 - `privacy-policy.ts`, `terms.ts` — el contenido, como datos estructurados.
-- `types.ts` — el tipo y **`LEGAL_CONTACT`, que son placeholders sin rellenar**.
+- `types.ts` — el tipo y `LEGAL_CONTACT`. Ver el estado real de cada campo en
+  el comentario del propio archivo; en resumen: `email` y `hostingRegion`
+  estaban resueltos desde antes, `entity` se resolvió en KAN-84 (con un riesgo
+  aceptado explícitamente, ver más abajo) y **solo `site` sigue pendiente**,
+  por falta de dominio, no de decisión.
 - Se pintan en `/privacy` y `/terms` con `LegalDocumentView`.
 
 Son datos y no JSX a propósito: la landing pública puede generarse del mismo
 objeto sin reescribir el texto, y así las dos versiones no pueden divergir.
 
-Están enganchados en tres sitios, y los tres son exigencias de tienda:
+Están enganchados en cuatro sitios, y los cuatro son exigencias de tienda:
 
 - Ajustes → Cuenta → Política de privacidad / Términos de uso.
 - Pie del paywall (Apple no aprueba una suscripción sin estos dos enlaces).
 - **Android, desde fuera de la app:** el diálogo de permisos de Health Connect
   tiene un enlace de privacidad que abre Prooffit con el intent
   `androidx.health.ACTION_SHOW_PERMISSIONS_RATIONALE`. El plugin de
-  `react-native-health-connect` ya escribe ese intent-filter en el manifiesto,
-  apuntando a la MainActivity.
+  `react-native-health-connect` escribe ese intent-filter en el manifiesto
+  (y su alias `ViewPermissionUsageActivity` para Android 14+), apuntando a la
+  MainActivity. **Resuelto en KAN-84:** `plugins/with-health-connect-privacy-link.js`
+  parchea `MainActivity.kt` (en `onCreate` y en `onNewIntent`, porque la
+  Activity es `singleTask` y con la app ya abierta el intent llega por ahí) para
+  ponerle al intent la URI `proof://privacy` cuando no trae ninguna — a partir
+  de ahí, el deep-linking de Expo Router ya sabe resolverla sin código nuevo en
+  JS. Solo sabe parchear Kotlin (lo único que genera este proyecto hoy); si
+  algún día `MainActivity` se generase en Java, el plugin falla alto en vez de
+  no hacer nada.
+- `/delete-account`: cómo borrar la cuenta **sin tener la app instalada**.
+  Nueva en KAN-84 (`src/app/delete-account.tsx`). No dispara ningún borrado —
+  `deleteAccount()` exige sesión de Supabase, así que una pantalla pública no
+  puede llamarla — solo explica el camino de dentro de la app y ofrece
+  escribir a `LEGAL_CONTACT.email` con un botón que abre el cliente de correo.
 
-Por eso `/privacy` y `/terms` viven **fuera de los dos `Stack.Protected`**: hay
-que poder leerlas sin cuenta.
-
-> ⚠️ **Pendiente y bloqueante:** el intent de Health Connect abre la app, pero
-> hoy aterriza en la pantalla principal, no en `/privacy`. Falta enrutarlo
-> (mismo patrón que `useAuthLink`). Google comprueba ese enlace.
+Por eso `/privacy`, `/terms` y `/delete-account` viven **fuera de los dos
+`Stack.Protected`**: hay que poder leerlas sin cuenta.
 
 ---
 
 ## 2. Lo que falta y solo puedes hacer tú
 
-### 2.1 Rellenar `LEGAL_CONTACT` — bloquea publicar
+### 2.1 `LEGAL_CONTACT` — estado a 13-sep-2026 (KAN-84)
 
-En `src/lib/legal/types.ts`. Cuatro valores, todos obligatorios:
+En `src/lib/legal/types.ts`. De los cuatro campos:
 
-| Campo | Qué poner | Por qué |
+| Campo | Estado | Nota |
 | --- | --- | --- |
-| `entity` | Nombre o razón social del responsable | RGPD art. 13: sin responsable identificable, la política no vale |
-| `email` | Un correo vivo para ejercer derechos | Tiene que responder de verdad; es donde llegan las peticiones de borrado sin app |
-| `site` | Dominio de la landing | Va en la ficha de ambas tiendas |
-| `hostingRegion` | Región del proyecto de Supabase | Si es EE. UU. hay transferencia internacional que declarar; si es UE, no |
+| `email` | Resuelto | Ya lo estaba antes de KAN-84 |
+| `hostingRegion` | Resuelto | Ya lo estaba antes de KAN-84 (UE, Fráncfort) |
+| `entity` | Resuelto, **con riesgo aceptado** | Se puso `"ProofFit"` — el nombre del producto, no una persona física ni una sociedad constituida. El equipo (proyecto de hackatón de cuatro personas sin entidad legal propia) aceptó conscientemente que esto no identifica a un responsable en el sentido del RGPD art. 13, y que un revisor podría señalarlo. Si en algún momento se constituye una sociedad o se nombra una persona física responsable, hay que volver a este campo. |
+| `site` | **Pendiente de verdad** | No hay dominio comprado. Bloquea publicar: sin él no hay URL pública para `/privacy`, `/terms` ni `/delete-account` fuera de la app. |
 
-### 2.2 Landing pública — resto de KAN-56
+### 2.2 Landing pública — resto de KAN-56, sigue bloqueando
 
 Ambas tiendas piden una **URL pública, no un PDF, no geobloqueada**. Google Play
 exige además una **ruta web de borrado de cuenta** accesible sin instalar la app.
-Mínimo: `/privacy`, `/terms`, `/delete-account`.
+El código de las tres rutas ya existe (`/privacy`, `/terms`, `/delete-account`,
+las tres dentro de la app), pero **no hay ningún dominio ni hosting que las
+publique fuera de ella** — eso quedó fuera de KAN-84 a propósito, es trabajo
+aparte: comprar el dominio, rellenar `LEGAL_CONTACT.site` y desplegar el build
+web (`web.output: "static"` en `app.json`, `npx expo export -p web`) en algún
+sitio real.
 
 ### 2.3 Los tres formularios — KAN-54
 
@@ -117,9 +145,18 @@ de 12 testers de KAN-46**, que es el camino crítico hacia el 30 de septiembre.
 | Tipos de dato de Health Connect | **Solo `READ_STEPS`.** Nada más |
 | Justificación | Los pasos diarios del usuario son la puntuación de duelos 1v1 y guerras de clanes, y lo que da XP. Sin ellos el juego no tiene mecánica |
 
-Pedir más tipos de dato de los que se usan es motivo de rechazo. `app.json` ya
+Pedir más tipos de dato de los que se usan es motivo de rechazo. `app.json`
 declara únicamente `android.permission.health.READ_STEPS`: no añadas ninguno más
 sin actualizar este formulario y la política a la vez.
+
+> Hasta KAN-84, `app.json` declaraba también `android.permission.RECORD_AUDIO`
+> sin que ninguna línea de código lo usara — nadie sabe por qué se añadió (llegó
+> en el mismo commit que `eas.json`, sin explicación). Es exactamente el tipo de
+> permiso sensible sin justificar que la regla del principio de este documento
+> prohíbe: ni el código lo usaba, ni la política lo mencionaba, ni este
+> formulario lo declaraba. Se retiró. Si algún día se necesita audio de verdad,
+> se añade junto con el código que lo use y su fila en Data safety — nunca
+> antes.
 
 #### b) Play Console → Data safety
 

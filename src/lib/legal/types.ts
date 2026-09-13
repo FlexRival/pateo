@@ -27,16 +27,36 @@ export type LocalizedLegalDocument = Record<Language, LegalDocument>;
 /**
  * Los datos del responsable del tratamiento.
  *
- * ⚠️ TODOS SON PLACEHOLDERS Y HAY QUE SUSTITUIRLOS ANTES DE PUBLICAR. Una
- * política de privacidad sin un responsable identificable y una dirección de
- * contacto real no cumple el RGPD (art. 13) y las dos tiendas la rechazan.
+ * Estado a 13-sep-2026 (KAN-84): de los cuatro campos, **solo `site` sigue
+ * pendiente**, y no por falta de decisión sino porque todavía no hay un
+ * dominio comprado — en cuanto exista, hay que rellenarlo aquí y revisar el
+ * comentario `TODO(site)` en `privacy-policy.ts`. Los otros tres ya están
+ * resueltos:
+ *
+ * - `email` y `hostingRegion` estaban puestos desde antes de KAN-84.
+ * - `entity` se rellenó en KAN-84 con el nombre del producto, `"ProofFit"`,
+ *   a sabiendas de que **no identifica a una persona física ni a una
+ *   sociedad constituida** — es un proyecto de hackatón de cuatro personas
+ *   sin entidad legal propia. El RGPD (art. 13) exige un responsable
+ *   identificable, así que esto es un riesgo aceptado explícitamente por el
+ *   equipo, no un descuido: si en algún momento se constituye una sociedad o
+ *   se decide nombrar a una persona física responsable, hay que volver aquí.
+ *
+ * Sin un responsable identificable de verdad y una dirección de contacto
+ * real, las dos tiendas pueden rechazar la política igualmente — este riesgo
+ * sigue abierto para `entity` aun estando "relleno".
  *
  * Se dejan aquí, juntos y en un solo sitio, para que rellenarlos sea una
  * edición de cuatro líneas y no una caza por dentro de los textos.
  */
 export const LEGAL_CONTACT = {
-  /** Nombre o razón social de quien responde por los datos. */
-  entity: '[PENDIENTE: nombre o razón social del responsable]',
+  /**
+   * Nombre de quien responde por los datos.
+   *
+   * ⚠️ Es el nombre del producto, no una persona física ni una sociedad
+   * constituida — ver el aviso de riesgo aceptado arriba.
+   */
+  entity: 'ProofFit',
   /**
    * Dirección de contacto para ejercer derechos. Tiene que estar viva: es donde
    * llegan las peticiones de borrado de quien ya desinstaló la app y no puede
@@ -46,8 +66,16 @@ export const LEGAL_CONTACT = {
    * va de vacaciones, la obligación de responder en 30 días sigue corriendo.
    */
   email: 'porz4.shipaton@gmail.com',
-  /** Dominio donde viven las versiones públicas de estos textos (KAN-56). */
-  site: '[PENDIENTE: dominio de la landing]',
+  /**
+   * Dominio donde viven las versiones públicas de estos textos (KAN-56).
+   *
+   * ⚠️ PENDIENTE DE VERDAD: no hay dominio comprado todavía. Mientras esto
+   * esté así, no se interpola en ningún texto que se le enseñe al usuario —
+   * ver el `TODO(site)` en `privacy-policy.ts`, sección 8. Bloquea publicar:
+   * sin esto no hay URL pública donde alojar `/privacy`, `/terms` ni
+   * `/delete-account`, y las dos tiendas la exigen.
+   */
+  site: '[PENDIENTE: dominio de la landing — todavía no comprado]',
   /**
    * Dónde está alojada la base de datos de Supabase. Determina si hay
    * transferencia internacional de datos que declarar: un proyecto en una

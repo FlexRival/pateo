@@ -114,9 +114,14 @@ export default function RootLayout() {
           (`androidx.health.ACTION_SHOW_PERMISSIONS_RATIONALE`). Si esa ruta
           solo existiera con sesión iniciada, ese enlace —que Google comprueba—
           llevaría al login.
+
+          `delete-account` vive aquí por la misma razón que `privacy`: Google
+          Play exige poder leer cómo borrar la cuenta sin sesión iniciada — y
+          en cuanto exista un dominio real (KAN-56), sin la app instalada.
         */}
         <Stack.Screen name="privacy" />
         <Stack.Screen name="terms" />
+        <Stack.Screen name="delete-account" />
       </Stack>
     </ThemeProvider>
   );

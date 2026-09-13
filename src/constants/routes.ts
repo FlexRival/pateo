@@ -29,7 +29,8 @@ export type RouteKey =
   | 'forgotPassword'
   | 'resetPassword'
   | 'privacy'
-  | 'terms';
+  | 'terms'
+  | 'deleteAccount';
 
 export type RouteDefinition = {
   key: RouteKey;
@@ -149,6 +150,23 @@ export const ROUTES: Record<RouteKey, RouteDefinition> = {
    */
   privacy: { key: 'privacy', href: '/privacy', label: 'Privacy', tab: false },
   terms: { key: 'terms', href: '/terms', label: 'Terms', tab: false },
+  /**
+   * Cómo borrar la cuenta **sin** tener la app instalada — lo exige Google
+   * Play para cualquier app con creación de cuentas. Vive fuera de los dos
+   * `Stack.Protected` por la misma razón que `privacy`/`terms`: la persona
+   * que la abre puede no tener sesión, ni siquiera la app.
+   *
+   * No confundir con el botón real de borrado, que está en Ajustes y exige
+   * sesión iniciada (`settings.tsx` → `profileRepository.deleteAccount()`).
+   * Esta pantalla solo explica el camino y, para quien no tiene la app,
+   * ofrece escribir por correo.
+   */
+  deleteAccount: {
+    key: 'deleteAccount',
+    href: '/delete-account',
+    label: 'Delete account',
+    tab: false,
+  },
 };
 
 /** Solo las rutas de la barra de navegación, en el orden en que se pintan. */

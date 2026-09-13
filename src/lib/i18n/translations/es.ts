@@ -283,4 +283,23 @@ export const es: Translations = {
   legal: {
     lastUpdated: 'Última actualización: %{date}',
   },
+
+  /**
+   * `/delete-account`: la pantalla pública que exige Google Play — se puede
+   * leer sin cuenta, y sin la app instalada en cuanto esta ruta se publique
+   * en un dominio real (ver docs/legal.md). No confundir con
+   * `settings.deleteAccount`, el botón que borra la cuenta de verdad dentro
+   * de la app.
+   */
+  deleteAccount: {
+    title: 'Borra tu cuenta',
+    withAppTitle: 'Con la app instalada',
+    withAppBody: 'Ve a Ajustes → Cuenta → Borrar cuenta. Es inmediato y no tiene vuelta atrás.',
+    withoutAppTitle: 'Sin la app instalada',
+    withoutAppBody:
+      'Escríbenos desde el correo de tu cuenta y te la borraremos nosotros, en un plazo máximo de 30 días.',
+    emailButton: 'Escríbenos para borrar mi cuenta',
+    emailSubject: 'Borrar mi cuenta de Prooffit',
+    emailBody: 'Hola, quiero borrar mi cuenta de Prooffit asociada a este correo.',
+  },
 };

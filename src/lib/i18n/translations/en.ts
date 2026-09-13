@@ -286,6 +286,26 @@ export const en = {
   legal: {
     lastUpdated: 'Last updated: %{date}',
   },
+
+  /**
+   * `/delete-account`: the public screen Google Play requires — reachable
+   * without an account, and without the app installed at all once this route
+   * is published on a real domain (see docs/legal.md). Not to be confused
+   * with `settings.deleteAccount`, the button that actually performs the
+   * deletion inside the app.
+   */
+  deleteAccount: {
+    title: 'Delete your account',
+    withAppTitle: 'With the app installed',
+    withAppBody:
+      'Go to Settings → Account → Delete account. It happens immediately and there is no way back.',
+    withoutAppTitle: 'Without the app installed',
+    withoutAppBody:
+      'Write to us from the email address of your account and we will delete it for you, within 30 days at most.',
+    emailButton: 'Email us to delete my account',
+    emailSubject: 'Delete my Prooffit account',
+    emailBody: 'Hi, I would like to delete my Prooffit account associated with this email address.',
+  },
 } as const;
 
 /**
