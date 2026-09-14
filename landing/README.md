@@ -32,6 +32,9 @@ de nada que esta página necesite.
 ```
 landing/
   index.html            la página entera
+  privacy.html          GENERADO desde src/lib/legal/
+  terms.html            GENERADO desde src/lib/legal/
+  delete-account.html   GENERADO desde las cadenas de i18n
   robots.txt            ⚠️ lleva dominio de ejemplo
   sitemap.xml           ⚠️ lleva dominio de ejemplo
   styles/
@@ -41,8 +44,10 @@ landing/
     components.css      Button, Card, Chip, MeterBar, teléfono, FAQ
     sections.css        composición de cada sección
     motion.css          las diez animaciones, con su motivo cada una
+    legal.css           la página de documento legal (privacy/terms)
   scripts/
     build-tokens.mjs    colors.ts -> tokens.css
+    build-legal.mjs     src/lib/legal/ -> privacy.html y terms.html
     motion.js           cuándo ocurre cada animación (IntersectionObserver)
     og-image.html       fuente de la tarjeta para compartir
     render-og.sh        og-image.html -> assets/brand/og-image.png
@@ -146,16 +151,34 @@ Lo que ya está hecho:
 ## Antes de publicar
 
 1. **Dominio.** Toda la página lleva `https://prooffit.app` como ejemplo. Hay
-   que cambiarlo en `index.html` (canonical, `og:*`, JSON-LD), `robots.txt` y
-   `sitemap.xml`. Es el mismo dominio que hay que rellenar en `LEGAL_CONTACT.site`
-   (`src/lib/legal/types.ts`), que sigue bloqueando publicar (KAN-74).
+   que cambiarlo en cuatro sitios: `index.html` (canonical, `og:*`, JSON-LD),
+   `robots.txt`, `sitemap.xml` y la constante `SITE_ORIGIN` de
+   `scripts/build-legal.mjs` — esta última manda sobre el `canonical` de las
+   tres páginas generadas, así que después hay que volver a lanzar
+   `pnpm build:legal`. Es el mismo dominio que hay que rellenar en
+   `LEGAL_CONTACT.site` (`src/lib/legal/types.ts`), que sigue bloqueando
+   publicar (KAN-74).
 
-2. **Privacidad y términos.** El pie enlaza a `privacy.html` y `terms.html` y
-   **esas dos páginas todavía no existen**. Las dos tiendas exigen que sean
-   públicas (KAN-56). Los textos ya están escritos y guardados como datos en
-   `src/lib/legal/` (`privacy-policy.ts` y `terms.ts`), exactamente para poder
-   generarlas sin volver a escribir nada. Mientras no existan, los dos enlaces
-   del pie están rotos.
+2. **Las tres páginas que exigen las tiendas.** Ya existen: `privacy.html`,
+   `terms.html` y `delete-account.html` las genera `build-legal.mjs` desde lo
+   que ya pinta la app, así que la versión web y la de dentro no pueden
+   divergir — que es justo lo que un revisor comprueba. Se regeneran con:
+
+   ```bash
+   pnpm build:legal
+   ```
+
+   Cada una tira de su fuente: privacidad y términos de `src/lib/legal/`
+   (`privacy-policy.ts` y `terms.ts`), y la de borrado de cuenta de las
+   cadenas `deleteAccount.*` de `src/lib/i18n/translations/es.ts`, que son las
+   mismas que lee `src/app/delete-account.tsx`.
+
+   No las edites a mano: son ficheros generados y el siguiente `build:legal`
+   se lleva por delante cualquier cambio.
+
+   La de borrado importa tanto como las otras dos: Google Play exige una ruta
+   web de borrado de cuenta **alcanzable sin instalar la app**, y es la URL
+   que se pega en el formulario de Data safety.
 
 3. **Captura real.** Ver arriba.
 

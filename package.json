@@ -59,7 +59,9 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "check:contrast": "node --no-warnings=MODULE_TYPELESS_PACKAGE_JSON scripts/check-contrast.mjs",
-    "check:xp": "node --no-warnings=MODULE_TYPELESS_PACKAGE_JSON scripts/check-xp-formula.mjs"
+    "check:xp": "node --no-warnings=MODULE_TYPELESS_PACKAGE_JSON scripts/check-xp-formula.mjs",
+    "build:tokens": "node --no-warnings=MODULE_TYPELESS_PACKAGE_JSON landing/scripts/build-tokens.mjs",
+    "build:legal": "node --no-warnings=MODULE_TYPELESS_PACKAGE_JSON landing/scripts/build-legal.mjs"
   },
   "private": true
 }

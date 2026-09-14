@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ⚠️ Cambia el dominio por el real antes de publicar, y añade <url> para
-  privacy.html y terms.html en cuanto existan (ver landing/README.md).
+  ⚠️ Cambia el dominio por el real antes de publicar (ver landing/README.md).
+
+  Privacidad y términos llevan el `lastmod` que declara el propio documento
+  (`lastUpdated` en src/lib/legal/), no la fecha en que se generó el HTML: lo
+  que le importa a un buscador es cuándo cambió el texto.
+
+  `delete-account.html` va sin `lastmod` a propósito: es una página de
+  instrucciones, no un documento con versión, y no declara ninguna fecha.
+  Ponerle la del día en que se generó sería inventarse cuándo se revisó.
 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
@@ -9,5 +16,22 @@
     <lastmod>2026-09-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://prooffit.app/privacy.html</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://prooffit.app/terms.html</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://prooffit.app/delete-account.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
   </url>
 </urlset>

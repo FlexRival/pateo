@@ -625,10 +625,10 @@
 
         <nav class="footer__links" aria-label="Legal y contacto">
           <!--
-            TODO(legal): estas dos páginas todavía no existen en esta carpeta.
-            Se generan a partir de src/lib/legal/ (privacy-policy.ts y
-            terms.ts), que ya guarda los textos como datos justo para esto.
-            Las dos tiendas exigen que sean públicas. Ver landing/README.md.
+            Las dos páginas las genera `landing/scripts/build-legal.mjs` a
+            partir de src/lib/legal/, el mismo objeto que pinta la pantalla
+            equivalente dentro de la app. No se editan a mano: se toca el
+            texto allí y se regenera con `pnpm build:legal`.
           -->
           <a href="privacy.html">Privacidad</a>
           <a href="terms.html">Términos</a>

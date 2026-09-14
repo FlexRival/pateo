@@ -1,0 +1,121 @@
+/**
+ * Página de documento legal: `privacy.html` y `terms.html`.
+ *
+ * Existe porque un texto legal es justo lo contrario de una landing. Allí hay
+ * bloques que respiran y titulares de 4.5rem; aquí hay un texto largo que un
+ * revisor de tienda tiene que poder leer de corrido sin pelearse con la
+ * maquetación. Por eso lo primero que hace este fichero es deshacer dos
+ * reglas de `base.css` que en esta página estorban.
+ *
+ * Mismo criterio que `LegalDocumentView` dentro de la app: sin tarjetas y sin
+ * adornos. Trocear una política en cajas no la hace más legible, la hace más
+ * difícil de recorrer.
+ */
+
+/*
+ * `base.css` le da a cada <section> medio `--section-y` arriba y abajo. En la
+ * portada eso es el aire entre bloques; aquí serían agujeros de hasta 9rem
+ * entre el apartado 3 y el 4.
+ */
+.legal section {
+  padding-block: 0;
+}
+
+/*
+ * Y `h2` es `--type-section`, que llega a 3.5rem: el cuerpo del titular de una
+ * sección del hero. Un «7. Cuánto tiempo guardamos tus datos» a ese tamaño se
+ * lee como un grito. Vuelve a la escala de la app (`--type-subheading`), que
+ * es la que usa `ThemedText type="subheading"` en la pantalla equivalente.
+ */
+.legal h2 {
+  font-size: var(--type-subheading);
+  letter-spacing: normal;
+}
+
+/* ── Documento ──────────────────────────────────────────────────────────── */
+
+.legal {
+  padding-block: var(--space-6) var(--section-y);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/*
+ * 70ch. La medida de lectura cómoda para texto corrido: por debajo de ~45 el
+ * ojo salta de línea demasiado pronto, por encima de ~75 pierde el renglón al
+ * volver. `--page-max` (1200px) manda en la portada, pero aquí no hay rejilla
+ * que llenar, hay un párrafo detrás de otro.
+ */
+.legal__body {
+  max-width: 70ch;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.legal__title {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.legal__meta {
+  color: var(--color-text-muted);
+  font-size: var(--type-caption);
+}
+
+.legal__intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  color: var(--color-text-secondary);
+  font-size: var(--type-body);
+}
+
+.legal section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.legal section p {
+  color: var(--color-text-secondary);
+  font-size: var(--type-small);
+}
+
+/* ── Cabecera ───────────────────────────────────────────────────────────── */
+
+/*
+ * Deliberadamente NO se reutiliza el dock de la portada: sus enlaces son
+ * anclas (`#como-funciona`, `#faq`) que en esta página no existen y llevarían
+ * a ningún sitio. Aquí solo hace falta la marca y la vuelta.
+ */
+.legal-nav {
+  border-bottom: 1px solid var(--color-border);
+  padding-block: var(--space-3);
+}
+
+.legal-nav__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.legal-nav__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-right: auto;
+}
+
+.legal-nav .mark {
+  width: 34px;
+  height: 34px;
+}
+
+.legal-nav__wordmark {
+  font-family: var(--font-display);
+  font-size: var(--type-subheading);
+  letter-spacing: var(--tracking-hero);
+}

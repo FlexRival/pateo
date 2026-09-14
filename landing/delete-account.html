@@ -1,0 +1,168 @@
+<!doctype html>
+<!--
+  FICHERO GENERADO por landing/scripts/build-legal.mjs. No lo edites a mano.
+
+  El texto vive dentro del proyecto (src/lib/legal/ para privacidad y
+  términos, las cadenas de i18n para el borrado de cuenta), que es lo mismo
+  que pinta la pantalla equivalente dentro de la app. Para cambiar una coma se
+  toca allí y se vuelve a generar:
+
+    pnpm build:legal
+-->
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Borra tu cuenta · Prooffit</title>
+    <meta name="description" content="Ve a Ajustes → Cuenta → Borrar cuenta." />
+    <link rel="canonical" href="https://prooffit.app/delete-account.html" />
+    <meta name="theme-color" content="#08090C" />
+    <meta name="robots" content="index, follow" />
+
+    <link rel="icon" href="assets/brand/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="assets/brand/app-icon.png" />
+
+    <link
+      rel="preload"
+      href="assets/fonts/ChakraPetch_700Bold.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="assets/fonts/SpaceGrotesk_400Regular.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin
+    />
+
+    <!--
+      Sin motion.css ni motion.js: aquí no hay una sola animación. Un texto
+      legal no se revela al hacer scroll, se lee.
+    -->
+    <link rel="stylesheet" href="styles/tokens.css" />
+    <link rel="stylesheet" href="styles/theme.css" />
+    <link rel="stylesheet" href="styles/base.css" />
+    <link rel="stylesheet" href="styles/components.css" />
+    <link rel="stylesheet" href="styles/legal.css" />
+  </head>
+
+  <body>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+    <header class="legal-nav">
+      <div class="shell legal-nav__inner">
+        <a class="legal-nav__brand" href="index.html" aria-label="Prooffit, inicio">
+          <svg class="mark" viewBox="0 0 1080 1080" role="img" aria-hidden="true" focusable="false">
+            <g transform="rotate(-90 540 540)" fill="none" stroke-linecap="butt">
+              <circle
+                cx="540"
+                cy="540"
+                r="418"
+                stroke="var(--color-primary)"
+                stroke-width="86"
+                stroke-dasharray="1470.9 2626.4"
+              />
+              <circle
+                cx="540"
+                cy="540"
+                r="418"
+                stroke="var(--color-defeat)"
+                stroke-width="86"
+                stroke-dasharray="1050.6 2626.4"
+                stroke-dashoffset="-1523.3"
+              />
+            </g>
+            <text
+              x="540"
+              y="540"
+              fill="var(--color-text)"
+              font-family="Chakra Petch, sans-serif"
+              font-weight="700"
+              font-size="400"
+              text-anchor="middle"
+              dominant-baseline="central"
+            >
+              P
+            </text>
+          </svg>
+          <span class="legal-nav__wordmark">Prooffit</span>
+        </a>
+
+        <a class="button button--secondary" href="index.html">Volver</a>
+      </div>
+    </header>
+
+    <main id="contenido">
+      <article class="shell legal">
+        <div class="legal__body">
+          <div class="legal__title">
+            <h1>Borra tu cuenta</h1>
+          </div>
+
+          <section>
+            <h2>Con la app instalada</h2>
+            <p>Ve a Ajustes → Cuenta → Borrar cuenta. Es inmediato y no tiene vuelta atrás.</p>
+          </section>
+
+          <section>
+            <h2>Sin la app instalada</h2>
+            <p>Escríbenos desde el correo de tu cuenta y te la borraremos nosotros, en un plazo máximo de 30 días.</p>
+          </section>
+          <p><a class="button button--primary" href="mailto:porz4.shipaton@gmail.com?subject=Borrar%20mi%20cuenta%20de%20Prooffit&amp;body=Hola%2C%20quiero%20borrar%20mi%20cuenta%20de%20Prooffit%20asociada%20a%20este%20correo.">Escríbenos para borrar mi cuenta</a></p>
+        </div>
+      </article>
+    </main>
+
+    <footer class="footer">
+      <div class="shell footer__inner">
+        <div class="footer__brand">
+          <svg class="mark" viewBox="0 0 1080 1080" role="img" aria-hidden="true" focusable="false">
+            <g transform="rotate(-90 540 540)" fill="none" stroke-linecap="butt">
+              <circle
+                cx="540"
+                cy="540"
+                r="418"
+                stroke="var(--color-primary)"
+                stroke-width="86"
+                stroke-dasharray="1470.9 2626.4"
+              />
+              <circle
+                cx="540"
+                cy="540"
+                r="418"
+                stroke="var(--color-defeat)"
+                stroke-width="86"
+                stroke-dasharray="1050.6 2626.4"
+                stroke-dashoffset="-1523.3"
+              />
+            </g>
+            <text
+              x="540"
+              y="540"
+              fill="var(--color-text)"
+              font-family="Chakra Petch, sans-serif"
+              font-weight="700"
+              font-size="400"
+              text-anchor="middle"
+              dominant-baseline="central"
+            >
+              P
+            </text>
+          </svg>
+          <span class="nav__wordmark">Prooffit</span>
+        </div>
+
+        <nav class="footer__links" aria-label="Legal y contacto">
+          <a href="privacy.html">Privacidad</a>
+          <a href="terms.html">Términos</a>
+          <a href="mailto:porz4.shipaton@gmail.com">Contacto</a>
+        </nav>
+
+        <p class="footer__legal label">Prooffit 2026. Hecho para la gente que no sabe perder.</p>
+      </div>
+    </footer>
+  </body>
+</html>

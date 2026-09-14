@@ -122,12 +122,26 @@ En `src/lib/legal/types.ts`. De los cuatro campos:
 
 Ambas tiendas piden una **URL pública, no un PDF, no geobloqueada**. Google Play
 exige además una **ruta web de borrado de cuenta** accesible sin instalar la app.
-El código de las tres rutas ya existe (`/privacy`, `/terms`, `/delete-account`,
-las tres dentro de la app), pero **no hay ningún dominio ni hosting que las
-publique fuera de ella** — eso quedó fuera de KAN-84 a propósito, es trabajo
-aparte: comprar el dominio, rellenar `LEGAL_CONTACT.site` y desplegar el build
-web (`web.output: "static"` en `app.json`, `npx expo export -p web`) en algún
-sitio real.
+
+**El HTML ya no falta.** Las tres páginas existen como ficheros estáticos en
+`landing/` — `privacy.html`, `terms.html` y `delete-account.html` — generadas
+por `landing/scripts/build-legal.mjs` (`pnpm build:legal`) a partir de las
+mismas fuentes que pinta la app: `src/lib/legal/` para las dos primeras y las
+cadenas `deleteAccount.*` del i18n para la tercera. Se generan y no se
+escriben a mano justamente por la regla del principio de este documento: así
+la versión web y la de dentro de la app no pueden decir cosas distintas.
+
+Lo que **sigue bloqueando** es lo que no es código: **comprar un dominio,
+rellenar `LEGAL_CONTACT.site` y subir la carpeta `landing/` a un hosting**.
+Hasta entonces esas tres páginas existen en el repo pero no tienen URL
+pública, que es lo que piden las tiendas. Ojo: la landing es HTML plano y se
+sirve subiendo la carpeta tal cual — no hace falta `npx expo export -p web`,
+que es otra cosa (el build web de la app).
+
+Y queda un detalle que se arrastra al publicar: el dominio de ejemplo
+`https://prooffit.app` está escrito en `index.html`, `robots.txt`,
+`sitemap.xml` y en la constante `SITE_ORIGIN` de `build-legal.mjs`. Cambiarlo
+en esos cuatro sitios y regenerar es el último paso antes de subir.
 
 ### 2.3 Los tres formularios — KAN-54
 
