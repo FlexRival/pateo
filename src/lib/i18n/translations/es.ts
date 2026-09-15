@@ -27,6 +27,11 @@ export const es: Translations = {
     toNextLevel: '%{remaining} XP PARA NV %{level}',
   },
 
+  levelUpNotification: {
+    title: '¡Nivel %{level}!',
+    body: 'Tus pasos de hoy te han subido de nivel. Abre Prooffit para verlo.',
+  },
+
   nav: {
     home: 'Inicio',
     duels: 'Duelos',
@@ -260,6 +265,11 @@ export const es: Translations = {
     unavailable: 'NO DISPONIBLE',
     language: 'IDIOMA',
     notifications: 'NOTIFICACIONES',
+    levelUpAlerts: 'Avisos de subida de nivel (en segundo plano)',
+    levelUpAlertsNotificationsDenied:
+      'Permite las notificaciones de Prooffit en los ajustes del sistema para activar esto.',
+    levelUpAlertsBackgroundDenied:
+      'Permite el acceso en segundo plano de Health Connect para Prooffit en los ajustes del sistema para activar esto.',
     leadChanges: 'Cambios de líder',
     duelInvites: 'Invitaciones a duelo',
     dailyStepSummary: 'Resumen diario de pasos',

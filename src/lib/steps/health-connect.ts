@@ -36,6 +36,18 @@ import type { DailySteps, StepsAccess, StepsReader } from '@/lib/steps/types';
 const STEPS_PERMISSION = { accessType: 'read', recordType: 'Steps' } as const;
 
 /**
+ * El permiso APARTE que hace falta para leer Health Connect con la app
+ * cerrada (`docs/healthkit-y-health-connect.md`, sección «Segundo plano»).
+ * Sin este permiso el de arriba (`STEPS_PERMISSION`) solo sirve con la app en
+ * primer plano — es justo el que usa la tarea en segundo plano
+ * (`src/lib/steps/background-task.ts`).
+ */
+const BACKGROUND_ACCESS_PERMISSION = {
+  accessType: 'read',
+  recordType: 'BackgroundAccessPermission',
+} as const;
+
+/**
  * Un registro por página son 1000 por defecto; un día normal genera unas
  * decenas. Se pagina igualmente porque una semana de un reloj que escribe cada
  * pocos minutos sí puede pasarse, y perder la última página sería perder pasos
@@ -65,6 +77,55 @@ async function hasStepsPermission(): Promise<boolean> {
       permission.recordType === 'Steps' &&
       permission.accessType === 'read',
   );
+}
+
+async function hasBackgroundAccessPermission(): Promise<boolean> {
+  const granted = await getGrantedPermissions();
+
+  return granted.some(
+    (permission) => 'recordType' in permission && permission.recordType === 'BackgroundAccessPermission',
+  );
+}
+
+/**
+ * Estado del permiso de background, sin abrir ningún diálogo. Aparte de
+ * `healthConnectReader.getAccess()` porque no tiene equivalente en iOS —esto
+ * es exclusivo de la tarea en segundo plano, que ya es solo Android (KAN-46)—
+ * y porque `react-native-health-connect` (4.1.3) no expone la Feature
+ * Availability API para comprobar `FEATURE_READ_HEALTH_DATA_IN_BACKGROUND` de
+ * antemano (pendiente en `docs/healthkit-y-health-connect.md`): en su lugar,
+ * "no concedido" cubre tanto "dijo que no" como "el dispositivo no lo tiene",
+ * y en los dos casos la tarea en segundo plano simplemente no hace nada ese
+ * ciclo — el sync al abrir la app sigue funcionando igual.
+ */
+export async function getBackgroundAccess(): Promise<StepsAccess> {
+  const unavailable = await availability();
+  if (unavailable) {
+    return unavailable;
+  }
+
+  await initialize();
+
+  return (await hasBackgroundAccessPermission()) ? { status: 'granted' } : { status: 'undetermined' };
+}
+
+/**
+ * Pide el permiso de pasos Y el de background JUNTOS, en el mismo diálogo:
+ * sin el de pasos, el de background no sirve de nada, y pedirlos por
+ * separado serían dos interrupciones en vez de una.
+ */
+export async function requestBackgroundAccess(): Promise<StepsAccess> {
+  const unavailable = await availability();
+  if (unavailable) {
+    return unavailable;
+  }
+
+  await initialize();
+  await requestPermission([STEPS_PERMISSION, BACKGROUND_ACCESS_PERMISSION]);
+
+  return (await hasBackgroundAccessPermission())
+    ? { status: 'granted' }
+    : { status: 'denied', canAskAgain: true };
 }
 
 export const healthConnectReader: StepsReader = {

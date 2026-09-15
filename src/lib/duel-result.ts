@@ -11,7 +11,7 @@
  */
 
 import type { LevelUp } from '@/lib/level-up';
-import { levelForXp, xpForDuelWin } from '@/lib/xp';
+import { levelUpFrom, xpForDuelWin } from '@/lib/xp';
 import type { Duel, DuelOutcome } from '@/repositories';
 
 export type DuelResult = {
@@ -24,39 +24,19 @@ export type DuelResult = {
 };
 
 /**
- * Si este duelo hizo subir de nivel, deduciéndolo del XP que tiene el perfil
- * **ahora** menos el que acaba de ganar.
+ * Traduce un duelo cerrado a lo que enseña la pantalla de resultado, o `null`
+ * si ese duelo todavía no ha terminado — no hay nada que contar de un duelo en
+ * marcha, y celebrarlo antes de tiempo sería mentir.
  *
- * Se deduce en vez de pasarlo por la URL porque un parámetro se puede quedar
- * viejo o falsear, y el XP del perfil ya lo escribió `resolve_duel` en el mismo
- * momento que el resultado: son el mismo hecho contado dos veces.
+ * El nivel «de antes» se deduce restando el XP de este duelo al XP que tiene
+ * el perfil **ahora** (`levelUpFrom`, en `lib/xp.ts`), en vez de pasarlo por
+ * la URL: un parámetro se puede quedar viejo o falsear, y el XP del perfil ya
+ * lo escribió `resolve_duel` en el mismo momento que el resultado.
  *
  * Límite conocido: si el jugador cierra **dos** duelos ganados a la vez —al
  * abrir la app después de varios días—, restar solo el XP de este duelo puede
  * situar el nivel «de antes» más arriba de lo que estaba, y entonces la subida
  * no se celebra. Se prefiere callar una subida real a inventar una que no fue.
- */
-function levelUpFrom(currentXp: number, xpEarned: number): LevelUp | null {
-  if (xpEarned <= 0) {
-    return null;
-  }
-
-  const before = levelForXp(currentXp - xpEarned);
-  const after = levelForXp(currentXp);
-
-  if (after <= before) {
-    return null;
-  }
-
-  // Sin recompensa: el diseño reserva una card para ello, pero no existe el
-  // sistema que la llene. Ver `LevelUp.reward` en `level-up.ts`.
-  return { fromLevel: before, toLevel: after, reward: null };
-}
-
-/**
- * Traduce un duelo cerrado a lo que enseña la pantalla de resultado, o `null`
- * si ese duelo todavía no ha terminado — no hay nada que contar de un duelo en
- * marcha, y celebrarlo antes de tiempo sería mentir.
  */
 export function duelResultFor(duel: Duel, currentXp: number): DuelResult | null {
   if (duel.status !== 'finished' || duel.outcome === null) {

@@ -61,8 +61,9 @@ export class CachedProfileRepository implements ProfileRepository {
     email: string,
     password: string,
     username: string,
+    redirectTo: string,
   ): ReturnType<ProfileRepository['signUp']> {
-    return this.inner.signUp(email, password, username);
+    return this.inner.signUp(email, password, username, redirectTo);
   }
 
   signOut(): Promise<void> {

@@ -7,6 +7,12 @@ import { FONT_ASSETS } from '@/constants/theme';
 import { useAuthLink } from '@/hooks/use-auth-link';
 import { useProfile } from '@/hooks/use-profile';
 import { useSubscriptionSync } from '@/hooks/use-subscription-sync';
+// Efecto secundario: registra `TaskManager.defineTask` a nivel de módulo.
+// Tiene que importarse aquí, sin condicionar a la sesión ni a la plataforma,
+// porque WorkManager puede arrancar el bundle en frío (headless, sin sesión
+// ni árbol de React) y la tarea tiene que existir ya para entonces — ver la
+// cabecera de `background-task.ts`.
+import '@/lib/steps/background-task';
 
 SplashScreen.preventAutoHideAsync();
 

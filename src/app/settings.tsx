@@ -12,6 +12,7 @@ import { ThemedText } from '@/components/atoms/themed-text';
 import { ThemedView } from '@/components/atoms/themed-view';
 import { ROUTES } from '@/constants/routes';
 import { MaxContentWidth, Palette, Radius, Spacing } from '@/constants/theme';
+import { useLevelUpNotifications } from '@/hooks/use-level-up-notifications';
 import { useProfile } from '@/hooks/use-profile';
 import { useSteps } from '@/hooks/use-steps';
 import { useTheme } from '@/hooks/use-theme';
@@ -190,6 +191,8 @@ export default function SettingsScreen() {
           </Section>
 
           <Section title={t('settings.notifications')}>
+            <LevelUpAlertsRow />
+
             <SettingRow label={t('settings.leadChanges')}>
               <Toggle value={leadChanges} onChange={setLeadChanges} label={t('settings.leadChanges')} />
             </SettingRow>
@@ -332,6 +335,50 @@ function ActivitySourceRows() {
           {steps ? formatCount(steps.goal) : '—'}
         </ThemedText>
       </SettingRow>
+    </>
+  );
+}
+
+/**
+ * El único conmutador de verdad de la sección de notificaciones — los otros
+ * tres son de mentira (ver el comentario de cabecera de la pantalla).
+ *
+ * A diferencia de esos, no hace falta ninguna tabla de preferencias: el
+ * estado es si la tarea en segundo plano está registrada o no
+ * (`useLevelUpNotifications`), y eso ya lo persiste el propio sistema.
+ *
+ * Ni se enseña fuera de Android: la tarea en segundo plano es Android-only
+ * (KAN-46), y un conmutador que no hace nada en iOS o en web sería peor que
+ * no tenerlo.
+ */
+function LevelUpAlertsRow() {
+  const { t } = useTranslation();
+  const { state, error, setEnabled } = useLevelUpNotifications();
+
+  if (state.status === 'unavailable') {
+    return null;
+  }
+
+  return (
+    <>
+      <SettingRow label={t('settings.levelUpAlerts')}>
+        <Toggle
+          value={state.status === 'ready' && state.enabled}
+          onChange={(next) => void setEnabled(next)}
+          label={t('settings.levelUpAlerts')}
+        />
+      </SettingRow>
+
+      {error ? (
+        <Notice
+          tone="rival"
+          message={t(
+            error === 'notifications-denied'
+              ? 'settings.levelUpAlertsNotificationsDenied'
+              : 'settings.levelUpAlertsBackgroundDenied',
+          )}
+        />
+      ) : null}
     </>
   );
 }

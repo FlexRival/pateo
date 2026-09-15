@@ -1,14 +1,9 @@
+import { router } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 
 import type { AsyncState } from '@/hooks/async-state';
-import {
-  daysAgoKey,
-  getStepsAccess,
-  readDailySteps,
-  requestStepsAccess,
-  todayKey,
-  type StepsAccess,
-} from '@/lib/steps';
+import { daysAgoKey, getStepsAccess, requestStepsAccess, todayKey, type StepsAccess } from '@/lib/steps';
+import { syncStepsAndDetectLevelUp } from '@/lib/steps/sync';
 import { SYNC_WINDOW_DAYS, stepsRepository } from '@/repositories';
 
 /**
@@ -76,7 +71,19 @@ async function loadSteps(): Promise<StepsSummary> {
   const from = daysAgoKey(SYNC_WINDOW_DAYS);
   const to = todayKey();
 
-  await stepsRepository.syncDailySteps(await readDailySteps(from, to));
+  // Sincroniza y, con los pasos, el XP en vivo (`sync_daily_steps`, además
+  // del XP de duelos, que sigue igual — `supabase/SCHEMA.md` §7). Compartido
+  // con la tarea en segundo plano (`src/lib/steps/background-task.ts`), que
+  // hace lo mismo cuando la app está cerrada y dispara una notificación en
+  // vez de navegar.
+  const levelUp = await syncStepsAndDetectLevelUp();
+
+  if (levelUp) {
+    router.push({
+      pathname: '/level-up',
+      params: { from: String(levelUp.fromLevel), to: String(levelUp.toLevel) },
+    });
+  }
 
   const stored = await stepsRepository.getStoredSteps(from, to);
   const today = stored.find((day) => day.date === to);

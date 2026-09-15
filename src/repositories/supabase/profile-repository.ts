@@ -111,11 +111,12 @@ export class SupabaseProfileRepository implements ProfileRepository {
     email: string,
     password: string,
     username: string,
+    redirectTo: string,
   ): Promise<{ needsEmailConfirmation: boolean }> {
     const { data, error } = await this.client.auth.signUp({
       email,
       password,
-      options: { data: { username } },
+      options: { data: { username }, emailRedirectTo: redirectTo },
     });
 
     if (error) {
@@ -172,8 +173,9 @@ export class SupabaseProfileRepository implements ProfileRepository {
 
     const accessToken = params.get('access_token');
     const refreshToken = params.get('refresh_token');
+    const type = params.get('type');
 
-    if (params.get('type') !== 'recovery' || !accessToken || !refreshToken) {
+    if ((type !== 'recovery' && type !== 'signup') || !accessToken || !refreshToken) {
       return 'none';
     }
 
@@ -186,7 +188,7 @@ export class SupabaseProfileRepository implements ProfileRepository {
       throw new RepositoryError('Ese enlace ya no sirve. Pide uno nuevo.', { cause: error });
     }
 
-    return 'recovery';
+    return type;
   }
 
   /** No-op: esta implementación no cachea nada. El caché vive en el decorador. */

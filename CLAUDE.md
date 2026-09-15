@@ -77,8 +77,19 @@ Prooffit es una app RPG móvil desarrollada con Expo (React Native) donde los pa
   leaderboard de clanes.** El backend de todo eso está desplegado y se queda
   ahí inerte — no hay que revertir nada, porque los clanes **nunca llegaron a
   tener UI**. No construyas pantallas de clan sin que se reabra esa decisión.
-- **XP:** solo se gana al ganar un duelo (`floor(pasos_ganador / 10)`), no por
-  pasos diarios. Ver `supabase/SCHEMA.md`.
+- **XP:** dos fuentes aditivas desde el 15-sep-2026 (reabre la decisión
+  anterior de "solo duelos"). Duelos: `floor(pasos_ganador / 10)`, sin
+  cambios. Pasos diarios: `floor(pasos_del_día / 10)`, otorgado en vivo desde
+  `sync_daily_steps` (`step_logs.xp_granted` evita duplicar). La curva de
+  nivel dejó de ser plana: `level_for_xp`/`xp_for_level` ahora crecen en
+  progresiva (coste por nivel lineal, acumulado cuadrático), no exponencial.
+  Migración `20260915120000_steps_xp_progressive_level.sql`, espejo en
+  `src/lib/xp.ts`. Ver `supabase/SCHEMA.md` §7. Notificación de subida de
+  nivel en segundo plano (Android, opt-in en Ajustes): `expo-background-task`
+  + `expo-notifications`, mínimo real de 15 min entre ejecuciones y requiere
+  el permiso aparte `BackgroundAccessPermission` de Health Connect — sin él,
+  no hace nada ese ciclo y el sync al abrir la app sigue de respaldo. iOS
+  queda fuera (KAN-46).
 - **Pasos:** implementados (KAN-50). `src/lib/steps/` **lee** del teléfono
   (`expo-sensors`/CoreMotion en iOS, `react-native-health-connect` en Android)
   y `stepsRepository` **escribe** en el servidor por `sync_daily_steps_batch`;

@@ -11,6 +11,7 @@ import { ThemedText } from '@/components/atoms/themed-text';
 import { ThemedView } from '@/components/atoms/themed-view';
 import { ROUTES } from '@/constants/routes';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
+import { signupConfirmationRedirectUrl } from '@/hooks/use-auth-link';
 import { useTranslation } from '@/hooks/use-translation';
 import { MIN_PASSWORD_LENGTH } from '@/lib/password';
 import { profileRepository, RepositoryError } from '@/repositories';
@@ -71,6 +72,7 @@ export default function LoginScreen() {
           email.trim(),
           password,
           username.trim(),
+          signupConfirmationRedirectUrl(),
         );
 
         if (needsEmailConfirmation) {

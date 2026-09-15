@@ -24,6 +24,22 @@ export function passwordResetRedirectUrl(): string {
 }
 
 /**
+ * La URL a la que el correo de confirmación de cuenta devuelve al usuario.
+ *
+ * A diferencia de la recuperación, confirmar no necesita aterrizar en una
+ * pantalla concreta: `resumeSessionFromLink` abre sesión con los tokens que
+ * trae el propio enlace, y el guard de `src/app/_layout.tsx` reacciona solo
+ * al cambio de sesión y muestra la app. Por eso apunta a la raíz del esquema
+ * en vez de a una ruta propia.
+ *
+ * **Hay que darla de alta en Supabase** (Authentication → URL Configuration →
+ * Redirect URLs), igual que `passwordResetRedirectUrl`.
+ */
+export function signupConfirmationRedirectUrl(): string {
+  return Linking.createURL('/');
+}
+
+/**
  * Atiende los enlaces que abren la app desde un correo de autenticación (hoy
  * solo el de recuperar la cuenta).
  *

@@ -148,9 +148,20 @@ mitad de duelo puede dejar sin datos los primeros días.
 
 Leer con la app cerrada necesita `PERMISSION_READ_HEALTH_DATA_IN_BACKGROUND`, y
 **no está en todos los dispositivos**: depende de la versión de Health Connect
-instalada. Hay que comprobar `FEATURE_READ_HEALTH_DATA_IN_BACKGROUND` con la
-Feature Availability API antes de programar nada, y tener plan B para quien no lo
-tenga (sincronizar al abrir la app).
+instalada.
+
+**Implementado el 15-sep-2026** (`src/lib/steps/background-task.ts` +
+`src/lib/steps/health-connect.ts`, `getBackgroundAccess`/
+`requestBackgroundAccess`), con una salvedad sobre lo que se planeaba aquí:
+`react-native-health-connect` (4.1.3) **no expone la Feature Availability
+API**, así que no hay forma de comprobar `FEATURE_READ_HEALTH_DATA_IN_BACKGROUND`
+de antemano como se proponía. En su lugar se pide el permiso directamente
+(`BackgroundAccessPermission`, junto al de `Steps`, mismo diálogo) y se trata
+"no concedido" como un solo caso, sea porque el usuario dijo que no o porque
+el dispositivo no lo soporta — la tarea en segundo plano simplemente no hace
+nada ese ciclo. El plan B que ya proponía este documento —sincronizar al
+abrir la app— sigue siendo el respaldo real, sin cambios: la tarea en segundo
+plano es una mejora sobre eso, no su sustituto.
 
 ### Procedencia del dato
 
@@ -207,7 +218,9 @@ pantalla no puede tratar «cero pasos» de dos maneras según el móvil.
 - [ ] Android: permiso, actividad de rationale, activity-alias, `<queries>`
 - [ ] Usar `HKStatisticsCollectionQuery`, **nunca** sumar muestras a mano
 - [ ] Tratar los tres estados de `getSdkStatus`
-- [ ] Comprobar `FEATURE_READ_HEALTH_DATA_IN_BACKGROUND` antes de usarlo
+- [x] ~~Comprobar `FEATURE_READ_HEALTH_DATA_IN_BACKGROUND` antes de usarlo~~ —
+      no hay API para eso en la librería instalada; se pide el permiso
+      directo y se trata "no concedido" como un solo caso (ver arriba).
 - [ ] Diseñar la pantalla para el caso «0 pasos porque denegó y no lo sabemos»
 - [ ] Formulario de datos de salud en Play Console, pidiendo **solo** pasos
 

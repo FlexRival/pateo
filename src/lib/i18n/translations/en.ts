@@ -27,6 +27,17 @@ export const en = {
     toNextLevel: '%{remaining} XP TO LV %{level}',
   },
 
+  /**
+   * Texto de la notificación local que dispara `background-task.ts`. Usa
+   * `translate()` en vez de `useTranslation()` porque corre fuera de React
+   * (la tarea en segundo plano no monta ningún componente) — ver
+   * `src/lib/i18n/index.ts`.
+   */
+  levelUpNotification: {
+    title: 'Level %{level}!',
+    body: 'Your daily steps just leveled you up. Open Prooffit to see it.',
+  },
+
   nav: {
     home: 'Home',
     duels: 'Duels',
@@ -263,6 +274,11 @@ export const en = {
     unavailable: 'UNAVAILABLE',
     language: 'LANGUAGE',
     notifications: 'NOTIFICATIONS',
+    levelUpAlerts: 'Level-up alerts (background)',
+    levelUpAlertsNotificationsDenied:
+      'Allow notifications for Prooffit in your device settings to enable this.',
+    levelUpAlertsBackgroundDenied:
+      'Allow Health Connect background access for Prooffit in your device settings to enable this.',
     leadChanges: 'Lead changes',
     duelInvites: 'Duel invites',
     dailyStepSummary: 'Daily step summary',

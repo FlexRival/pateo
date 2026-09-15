@@ -23,6 +23,7 @@ Referencia de la capa de datos (Supabase / Postgres). Léela antes de tocar
 | `migrations/20260907120000_profile_email.sql` | Columna `profiles.email` (copia de `auth.users.email`, `NOT NULL` + `UNIQUE`), con backfill de las filas existentes. `handle_new_user()` pasa a rellenarla también; nuevo trigger `on_auth_user_email_updated` la mantiene al día si el usuario cambia su email. No se concede `SELECT` sobre ella en la tabla base (es PII); se expone solo vía la vista `my_profile`, filtrada a `auth.uid()`. Ver §3.1. |
 
 | `migrations/20260907130000_account_deletion.sql` | Borrado de cuenta (requisito de tienda): RPC `prepare_account_deletion()`, que traspasa el liderazgo de clan **antes** de que el borrado de `auth.users` dispare el `CASCADE` — sin ella, borrar a un líder borraría su clan entero y a todos sus miembros. El borrado en sí lo hace la Edge Function `delete-account`. Ver §17. |
+| `migrations/20260915120000_steps_xp_progressive_level.sql` | Reabre "el XP solo se gana en duelos": redefine `level_for_xp` con una curva progresiva (nuevo helper `xp_for_level`, coste por nivel creciente, no exponencial) y redefine `sync_daily_steps` para otorgar XP por pasos en vivo, además del de duelos (que no cambia). Columna `step_logs.xp_granted`. Ver §7. |
 
 Estado de aplicación:
 
@@ -63,6 +64,15 @@ Estado de aplicación:
   dos ficheros de cron (`…090000_…`, `…121000_…`) **no se pueden validar así**
   porque ni PGlite ni el stack local por defecto traen `pg_cron`/`pg_net`
   activos — solo se prueban contra un proyecto Supabase real.
+  `…120000_steps_xp_progressive_level` (15-sep-2026) tampoco se ha hecho
+  `supabase db push` todavía. Se validó sobre PGlite (15 asserts: la curva —
+  `xp_for_level(300)`, `level_for_xp` en la frontera exacta de un nivel y un
+  XP por debajo, nivel 1 con XP 0 —, otorgar XP en el primer sync,
+  re-sincronizar el mismo día sin duplicar, sincronizar más pasos el mismo día
+  y solo sumar la diferencia, sincronizar menos pasos y no restar ni tocar
+  `steps_count` por el `GREATEST` del anti-cheat, cruzar un umbral de nivel y
+  que `profiles.level` se actualice, y `EXECUTE` de `xp_for_level` concedido a
+  `authenticated`/`anon`).
 
 ⚠️ **Deriva de esquema con los cosméticos (KAN-80).** Este documento decía
 hasta el 9-sep-2026 que la migración de cosméticos de personaje
@@ -145,8 +155,8 @@ El registro crudo de pasos diarios.
   pasos y rachas a quien no esté en UTC.
 - `CHECK (steps_count >= 0)`.
 - índice en `date` para consultas tipo ranking.
-
-No hay columna de XP por día: el XP solo se gana ganando duelos.
+- `xp_granted` (desde `20260915120000_steps_xp_progressive_level.sql`):
+  cuánto XP ya se le dio a ese día — ver §7.
 
 ### `duels`
 
@@ -310,15 +320,35 @@ lo usan.
 
 ## 7. XP y nivel
 
-- **El XP solo se gana ganando un duelo.** No hay ruta de pasos → XP. Los pasos
-  solo importan como marcador del duelo.
-- Fórmula: `floor(pasos del ganador durante el duelo / 10)`.
-- `level_for_xp(xp)` → `1 + xp/1000`, marcada `IMMUTABLE`. El cliente también
-  puede llamarla para previsualizar "XP para el siguiente nivel" sin duplicar la
-  fórmula.
-- `profiles.xp` y `profiles.level` se escriben en un único sitio: `resolve_duel`.
+Decisión del 15-sep-2026: reabre "el XP solo se gana ganando un duelo"
+(cierto hasta `20260915120000_steps_xp_progressive_level.sql`). Ahora hay
+**dos fuentes de XP, aditivas**:
 
-Tanto `/10` como `/1000` son placeholders deliberados.
+- **Duelos** (sin cambios): solo el ganador, `floor(pasos del ganador durante
+  el duelo / 10)`. Se escribe en `resolve_duel`.
+- **Pasos diarios** (nuevo): `floor(pasos_del_día / 10)`, otorgado **en vivo**
+  desde `sync_daily_steps` — el mismo choque de escritura que ya protege el
+  anti-cheat de pasos (§16), no una RPC aparte. `step_logs.xp_granted`
+  recuerda cuánto de ese XP ya se otorgó para ese día concreto, así que cada
+  sync solo suma la diferencia con lo ya dado: repetir un sync del mismo día,
+  o sincronizar con menos pasos que los ya guardados (el `GREATEST` del
+  anti-cheat), no duplica ni resta XP.
+
+**Curva de nivel progresiva**, ya no plana. `xp_for_level(nivel)` es la única
+función con los literales de la curva (`LEVEL_BASE_XP = 1000`,
+`LEVEL_XP_STEP = 50`, ambos placeholders deliberados igual que el `/10`): el
+coste de cada nivel crece linealmente con el nivel, así que el XP acumulado
+crece en cuadrática — progresivo, no exponencial. `level_for_xp(xp)` es su
+inversa, calculada por búsqueda binaria (no por una fórmula cerrada con
+`sqrt()`, para no tener que hacerla coincidir en coma flotante bit a bit con
+TypeScript) y marcada `IMMUTABLE`. El cliente también puede llamar a las dos
+para previsualizar "XP para el siguiente nivel" sin duplicar la fórmula (bueno,
+duplicándola a propósito en `src/lib/xp.ts`, comparada por
+`scripts/check-xp-formula.mjs`).
+
+`profiles.xp` y `profiles.level` se escriben en dos sitios ahora:
+`resolve_duel` (duelos) y `sync_daily_steps` (pasos). Los dos llaman a
+`level_for_xp`, así que no pueden divergir en qué cuenta como "nivel".
 
 ---
 

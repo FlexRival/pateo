@@ -11,7 +11,6 @@ import { XpBar } from '@/components/molecules/xp-bar';
 import { ROUTES } from '@/constants/routes';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { parseLevelUp } from '@/lib/level-up';
-import { XP_PER_LEVEL } from '@/lib/xp';
 
 /**
  * Celebración de subida de nivel.
@@ -51,13 +50,10 @@ export default function LevelUpScreen() {
           {/* Hueco del personaje (KAN-19): reserva el espacio del diseño. */}
           <Card style={styles.characterSlot} />
 
-          <XpBar
-            value={XP_PER_LEVEL}
-            max={XP_PER_LEVEL}
-            label={null}
-            revealOnMount
-            style={styles.xpBar}
-          />
+          {/* Llena a propósito: celebra el nivel que se acaba de completar, no el
+              progreso dentro del nuevo. El coste de nivel ya no es fijo (curva
+              progresiva), así que "lleno" es value === max, no un XP_PER_LEVEL. */}
+          <XpBar value={1} max={1} label={null} revealOnMount style={styles.xpBar} />
 
           {levelUp.reward ? (
             <Card variant="highlight" style={styles.reward}>

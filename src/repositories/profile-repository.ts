@@ -35,7 +35,7 @@ export type PickedImage = {
  * `'none'` no es un fallo: la app recibe todos los enlaces que abren su
  * esquema, y la mayoría no son de autenticación.
  */
-export type AuthLinkPurpose = 'recovery' | 'none';
+export type AuthLinkPurpose = 'recovery' | 'signup' | 'none';
 
 export interface ProfileRepository {
   /** Perfil de la sesión actual, o `null` si no hay sesión iniciada. */
@@ -66,11 +66,20 @@ export interface ProfileRepository {
    * abrir sesión, `needsEmailConfirmation` viene en `true` y todavía no hay
    * sesión — la pantalla debe avisarlo en vez de asumir que ya se puede
    * entrar.
+   *
+   * `redirectTo` es la URL a la que el enlace de confirmación del correo
+   * devuelve al usuario — en móvil, un enlace profundo a la propia app. Lo
+   * decide quien llama y no el repositorio, igual que en `sendPasswordReset`:
+   * construirlo depende del esquema y de la plataforma (`Linking.createURL`).
+   * Sin ella, Supabase usa el «Site URL» del dashboard del proyecto, que por
+   * defecto es `http://localhost:3000` — el enlace del correo abriría eso en
+   * vez de la app.
    */
   signUp(
     email: string,
     password: string,
     username: string,
+    redirectTo: string,
   ): Promise<{ needsEmailConfirmation: boolean }>;
 
   /** Cierra la sesión actual. */

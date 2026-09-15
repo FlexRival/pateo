@@ -212,6 +212,18 @@ Actualizado el 6 de septiembre de 2026, al implementar KAN-50 y KAN-52.
       que el respaldo daría una app que aparenta funcionar sin contar nada.
 - [ ] **¿Cuándo se hace el development build (KAN-49)?** Sigue abierto y sigue
       bloqueando: nada de esto se ha ejecutado nunca en un teléfono.
+- [x] **¿Los pasos dan XP directamente?** → Decidido el 15-sep-2026: **sí,
+      además de los duelos** (no en su lugar). `floor(pasos_del_día / 10)`,
+      otorgado en vivo desde `sync_daily_steps`. La curva de nivel pasó de
+      plana a progresiva para que no compense subir de nivel a diario en
+      niveles altos. Detalle en `SCHEMA.md` §7, `CLAUDE.md`.
+- [x] **¿Aviso de subida de nivel con la app cerrada?** → Sí, en Android, tras
+      opt-in explícito en Ajustes (dos permisos: notificaciones y
+      `BackgroundAccessPermission` de Health Connect). Es un añadido sobre el
+      sync al abrir la app, no un sustituto: WorkManager no dispara antes de
+      15 minutos y el permiso de background no existe en todos los
+      dispositivos. Ver `healthkit-y-health-connect.md`, sección «Segundo
+      plano». iOS queda fuera (KAN-46, sin cuenta de Apple Developer).
 
 ### El hallazgo que cambia el plan de iOS
 

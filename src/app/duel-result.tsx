@@ -19,7 +19,6 @@ import { useShareCard } from '@/hooks/use-share-card';
 import { useTranslation } from '@/hooks/use-translation';
 import { duelResultFor } from '@/lib/duel-result';
 import { formatCount } from '@/lib/format';
-import { XP_PER_LEVEL } from '@/lib/xp';
 import type { DuelOutcome } from '@/repositories';
 
 /**
@@ -100,7 +99,10 @@ export default function DuelResultScreen() {
                 {t('duelResult.levelUp')}
               </ThemedText>
               <LevelUpBadge fromLevel={levelUp.fromLevel} toLevel={levelUp.toLevel} />
-              <XpBar value={XP_PER_LEVEL} max={XP_PER_LEVEL} label={null} revealOnMount />
+              {/* Barra llena a propósito: celebra el nivel que se acaba de completar,
+                  no el progreso dentro del nuevo. El coste de nivel ya no es un número
+                  fijo (curva progresiva), así que "lleno" es value === max, no XP_PER_LEVEL. */}
+              <XpBar value={1} max={1} label={null} revealOnMount />
             </Card>
           ) : null}
 
