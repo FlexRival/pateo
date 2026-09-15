@@ -5,14 +5,13 @@ formularios) y KAN-84 (cerrar lo que de todo esto bloqueaba publicar). Está en
 un solo sitio porque las cuatro cosas se contestan con la misma información y
 contradecirse entre ellas es motivo de rechazo.
 
-> ⚠️ **Publicar sigue bloqueado, y no por código.** KAN-84 cerró todo lo que se
-> podía cerrar sin un dominio: `LEGAL_CONTACT.entity` está relleno, el intent
-> de Health Connect ya enruta a `/privacy`, y existe `/delete-account`. Pero
-> `LEGAL_CONTACT.site` sigue sin valor real porque **no hay ningún dominio
-> comprado todavía**, y sin él no hay URL pública donde alojar `/privacy`,
-> `/terms` ni `/delete-account` fuera de la app — las dos tiendas la exigen.
-> Comprar el dominio y desplegar ese build web (KAN-56) es lo único que queda
-> antes de poder enviar la app a revisión.
+> ✅ **KAN-74 cerrado el 15-sep-2026.** `LEGAL_CONTACT.site` tiene ya el
+> dominio real, `https://prooffit.com`, propagado también a `SITE_ORIGIN` en
+> `build-legal.mjs` y a `index.html`/`robots.txt`/`sitemap.xml`; las tres
+> páginas generadas se han vuelto a construir con `pnpm build:legal`. Lo
+> único que queda antes de enviar la app a revisión es **desplegar la
+> carpeta `landing/` en un hosting real** que sirva ese dominio — el repo ya
+> no tiene ningún placeholder pendiente.
 
 **Regla que lo ordena todo:** lo que dice el código, lo que dice la política de
 privacidad y lo que se marca en los formularios tiene que ser **la misma
@@ -115,8 +114,8 @@ En `src/lib/legal/types.ts`. De los cuatro campos:
 | --- | --- | --- |
 | `email` | Resuelto | Ya lo estaba antes de KAN-84 |
 | `hostingRegion` | Resuelto | Ya lo estaba antes de KAN-84 (UE, Fráncfort) |
-| `entity` | Resuelto, **con riesgo aceptado** | Se puso `"ProofFit"` — el nombre del producto, no una persona física ni una sociedad constituida. El equipo (proyecto de hackatón de cuatro personas sin entidad legal propia) aceptó conscientemente que esto no identifica a un responsable en el sentido del RGPD art. 13, y que un revisor podría señalarlo. Si en algún momento se constituye una sociedad o se nombra una persona física responsable, hay que volver a este campo. |
-| `site` | **Pendiente de verdad** | No hay dominio comprado. Bloquea publicar: sin él no hay URL pública para `/privacy`, `/terms` ni `/delete-account` fuera de la app. |
+| `entity` | Resuelto, **con riesgo aceptado** | Se puso `"Prooffit"` — el nombre del producto, no una persona física ni una sociedad constituida. El equipo (proyecto de hackatón de cuatro personas sin entidad legal propia) aceptó conscientemente que esto no identifica a un responsable en el sentido del RGPD art. 13, y que un revisor podría señalarlo. Si en algún momento se constituye una sociedad o se nombra una persona física responsable, hay que volver a este campo. |
+| `site` | Resuelto (15-sep-2026) | `https://prooffit.com`, dominio comprado. Ya propagado a `build-legal.mjs`, `index.html`, `robots.txt` y `sitemap.xml`. Lo que sigue faltando no es este campo, sino desplegar `landing/` en un hosting que responda a ese dominio. |
 
 ### 2.2 Landing pública — resto de KAN-56, sigue bloqueando
 
@@ -131,17 +130,15 @@ cadenas `deleteAccount.*` del i18n para la tercera. Se generan y no se
 escriben a mano justamente por la regla del principio de este documento: así
 la versión web y la de dentro de la app no pueden decir cosas distintas.
 
-Lo que **sigue bloqueando** es lo que no es código: **comprar un dominio,
-rellenar `LEGAL_CONTACT.site` y subir la carpeta `landing/` a un hosting**.
-Hasta entonces esas tres páginas existen en el repo pero no tienen URL
-pública, que es lo que piden las tiendas. Ojo: la landing es HTML plano y se
-sirve subiendo la carpeta tal cual — no hace falta `npx expo export -p web`,
-que es otra cosa (el build web de la app).
-
-Y queda un detalle que se arrastra al publicar: el dominio de ejemplo
-`https://prooffit.app` está escrito en `index.html`, `robots.txt`,
-`sitemap.xml` y en la constante `SITE_ORIGIN` de `build-legal.mjs`. Cambiarlo
-en esos cuatro sitios y regenerar es el último paso antes de subir.
+El dominio, `https://prooffit.com`, ya está comprado y puesto en los cuatro
+sitios (`LEGAL_CONTACT.site`, `SITE_ORIGIN` de `build-legal.mjs`,
+`index.html`, `robots.txt`, `sitemap.xml`), y las tres páginas se han
+regenerado con `pnpm build:legal`. Lo que **sigue bloqueando** es lo que no
+es código: **subir la carpeta `landing/` a un hosting real** que sirva ese
+dominio. Hasta entonces esas tres páginas existen en el repo pero no tienen
+URL pública, que es lo que piden las tiendas. Ojo: la landing es HTML plano y
+se sirve subiendo la carpeta tal cual — no hace falta `npx expo export -p
+web`, que es otra cosa (el build web de la app).
 
 ### 2.3 Los tres formularios — KAN-54
 

@@ -150,14 +150,13 @@ Lo que ya está hecho:
 
 ## Antes de publicar
 
-1. **Dominio.** Toda la página lleva `https://prooffit.app` como ejemplo. Hay
-   que cambiarlo en cuatro sitios: `index.html` (canonical, `og:*`, JSON-LD),
-   `robots.txt`, `sitemap.xml` y la constante `SITE_ORIGIN` de
-   `scripts/build-legal.mjs` — esta última manda sobre el `canonical` de las
-   tres páginas generadas, así que después hay que volver a lanzar
-   `pnpm build:legal`. Es el mismo dominio que hay que rellenar en
-   `LEGAL_CONTACT.site` (`src/lib/legal/types.ts`), que sigue bloqueando
-   publicar (KAN-74).
+1. **Dominio.** Resuelto el 15-sep-2026 (KAN-74): `https://prooffit.com` es el
+   dominio real y ya está puesto en los cuatro sitios — `index.html`
+   (canonical, `og:*`, JSON-LD), `robots.txt`, `sitemap.xml` y la constante
+   `SITE_ORIGIN` de `scripts/build-legal.mjs` —, y las tres páginas generadas
+   se han vuelto a construir con `pnpm build:legal`. Es el mismo valor que
+   `LEGAL_CONTACT.site` (`src/lib/legal/types.ts`). Si el dominio cambiara,
+   hay que repetir estos mismos pasos.
 
 2. **Las tres páginas que exigen las tiendas.** Ya existen: `privacy.html`,
    `terms.html` y `delete-account.html` las genera `build-legal.mjs` desde lo

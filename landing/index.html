@@ -7,10 +7,10 @@
   con el repo, que es un proyecto Expo. Sin build, sin dependencias, sin
   node_modules: se sube la carpeta `landing/` a cualquier hosting y funciona.
 
-  ⚠️ ANTES DE PUBLICAR hay que sustituir el dominio de ejemplo
-  `https://prooffit.app` en: <link rel="canonical">, las etiquetas og:/twitter:,
-  el JSON-LD, `robots.txt` y `sitemap.xml`. Es el mismo dominio que hay que
-  rellenar en `LEGAL_CONTACT.site` (src/lib/legal/types.ts, KAN-74). Ver
+  Dominio real desde el 15-sep-2026: `https://prooffit.com` (KAN-74), el
+  mismo valor que `LEGAL_CONTACT.site` (src/lib/legal/types.ts) y que
+  `SITE_ORIGIN` en `landing/scripts/build-legal.mjs`. Si algún día cambia, hay
+  que actualizar los tres y volver a ejecutar `pnpm build:legal`. Ver
   landing/README.md.
 -->
 <html lang="es">
@@ -24,7 +24,7 @@
       name="description"
       content="Prooffit convierte tus pasos reales en duelos 1v1 contra tus amigos. Sin pulsera, sin apuntar nada: gana quien más anda. Descarga gratis en Android."
     />
-    <link rel="canonical" href="https://prooffit.app/" />
+    <link rel="canonical" href="https://prooffit.com/" />
     <meta name="theme-color" content="#08090C" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
 
@@ -32,13 +32,13 @@
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Prooffit" />
     <meta property="og:locale" content="es_ES" />
-    <meta property="og:url" content="https://prooffit.app/" />
+    <meta property="og:url" content="https://prooffit.com/" />
     <meta property="og:title" content="Prooffit: duelos 1v1 de pasos contra tus amigos" />
     <meta
       property="og:description"
       content="Tus pasos reales, convertidos en duelos 1v1. Gana quien más anda."
     />
-    <meta property="og:image" content="https://prooffit.app/assets/brand/og-image.png" />
+    <meta property="og:image" content="https://prooffit.com/assets/brand/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Prooffit. Tus pasos deciden quién gana." />
@@ -95,12 +95,12 @@
         "@graph": [
           {
             "@type": "MobileApplication",
-            "@id": "https://prooffit.app/#app",
+            "@id": "https://prooffit.com/#app",
             "name": "Prooffit",
             "applicationCategory": "HealthApplication",
             "applicationSubCategory": "Fitness",
             "operatingSystem": "Android 8.0 o superior",
-            "url": "https://prooffit.app/",
+            "url": "https://prooffit.com/",
             "installUrl": "https://play.google.com/store/apps/details?id=com.prooffit.app",
             "inLanguage": ["es", "en"],
             "description": "App de pasos con duelos 1v1 contra amigos. Los pasos reales del día deciden quién gana y dan XP para subir de nivel.",
@@ -112,7 +112,7 @@
           },
           {
             "@type": "FAQPage",
-            "@id": "https://prooffit.app/#faq",
+            "@id": "https://prooffit.com/#faq",
             "mainEntity": [
               {
                 "@type": "Question",

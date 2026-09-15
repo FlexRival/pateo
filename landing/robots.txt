@@ -4,4 +4,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://prooffit.app/sitemap.xml
+Sitemap: https://prooffit.com/sitemap.xml

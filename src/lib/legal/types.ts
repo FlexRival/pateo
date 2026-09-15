@@ -27,24 +27,27 @@ export type LocalizedLegalDocument = Record<Language, LegalDocument>;
 /**
  * Los datos del responsable del tratamiento.
  *
- * Estado a 13-sep-2026 (KAN-84): de los cuatro campos, **solo `site` sigue
- * pendiente**, y no por falta de decisión sino porque todavía no hay un
- * dominio comprado — en cuanto exista, hay que rellenarlo aquí y revisar el
- * comentario `TODO(site)` en `privacy-policy.ts`. Los otros tres ya están
- * resueltos:
+ * Estado a 15-sep-2026 (KAN-74): los cuatro campos están resueltos.
  *
  * - `email` y `hostingRegion` estaban puestos desde antes de KAN-84.
- * - `entity` se rellenó en KAN-84 con el nombre del producto, `"ProofFit"`,
+ * - `entity` se rellenó en KAN-84 con el nombre del producto, `"Prooffit"`,
  *   a sabiendas de que **no identifica a una persona física ni a una
  *   sociedad constituida** — es un proyecto de hackatón de cuatro personas
  *   sin entidad legal propia. El RGPD (art. 13) exige un responsable
  *   identificable, así que esto es un riesgo aceptado explícitamente por el
  *   equipo, no un descuido: si en algún momento se constituye una sociedad o
  *   se decide nombrar a una persona física responsable, hay que volver aquí.
+ * - `site` se rellenó el 15-sep-2026 con el dominio comprado, `prooffit.com`.
+ *   Revisado a la vez: `landing/scripts/build-legal.mjs` (`SITE_ORIGIN`),
+ *   `landing/index.html`, `landing/robots.txt` y `landing/sitemap.xml`
+ *   usaban el dominio de ejemplo `prooffit.app` y se han actualizado todos
+ *   al dominio real; las tres páginas legales generadas
+ *   (`landing/privacy.html`, `terms.html`, `delete-account.html`) se han
+ *   regenerado con `pnpm build:legal`.
  *
- * Sin un responsable identificable de verdad y una dirección de contacto
- * real, las dos tiendas pueden rechazar la política igualmente — este riesgo
- * sigue abierto para `entity` aun estando "relleno".
+ * Sin un responsable identificable de verdad, las dos tiendas pueden
+ * rechazar la política igualmente — este riesgo sigue abierto para `entity`
+ * aun estando "relleno".
  *
  * Se dejan aquí, juntos y en un solo sitio, para que rellenarlos sea una
  * edición de cuatro líneas y no una caza por dentro de los textos.
@@ -56,7 +59,7 @@ export const LEGAL_CONTACT = {
    * ⚠️ Es el nombre del producto, no una persona física ni una sociedad
    * constituida — ver el aviso de riesgo aceptado arriba.
    */
-  entity: 'ProofFit',
+  entity: 'Prooffit',
   /**
    * Dirección de contacto para ejercer derechos. Tiene que estar viva: es donde
    * llegan las peticiones de borrado de quien ya desinstaló la app y no puede
@@ -69,13 +72,12 @@ export const LEGAL_CONTACT = {
   /**
    * Dominio donde viven las versiones públicas de estos textos (KAN-56).
    *
-   * ⚠️ PENDIENTE DE VERDAD: no hay dominio comprado todavía. Mientras esto
-   * esté así, no se interpola en ningún texto que se le enseñe al usuario —
-   * ver el `TODO(site)` en `privacy-policy.ts`, sección 8. Bloquea publicar:
-   * sin esto no hay URL pública donde alojar `/privacy`, `/terms` ni
-   * `/delete-account`, y las dos tiendas la exigen.
+   * Comprado y en uso desde el 15-sep-2026. Es el mismo valor que
+   * `SITE_ORIGIN` en `landing/scripts/build-legal.mjs` — si alguna vez
+   * cambian, hay que actualizar los dos y volver a ejecutar
+   * `pnpm build:legal`.
    */
-  site: '[PENDIENTE: dominio de la landing — todavía no comprado]',
+  site: 'https://prooffit.com',
   /**
    * Dónde está alojada la base de datos de Supabase. Determina si hay
    * transferencia internacional de datos que declarar: un proyecto en una

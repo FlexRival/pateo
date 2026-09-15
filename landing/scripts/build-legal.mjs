@@ -38,17 +38,17 @@ const LANDING = join(HERE, '..');
 /**
  * El dominio público.
  *
- * ⚠️ Sigue siendo el de ejemplo, igual que en `index.html`, `robots.txt` y
- * `sitemap.xml`: todavía no hay dominio comprado (KAN-74). Cuando lo haya se
- * cambia aquí y se regenera; es el mismo valor que hay que poner en
- * `LEGAL_CONTACT.site` (`src/lib/legal/types.ts`).
+ * Dominio real desde el 15-sep-2026 (KAN-74), igual que en `index.html`,
+ * `robots.txt` y `sitemap.xml`, y el mismo valor que `LEGAL_CONTACT.site`
+ * (`src/lib/legal/types.ts`). Si alguna vez cambia, hay que actualizarlo en
+ * los cuatro sitios y regenerar con `pnpm build:legal`.
  *
- * No se lee de `LEGAL_CONTACT.site` a propósito: hoy ese campo contiene un
- * texto de aviso («[PENDIENTE: …]»), no una URL, e interpolarlo aquí
- * escupiría un `<link rel="canonical">` roto en una página que ven las dos
- * tiendas.
+ * Sigue sin leerse de `LEGAL_CONTACT.site` directamente: este script no
+ * puede resolver el alias `@/` de TypeScript sin el hook de más abajo, y
+ * mantener el valor literal aquí evita acoplar el build de la landing a esa
+ * resolución para un solo string.
  */
-const SITE_ORIGIN = 'https://prooffit.app';
+const SITE_ORIGIN = 'https://prooffit.com';
 
 /**
  * El idioma de la landing.
