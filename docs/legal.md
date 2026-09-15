@@ -185,12 +185,19 @@ sin actualizar este formulario y la política a la vez.
 #### c) App Store Connect → App Privacy
 
 - Datos recogidos y **vinculados a la identidad**: correo, nombre de usuario,
-  foto, salud y forma física, información de compra.
+  foto, salud y forma física, información de compra. Los pasos se declaran en
+  **Salud y forma física → Forma física** aunque no vengan de HealthKit: en iOS
+  salen del sensor de movimiento (CoreMotion), y eso sigue siendo dato de forma
+  física.
 - Uso: funcionalidad de la app. **Ni seguimiento, ni publicidad, ni analítica de
   terceros** — marcar «no se usa para seguimiento».
-- Las reglas de HealthKit prohíben usar datos de salud para publicidad
-  segmentada o cederlos a redes publicitarias. Prooffit no tiene anuncios, así
-  que hoy no hay conflicto; **si algún día entran anuncios, esto se rompe.**
+- La norma 5.1.3 de App Review prohíbe usar datos de salud y forma física para
+  publicidad o cederlos a terceros con ese fin, y cubre **también «Movimiento y
+  forma física»**, no solo HealthKit. Prooffit no tiene anuncios, así que hoy no
+  hay conflicto; **si algún día entran anuncios, esto se rompe.**
+- En el portal de Apple Developer (Identifiers → capacidades del App ID)
+  **HealthKit va desmarcado**: la app no lo usa, y declararlo sin usarlo es
+  motivo de rechazo. La única capacidad necesaria es In-App Purchase.
 
 #### d) Cadenas de permiso en `app.json`
 

@@ -7,10 +7,12 @@ import { LEGAL_CONTACT, type LocalizedLegalDocument } from '@/lib/legal/types';
  * (pasos), y eso activa tres regímenes a la vez que exigen cosas concretas y
  * comprobables:
  *
- *   * **Apple** — las reglas de HealthKit prohíben usar datos de salud para
- *     publicidad segmentada o cederlos a redes publicitarias, y obligan a
- *     declarar el uso en el cuestionario de App Privacy. Incumplirlo puede
- *     retirar la app YA PUBLICADA.
+ *   * **Apple** — la norma 5.1.3 de App Review prohíbe usar los datos de
+ *     salud y forma física para publicidad o cederlos a terceros con ese fin,
+ *     y el cuestionario de App Privacy obliga a declararlos. La norma cubre
+ *     también «Movimiento y forma física», que es de donde lee los pasos el
+ *     iPhone: aplica aunque la app no use HealthKit (y no lo usa). Incumplirlo
+ *     puede retirar la app YA PUBLICADA.
  *   * **Google Play** — usar Health Connect obliga a que la política de
  *     privacidad diga qué tipos de dato se leen y para qué, y a que sea la
  *     MISMA que se enseña al pulsar el enlace de privacidad dentro del diálogo
@@ -25,7 +27,7 @@ import { LEGAL_CONTACT, type LocalizedLegalDocument } from '@/lib/legal/types';
 export const privacyPolicy: LocalizedLegalDocument = {
   es: {
     title: 'Política de privacidad',
-    lastUpdated: '2026-09-07',
+    lastUpdated: '2026-09-15',
     intro: [
       'Prooffit convierte tus pasos diarios en progreso: subes de nivel, retas a tus amigos y compites por clanes. Para eso necesitamos algunos datos tuyos. Esta página explica exactamente cuáles, para qué, y cómo deshacerte de ellos.',
       'Está escrita para que se entienda. Si algo no se entiende, escríbenos y lo arreglamos.',
@@ -59,7 +61,7 @@ export const privacyPolicy: LocalizedLegalDocument = {
       {
         heading: '4. Tus datos de salud: los compromisos que sí importan',
         body: [
-          'Leemos únicamente el recuento de pasos, desde Apple Salud (iOS) o Health Connect (Android). Ningún otro tipo de dato de salud, aunque tu teléfono lo tenga.',
+          'Leemos únicamente el recuento de pasos: en iPhone, del sensor de movimiento del propio teléfono (el permiso «Movimiento y forma física»); en Android, de Health Connect. Ningún otro tipo de dato de salud, aunque tu teléfono lo tenga.',
           'No usamos tus datos de salud para publicidad, ni segmentada ni de ningún tipo, y no los cedemos a ninguna red publicitaria, agregador de datos ni broker. Prooffit no tiene anuncios.',
           'No vendemos tus datos de salud. A nadie. Nunca.',
           'No los usamos para tomar decisiones sobre seguros, empleo, crédito ni nada parecido, ni los compartimos con quien lo haga.',
@@ -129,7 +131,7 @@ export const privacyPolicy: LocalizedLegalDocument = {
 
   en: {
     title: 'Privacy Policy',
-    lastUpdated: '2026-09-07',
+    lastUpdated: '2026-09-15',
     intro: [
       'Prooffit turns your daily steps into progress: you level up, challenge your friends and compete for clans. That needs some data from you. This page explains exactly what we collect, what for, and how to get rid of it.',
       "It is written to be understood. If something isn't clear, write to us and we will fix it.",
@@ -163,7 +165,7 @@ export const privacyPolicy: LocalizedLegalDocument = {
       {
         heading: '4. Your health data: the commitments that actually matter',
         body: [
-          'We read step counts only, from Apple Health (iOS) or Health Connect (Android). No other kind of health data, even if your phone has it.',
+          "We read step counts only: on iPhone, from the phone's own motion sensor (the \"Motion & Fitness\" permission); on Android, from Health Connect. No other kind of health data, even if your phone has it.",
           'We do not use your health data for advertising of any kind, targeted or otherwise, and we do not pass it to any ad network, data aggregator or broker. Prooffit has no ads.',
           'We do not sell your health data. To anyone. Ever.',
           'We do not use it for decisions about insurance, employment or credit, and we do not share it with anyone who does.',
