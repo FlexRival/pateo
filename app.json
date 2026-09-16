@@ -1,11 +1,8 @@
 {
   "expo": {
     "name": "Pateo",
-<<<<<<< HEAD
     "slug": "prooffit",
-=======
     "slug": "pateo",
->>>>>>> 54d9138bc9d01025cfb41a2175a4f5bb6753ebb5
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
