@@ -1,17 +1,21 @@
 {
   "expo": {
     "name": "Pateo",
+<<<<<<< HEAD
     "slug": "prooffit",
+=======
+    "slug": "pateo",
+>>>>>>> 54d9138bc9d01025cfb41a2175a4f5bb6753ebb5
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "proof",
     "userInterfaceStyle": "dark",
     "ios": {
-      "bundleIdentifier": "com.prooffit.app"
+      "bundleIdentifier": "com.pateo.app"
     },
     "android": {
-      "package": "com.prooffit.app",
+      "package": "com.pateo.app",
       "adaptiveIcon": {
         "backgroundColor": "#08090C",
         "foregroundImage": "./assets/images/android-icon-foreground.png",

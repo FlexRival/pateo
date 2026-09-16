@@ -1,5 +1,5 @@
 -- ============================================================================
--- MIGRACIÓN: PASOS TOTALES — Prooffit
+-- MIGRACIÓN: PASOS TOTALES — Pateo
 --
 -- POR QUÉ EXISTE:
 --   La casilla «PASOS TOTALES» de Perfil estaba escrita a fuego en `0` porque

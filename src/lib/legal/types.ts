@@ -37,11 +37,15 @@ export type LocalizedLegalDocument = Record<Language, LegalDocument>;
  *   identificable, así que esto es un riesgo aceptado explícitamente por el
  *   equipo, no un descuido: si en algún momento se constituye una sociedad o
  *   se decide nombrar a una persona física responsable, hay que volver aquí.
+<<<<<<< HEAD
  * - `site` se rellenó el 15-sep-2026 con el dominio comprado, `prooffit.com`,
  *   y ese mismo día pasó a `pateo.es` con el cambio de marca a Pateo.
+=======
+ * - `site` se rellenó el 15-sep-2026 con el dominio comprado, `pateo.es`.
+>>>>>>> 54d9138bc9d01025cfb41a2175a4f5bb6753ebb5
  *   Revisado a la vez: `landing/scripts/build-legal.mjs` (`SITE_ORIGIN`),
  *   `landing/index.html`, `landing/robots.txt` y `landing/sitemap.xml`
- *   usaban el dominio de ejemplo `prooffit.app` y se han actualizado todos
+ *   usaban el dominio de ejemplo `pateo.app` y se han actualizado todos
  *   al dominio real; las tres páginas legales generadas
  *   (`landing/privacy.html`, `terms.html`, `delete-account.html`) se han
  *   regenerado con `pnpm build:legal`.

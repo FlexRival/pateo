@@ -1,5 +1,5 @@
 -- ============================================================================
--- MIGRACIÓN: RACHAS DE PASOS (STREAKS) — Prooffit
+-- MIGRACIÓN: RACHAS DE PASOS (STREAKS) — Pateo
 --
 -- `profiles.streak_days` es estado derivado: NÚMERO de días consecutivos en los
 -- que el usuario alcanzó la meta diaria de pasos. Lo mantiene el servidor a

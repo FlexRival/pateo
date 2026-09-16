@@ -150,8 +150,13 @@ Lo que ya está hecho:
 
 ## Antes de publicar
 
+<<<<<<< HEAD
 1. **Dominio.** `https://pateo.es` desde el cambio de marca a Pateo
    (15-sep-2026; sustituye a `prooffit.com`, KAN-74). Ya está puesto en los cuatro sitios — `index.html`
+=======
+1. **Dominio.** Resuelto el 15-sep-2026 (KAN-74): `https://pateo.es` es el
+   dominio real y ya está puesto en los cuatro sitios — `index.html`
+>>>>>>> 54d9138bc9d01025cfb41a2175a4f5bb6753ebb5
    (canonical, `og:*`, JSON-LD), `robots.txt`, `sitemap.xml` y la constante
    `SITE_ORIGIN` de `scripts/build-legal.mjs` —, y las tres páginas generadas
    se han vuelto a construir con `pnpm build:legal`. Es el mismo valor que

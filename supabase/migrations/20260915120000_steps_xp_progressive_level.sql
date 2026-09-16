@@ -1,5 +1,5 @@
 -- ============================================================================
--- MIGRACIÓN: XP POR PASOS + CURVA DE NIVEL PROGRESIVA — Prooffit
+-- MIGRACIÓN: XP POR PASOS + CURVA DE NIVEL PROGRESIVA — Pateo
 --
 -- Reabre una decisión que estaba documentada como cerrada (`SCHEMA.md` §7,
 -- `CLAUDE.md`): "el XP solo se gana ganando un duelo". A partir de aquí los

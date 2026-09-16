@@ -104,7 +104,18 @@ export default function LoginScreen() {
           contentContainerStyle={styles.content}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled">
+<<<<<<< HEAD
           <BrandHeader tagline={t('login.tagline')} />
+=======
+          <View style={styles.brand}>
+            <ThemedText type="title" style={styles.centered}>
+              PATEO
+            </ThemedText>
+            <ThemedText type="small" themeColor="textMuted" style={styles.centered}>
+              {t('login.tagline')}
+            </ThemedText>
+          </View>
+>>>>>>> 54d9138bc9d01025cfb41a2175a4f5bb6753ebb5
 
           <Card style={styles.form}>
             <SegmentedControl options={modeOptions(t)} value={mode} onChange={setMode} />

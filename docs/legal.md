@@ -121,7 +121,11 @@ En `src/lib/legal/types.ts`. De los cuatro campos:
 | `email` | Resuelto | Ya lo estaba antes de KAN-84 |
 | `hostingRegion` | Resuelto | Ya lo estaba antes de KAN-84 (UE, Fráncfort) |
 | `entity` | Resuelto, **con riesgo aceptado** | Se puso `"Pateo"` — el nombre del producto, no una persona física ni una sociedad constituida. El equipo (proyecto de hackatón de cuatro personas sin entidad legal propia) aceptó conscientemente que esto no identifica a un responsable en el sentido del RGPD art. 13, y que un revisor podría señalarlo. Si en algún momento se constituye una sociedad o se nombra una persona física responsable, hay que volver a este campo. |
+<<<<<<< HEAD
 | `site` | Resuelto (15-sep-2026) | `https://pateo.es`, dominio de la marca desde el cambio de Prooffit a Pateo (sustituye a `prooffit.com`). Ya propagado a `build-legal.mjs`, `index.html`, `robots.txt` y `sitemap.xml`. Lo que sigue faltando no es este campo, sino desplegar `landing/` en un hosting que responda a ese dominio. |
+=======
+| `site` | Resuelto (15-sep-2026) | `https://pateo.es`, dominio comprado. Ya propagado a `build-legal.mjs`, `index.html`, `robots.txt` y `sitemap.xml`. Lo que sigue faltando no es este campo, sino desplegar `landing/` en un hosting que responda a ese dominio. |
+>>>>>>> 54d9138bc9d01025cfb41a2175a4f5bb6753ebb5
 
 ### 2.2 Landing pública — resto de KAN-56, sigue bloqueando
 
@@ -136,7 +140,11 @@ cadenas `deleteAccount.*` del i18n para la tercera. Se generan y no se
 escriben a mano justamente por la regla del principio de este documento: así
 la versión web y la de dentro de la app no pueden decir cosas distintas.
 
+<<<<<<< HEAD
 El dominio, `https://pateo.es`, ya está puesto en los cuatro
+=======
+El dominio, `https://pateo.es`, ya está comprado y puesto en los cuatro
+>>>>>>> 54d9138bc9d01025cfb41a2175a4f5bb6753ebb5
 sitios (`LEGAL_CONTACT.site`, `SITE_ORIGIN` de `build-legal.mjs`,
 `index.html`, `robots.txt`, `sitemap.xml`), y las tres páginas se han
 regenerado con `pnpm build:legal`. Lo que **sigue bloqueando** es lo que no
