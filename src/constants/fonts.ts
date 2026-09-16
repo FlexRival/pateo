@@ -1,5 +1,5 @@
 /**
- * Capa tipográfica del sistema de diseño de Prooffit. Ver `docs/design.md`
+ * Capa tipográfica del sistema de diseño de Pateo. Ver `docs/design.md`
  * § Tipografía para la referencia legible.
  *
  * El diseño usa dos familias y nada más:

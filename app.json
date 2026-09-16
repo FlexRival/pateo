@@ -1,17 +1,17 @@
 {
   "expo": {
-    "name": "Prooffit",
-    "slug": "prooffit",
+    "name": "Pateo",
+    "slug": "pateo",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "proof",
     "userInterfaceStyle": "dark",
     "ios": {
-      "bundleIdentifier": "com.prooffit.app"
+      "bundleIdentifier": "com.pateo.app"
     },
     "android": {
-      "package": "com.prooffit.app",
+      "package": "com.pateo.app",
       "adaptiveIcon": {
         "backgroundColor": "#08090C",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -41,7 +41,7 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Prooffit needs access to your photos so you can set a profile picture."
+          "photosPermission": "Pateo needs access to your photos so you can set a profile picture."
         }
       ],
       "expo-localization",
@@ -50,7 +50,7 @@
       [
         "expo-sensors",
         {
-          "motionPermission": "Prooffit counts your daily steps to level you up and settle your duels."
+          "motionPermission": "Pateo counts your daily steps to level you up and settle your duels."
         }
       ],
       [

@@ -1,4 +1,4 @@
-# Prooffit — Estructura de la base de datos
+# Pateo — Estructura de la base de datos
 
 Referencia de la capa de datos (Supabase / Postgres). Léela antes de tocar
 `supabase/migrations/`.

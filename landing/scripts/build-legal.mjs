@@ -48,7 +48,7 @@ const LANDING = join(HERE, '..');
  * mantener el valor literal aquí evita acoplar el build de la landing a esa
  * resolución para un solo string.
  */
-const SITE_ORIGIN = 'https://prooffit.com';
+const SITE_ORIGIN = 'https://pateo.es';
 
 /**
  * El idioma de la landing.
@@ -255,7 +255,7 @@ ${intro.map((text) => `            <p>${escape(text)}</p>`).join('\n')}
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>${escape(title)} · Prooffit</title>
+    <title>${escape(title)} · Pateo</title>
     <meta name="description" content="${escape(metaDescription(page))}" />
     <link rel="canonical" href="${SITE_ORIGIN}/${file}" />
     <meta name="theme-color" content="#08090C" />
@@ -295,9 +295,9 @@ ${intro.map((text) => `            <p>${escape(text)}</p>`).join('\n')}
 
     <header class="legal-nav">
       <div class="shell legal-nav__inner">
-        <a class="legal-nav__brand" href="index.html" aria-label="Prooffit, inicio">
+        <a class="legal-nav__brand" href="index.html" aria-label="Pateo, inicio">
           ${MARK}
-          <span class="legal-nav__wordmark">Prooffit</span>
+          <span class="legal-nav__wordmark">Pateo</span>
         </a>
 
         <a class="button button--secondary" href="index.html">Volver</a>
@@ -320,7 +320,7 @@ ${sections.map(renderSection).join('\n\n')}${actionBlock}
       <div class="shell footer__inner">
         <div class="footer__brand">
           ${MARK}
-          <span class="nav__wordmark">Prooffit</span>
+          <span class="nav__wordmark">Pateo</span>
         </div>
 
         <nav class="footer__links" aria-label="Legal y contacto">
@@ -329,7 +329,7 @@ ${sections.map(renderSection).join('\n\n')}${actionBlock}
           <a href="mailto:${LEGAL_CONTACT.email}">Contacto</a>
         </nav>
 
-        <p class="footer__legal label">Prooffit 2026. Hecho para la gente que no sabe perder.</p>
+        <p class="footer__legal label">Pateo 2026. Hecho para la gente que no sabe perder.</p>
       </div>
     </footer>
   </body>

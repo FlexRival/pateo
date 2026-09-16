@@ -10,7 +10,7 @@
  *
  * Las variables se escriben `%{nombre}` (formato de i18n-js).
  *
- * **PROOFFIT no está aquí**: es la marca, y una marca no se traduce.
+ * **PATEO no está aquí**: es la marca, y una marca no se traduce.
  */
 export const en = {
   common: {
@@ -35,7 +35,7 @@ export const en = {
    */
   levelUpNotification: {
     title: 'Level %{level}!',
-    body: 'Your daily steps just leveled you up. Open Prooffit to see it.',
+    body: 'Your daily steps just leveled you up. Open Pateo to see it.',
   },
 
   nav: {
@@ -276,9 +276,9 @@ export const en = {
     notifications: 'NOTIFICATIONS',
     levelUpAlerts: 'Level-up alerts (background)',
     levelUpAlertsNotificationsDenied:
-      'Allow notifications for Prooffit in your device settings to enable this.',
+      'Allow notifications for Pateo in your device settings to enable this.',
     levelUpAlertsBackgroundDenied:
-      'Allow Health Connect background access for Prooffit in your device settings to enable this.',
+      'Allow Health Connect background access for Pateo in your device settings to enable this.',
     leadChanges: 'Lead changes',
     duelInvites: 'Duel invites',
     dailyStepSummary: 'Daily step summary',
@@ -319,8 +319,8 @@ export const en = {
     withoutAppBody:
       'Write to us from the email address of your account and we will delete it for you, within 30 days at most.',
     emailButton: 'Email us to delete my account',
-    emailSubject: 'Delete my Prooffit account',
-    emailBody: 'Hi, I would like to delete my Prooffit account associated with this email address.',
+    emailSubject: 'Delete my Pateo account',
+    emailBody: 'Hi, I would like to delete my Pateo account associated with this email address.',
   },
 } as const;
 

@@ -1,5 +1,5 @@
 -- ============================================================================
--- MIGRACIÓN: AMISTADES — Prooffit
+-- MIGRACIÓN: AMISTADES — Pateo
 --
 -- Relación bidireccional entre dos profiles: solicitud → aceptar/rechazar →
 -- amistad activa. Sirve de base para "duelos contra amigos" (ver CLAUDE.md).

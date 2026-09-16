@@ -30,17 +30,17 @@ export type LocalizedLegalDocument = Record<Language, LegalDocument>;
  * Estado a 15-sep-2026 (KAN-74): los cuatro campos están resueltos.
  *
  * - `email` y `hostingRegion` estaban puestos desde antes de KAN-84.
- * - `entity` se rellenó en KAN-84 con el nombre del producto, `"Prooffit"`,
+ * - `entity` se rellenó en KAN-84 con el nombre del producto, `"Pateo"`,
  *   a sabiendas de que **no identifica a una persona física ni a una
  *   sociedad constituida** — es un proyecto de hackatón de cuatro personas
  *   sin entidad legal propia. El RGPD (art. 13) exige un responsable
  *   identificable, así que esto es un riesgo aceptado explícitamente por el
  *   equipo, no un descuido: si en algún momento se constituye una sociedad o
  *   se decide nombrar a una persona física responsable, hay que volver aquí.
- * - `site` se rellenó el 15-sep-2026 con el dominio comprado, `prooffit.com`.
+ * - `site` se rellenó el 15-sep-2026 con el dominio comprado, `pateo.es`.
  *   Revisado a la vez: `landing/scripts/build-legal.mjs` (`SITE_ORIGIN`),
  *   `landing/index.html`, `landing/robots.txt` y `landing/sitemap.xml`
- *   usaban el dominio de ejemplo `prooffit.app` y se han actualizado todos
+ *   usaban el dominio de ejemplo `pateo.app` y se han actualizado todos
  *   al dominio real; las tres páginas legales generadas
  *   (`landing/privacy.html`, `terms.html`, `delete-account.html`) se han
  *   regenerado con `pnpm build:legal`.
@@ -59,7 +59,7 @@ export const LEGAL_CONTACT = {
    * ⚠️ Es el nombre del producto, no una persona física ni una sociedad
    * constituida — ver el aviso de riesgo aceptado arriba.
    */
-  entity: 'Prooffit',
+  entity: 'Pateo',
   /**
    * Dirección de contacto para ejercer derechos. Tiene que estar viva: es donde
    * llegan las peticiones de borrado de quien ya desinstaló la app y no puede
@@ -77,7 +77,7 @@ export const LEGAL_CONTACT = {
    * cambian, hay que actualizar los dos y volver a ejecutar
    * `pnpm build:legal`.
    */
-  site: 'https://prooffit.com',
+  site: 'https://pateo.es',
   /**
    * Dónde está alojada la base de datos de Supabase. Determina si hay
    * transferencia internacional de datos que declarar: un proyecto en una

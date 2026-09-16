@@ -1,5 +1,5 @@
 /**
- * Punto de entrada del sistema de diseño de Prooffit.
+ * Punto de entrada del sistema de diseño de Pateo.
  *
  * Los componentes importan de aquí. La capa interna es `colors.ts`: rampas y
  * tokens semánticos, sin dependencias, para poder validarlo con Node.

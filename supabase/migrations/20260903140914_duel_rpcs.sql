@@ -1,5 +1,5 @@
 -- ============================================================================
--- MIGRACIÓN: LÓGICA DE DUELOS (RPC) — Prooffit
+-- MIGRACIÓN: LÓGICA DE DUELOS (RPC) — Pateo
 --
 -- Toda mutación de un duelo pasa por funciones SECURITY DEFINER. El cliente
 -- (rol `authenticated`) solo puede:

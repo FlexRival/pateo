@@ -1,5 +1,5 @@
 -- ============================================================================
--- MIGRACIÓN: SUSCRIPCIONES (RevenueCat) — Prooffit
+-- MIGRACIÓN: SUSCRIPCIONES (RevenueCat) — Pateo
 --
 -- RevenueCat es la FUENTE DE VERDAD de los entitlements. El SDK cliente
 -- (`react-native-purchases`) hace la compra con la store; el backend NO

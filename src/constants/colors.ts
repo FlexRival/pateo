@@ -1,5 +1,5 @@
 /**
- * Capa de color del sistema de diseño de Prooffit. Ver `docs/design.md` para
+ * Capa de color del sistema de diseño de Pateo. Ver `docs/design.md` para
  * la referencia legible de cada token — este archivo es lo que corre, ese
  * documento es lo que se lee.
  *
@@ -121,7 +121,7 @@ export const Gradients = {
  * Tokens semánticos. Un componente pide `surface`, nunca `Palette.card`,
  * para que la dirección visual cambie sin tocar los componentes.
  *
- * Prooffit es de tema único, oscuro — no hay `Colors.light`. Se conserva la
+ * Pateo es de tema único, oscuro — no hay `Colors.light`. Se conserva la
  * clave `dark` para no romper `Object.entries(Colors)` en
  * `check-contrast.mjs` y para que añadir un tema claro en el futuro sea
  * sumar una clave, no rediseñar el tipo `ThemeColor`.

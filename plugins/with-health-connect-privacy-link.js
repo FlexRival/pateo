@@ -30,7 +30,7 @@ const { withMainActivity } = require('expo/config-plugins');
  * `MainActivity` se genera en Java, el plugin falla alto en vez de no hacer
  * nada, para que el hueco no pase desapercibido.
  */
-const MARKER = 'prooffit-health-connect-privacy-link';
+const MARKER = 'pateo-health-connect-privacy-link';
 
 function withHealthConnectPrivacyLink(config) {
   return withMainActivity(config, (config) => {

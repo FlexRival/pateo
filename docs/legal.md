@@ -6,7 +6,7 @@ un solo sitio porque las cuatro cosas se contestan con la misma información y
 contradecirse entre ellas es motivo de rechazo.
 
 > ✅ **KAN-74 cerrado el 15-sep-2026.** `LEGAL_CONTACT.site` tiene ya el
-> dominio real, `https://prooffit.com`, propagado también a `SITE_ORIGIN` en
+> dominio real, `https://pateo.es`, propagado también a `SITE_ORIGIN` en
 > `build-legal.mjs` y a `index.html`/`robots.txt`/`sitemap.xml`; las tres
 > páginas generadas se han vuelto a construir con `pnpm build:legal`. Lo
 > único que queda antes de enviar la app a revisión es **desplegar la
@@ -81,7 +81,7 @@ Están enganchados en cuatro sitios, y los cuatro son exigencias de tienda:
 - Ajustes → Cuenta → Política de privacidad / Términos de uso.
 - Pie del paywall (Apple no aprueba una suscripción sin estos dos enlaces).
 - **Android, desde fuera de la app:** el diálogo de permisos de Health Connect
-  tiene un enlace de privacidad que abre Prooffit con el intent
+  tiene un enlace de privacidad que abre Pateo con el intent
   `androidx.health.ACTION_SHOW_PERMISSIONS_RATIONALE`. El plugin de
   `react-native-health-connect` escribe ese intent-filter en el manifiesto
   (y su alias `ViewPermissionUsageActivity` para Android 14+), apuntando a la
@@ -114,8 +114,8 @@ En `src/lib/legal/types.ts`. De los cuatro campos:
 | --- | --- | --- |
 | `email` | Resuelto | Ya lo estaba antes de KAN-84 |
 | `hostingRegion` | Resuelto | Ya lo estaba antes de KAN-84 (UE, Fráncfort) |
-| `entity` | Resuelto, **con riesgo aceptado** | Se puso `"Prooffit"` — el nombre del producto, no una persona física ni una sociedad constituida. El equipo (proyecto de hackatón de cuatro personas sin entidad legal propia) aceptó conscientemente que esto no identifica a un responsable en el sentido del RGPD art. 13, y que un revisor podría señalarlo. Si en algún momento se constituye una sociedad o se nombra una persona física responsable, hay que volver a este campo. |
-| `site` | Resuelto (15-sep-2026) | `https://prooffit.com`, dominio comprado. Ya propagado a `build-legal.mjs`, `index.html`, `robots.txt` y `sitemap.xml`. Lo que sigue faltando no es este campo, sino desplegar `landing/` en un hosting que responda a ese dominio. |
+| `entity` | Resuelto, **con riesgo aceptado** | Se puso `"Pateo"` — el nombre del producto, no una persona física ni una sociedad constituida. El equipo (proyecto de hackatón de cuatro personas sin entidad legal propia) aceptó conscientemente que esto no identifica a un responsable en el sentido del RGPD art. 13, y que un revisor podría señalarlo. Si en algún momento se constituye una sociedad o se nombra una persona física responsable, hay que volver a este campo. |
+| `site` | Resuelto (15-sep-2026) | `https://pateo.es`, dominio comprado. Ya propagado a `build-legal.mjs`, `index.html`, `robots.txt` y `sitemap.xml`. Lo que sigue faltando no es este campo, sino desplegar `landing/` en un hosting que responda a ese dominio. |
 
 ### 2.2 Landing pública — resto de KAN-56, sigue bloqueando
 
@@ -130,7 +130,7 @@ cadenas `deleteAccount.*` del i18n para la tercera. Se generan y no se
 escriben a mano justamente por la regla del principio de este documento: así
 la versión web y la de dentro de la app no pueden decir cosas distintas.
 
-El dominio, `https://prooffit.com`, ya está comprado y puesto en los cuatro
+El dominio, `https://pateo.es`, ya está comprado y puesto en los cuatro
 sitios (`LEGAL_CONTACT.site`, `SITE_ORIGIN` de `build-legal.mjs`,
 `index.html`, `robots.txt`, `sitemap.xml`), y las tres páginas se han
 regenerado con `pnpm build:legal`. Lo que **sigue bloqueando** es lo que no
@@ -152,7 +152,7 @@ de 12 testers de KAN-46**, que es el camino crítico hacia el 30 de septiembre.
 | --- | --- |
 | ¿Ofrece funciones de salud? | Sí |
 | Categoría | Fitness / bienestar. **No** es producto sanitario |
-| Caso de uso | «Juego con mecánicas basadas en fitness» — está en la lista de casos aprobados, y es literalmente lo que es Prooffit |
+| Caso de uso | «Juego con mecánicas basadas en fitness» — está en la lista de casos aprobados, y es literalmente lo que es Pateo |
 | Tipos de dato de Health Connect | **Solo `READ_STEPS`.** Nada más |
 | Justificación | Los pasos diarios del usuario son la puntuación de duelos 1v1 y guerras de clanes, y lo que da XP. Sin ellos el juego no tiene mecánica |
 
@@ -190,7 +190,7 @@ sin actualizar este formulario y la política a la vez.
   terceros** — marcar «no se usa para seguimiento».
 - La norma 5.1.3 de App Review prohíbe usar datos de salud y forma física para
   publicidad o cederlos a terceros con ese fin, y cubre **también «Movimiento y
-  forma física»**, no solo HealthKit. Prooffit no tiene anuncios, así que hoy no
+  forma física»**, no solo HealthKit. Pateo no tiene anuncios, así que hoy no
   hay conflicto; **si algún día entran anuncios, esto se rompe.**
 - En el portal de Apple Developer (Identifiers → capacidades del App ID)
   **HealthKit va desmarcado**: la app no lo usa, y declararlo sin usarlo es

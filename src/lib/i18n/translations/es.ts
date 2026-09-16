@@ -29,7 +29,7 @@ export const es: Translations = {
 
   levelUpNotification: {
     title: '¡Nivel %{level}!',
-    body: 'Tus pasos de hoy te han subido de nivel. Abre Prooffit para verlo.',
+    body: 'Tus pasos de hoy te han subido de nivel. Abre Pateo para verlo.',
   },
 
   nav: {
@@ -267,9 +267,9 @@ export const es: Translations = {
     notifications: 'NOTIFICACIONES',
     levelUpAlerts: 'Avisos de subida de nivel (en segundo plano)',
     levelUpAlertsNotificationsDenied:
-      'Permite las notificaciones de Prooffit en los ajustes del sistema para activar esto.',
+      'Permite las notificaciones de Pateo en los ajustes del sistema para activar esto.',
     levelUpAlertsBackgroundDenied:
-      'Permite el acceso en segundo plano de Health Connect para Prooffit en los ajustes del sistema para activar esto.',
+      'Permite el acceso en segundo plano de Health Connect para Pateo en los ajustes del sistema para activar esto.',
     leadChanges: 'Cambios de líder',
     duelInvites: 'Invitaciones a duelo',
     dailyStepSummary: 'Resumen diario de pasos',
@@ -309,7 +309,7 @@ export const es: Translations = {
     withoutAppBody:
       'Escríbenos desde el correo de tu cuenta y te la borraremos nosotros, en un plazo máximo de 30 días.',
     emailButton: 'Escríbenos para borrar mi cuenta',
-    emailSubject: 'Borrar mi cuenta de Prooffit',
-    emailBody: 'Hola, quiero borrar mi cuenta de Prooffit asociada a este correo.',
+    emailSubject: 'Borrar mi cuenta de Pateo',
+    emailBody: 'Hola, quiero borrar mi cuenta de Pateo asociada a este correo.',
   },
 };
