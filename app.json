@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Prooffit",
+    "name": "Pateo",
     "slug": "prooffit",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -41,7 +41,7 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Prooffit needs access to your photos so you can set a profile picture."
+          "photosPermission": "Pateo needs access to your photos so you can set a profile picture."
         }
       ],
       "expo-localization",
@@ -50,7 +50,7 @@
       [
         "expo-sensors",
         {
-          "motionPermission": "Prooffit counts your daily steps to level you up and settle your duels."
+          "motionPermission": "Pateo counts your daily steps to level you up and settle your duels."
         }
       ],
       [

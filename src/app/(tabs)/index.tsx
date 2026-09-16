@@ -67,7 +67,7 @@ export default function HomeScreen() {
     return <ThemedView style={styles.screen} />;
   }
 
-  const { username, xp, avatarUrl, streakDays, equippedFrameId } = profileState.data;
+  const { id: userId, username, xp, avatarUrl, streakDays, equippedFrameId } = profileState.data;
   const { level, xpIntoLevel, xpForNextLevel } = levelProgress(xp);
   const equippedFrame = frameById(equippedFrameId);
 
@@ -82,7 +82,7 @@ export default function HomeScreen() {
             {/* La foto de la cuenta, igual que en Perfil y Ajustes (KAN-64), con
                 su marco si tiene uno equipado. No es el hueco del personaje
                 descartado: eso es `character`. */}
-            <FrameOverlay frame={equippedFrame} avatarUrl={avatarUrl} style={styles.avatar} />
+            <FrameOverlay frame={equippedFrame} avatarUrl={avatarUrl} seed={userId} style={styles.avatar} />
 
             <View style={styles.identity}>
               <ThemedText type="bodyBold">{username}</ThemedText>
@@ -95,7 +95,7 @@ export default function HomeScreen() {
             <>
               {/* Tu foto, en grande, igual que en Perfil, con su marco y racha. */}
               <View style={styles.characterWrap}>
-                <FrameOverlay frame={equippedFrame} avatarUrl={avatarUrl} style={styles.character} />
+                <FrameOverlay frame={equippedFrame} avatarUrl={avatarUrl} seed={userId} style={styles.character} />
                 <StreakBadge days={streakDays} />
               </View>
 
@@ -111,6 +111,7 @@ export default function HomeScreen() {
                 duel={duel}
                 username={username}
                 avatarUrl={avatarUrl}
+                seed={userId}
                 frame={equippedFrame}
               />
 
@@ -125,6 +126,7 @@ export default function HomeScreen() {
               steps={steps}
               onConnect={requestAccess}
               avatarUrl={avatarUrl}
+              seed={userId}
               streakDays={streakDays}
               frame={equippedFrame}
             />
@@ -219,12 +221,15 @@ function CurrentDuelCard({
   duel,
   username,
   avatarUrl,
+  seed,
   frame,
 }: {
   duel: Duel;
   username: string;
   /** La tuya, con su marco. La del rival viaja dentro del propio duelo. */
   avatarUrl: string | null;
+  /** Tu id, para el avatar por defecto. El del rival sale del propio duelo. */
+  seed: string;
   frame: FrameMeta | null;
 }) {
   const { t } = useTranslation();
@@ -250,6 +255,7 @@ function CurrentDuelCard({
         tone="power"
         leader={leader}
         avatarUrl={avatarUrl}
+        seed={seed}
         frame={frame}
       />
       <DuelSideRow
@@ -258,6 +264,7 @@ function CurrentDuelCard({
         tone="rival"
         leader={leader}
         avatarUrl={duel.opponent.avatarUrl}
+        seed={duel.opponent.userId}
         // `DuelOpponent` no trae `equippedFrameId` todavía — solo tu propia
         // foto lleva marco por ahora.
         frame={null}
@@ -279,12 +286,14 @@ function NoDuelState({
   steps,
   onConnect,
   avatarUrl,
+  seed,
   streakDays,
   frame,
 }: {
   steps: StepsSummary | null;
   onConnect: ConnectFn;
   avatarUrl: string | null;
+  seed: string;
   streakDays: number;
   frame: FrameMeta | null;
 }) {
@@ -302,8 +311,8 @@ function NoDuelState({
           <FrameOverlay
             frame={frame}
             avatarUrl={avatarUrl}
+            seed={seed}
             style={styles.idleCharacter}
-            fallbackVariant="sunken"
           />
           <StreakBadge days={streakDays} />
         </View>
@@ -350,6 +359,8 @@ const SIDE_AVATAR_EDGE: Record<Extract<MeterTone, 'power' | 'rival'>, ThemeColor
 type DuelSideRowProps = {
   name: string;
   avatarUrl: string | null;
+  /** Id de quien es esta fila: decide su avatar por defecto. */
+  seed: string;
   steps: number;
   tone: Extract<MeterTone, 'power' | 'rival'>;
   /** Pasos de quien va ganando: el denominador de las dos barras. */
@@ -357,7 +368,7 @@ type DuelSideRowProps = {
   frame: FrameMeta | null;
 };
 
-function DuelSideRow({ name, steps, tone, leader, avatarUrl, frame }: DuelSideRowProps) {
+function DuelSideRow({ name, steps, tone, leader, avatarUrl, seed, frame }: DuelSideRowProps) {
   const theme = useTheme();
 
   return (
@@ -366,6 +377,7 @@ function DuelSideRow({ name, steps, tone, leader, avatarUrl, frame }: DuelSideRo
       <FrameOverlay
         frame={frame}
         avatarUrl={avatarUrl}
+        seed={seed}
         style={[styles.duelAvatar, { borderColor: theme[SIDE_AVATAR_EDGE[tone]] }]}
       />
 

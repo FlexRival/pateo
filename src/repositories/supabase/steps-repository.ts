@@ -3,6 +3,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { RepositoryError } from '@/repositories/errors';
 import {
   SYNC_WINDOW_DAYS,
+  type StepGoalBounds,
   type StepSyncOutcome,
   type StepsRepository,
 } from '@/repositories/steps-repository';
@@ -78,13 +79,40 @@ export class SupabaseStepsRepository implements StepsRepository {
   }
 
   async getDailyStepGoal(): Promise<number> {
-    const { data, error } = await this.client.rpc('daily_step_goal');
+    const { data, error } = await this.client.rpc('my_daily_step_goal');
 
     if (error) {
-      throw new RepositoryError('No se pudo leer la meta diaria de pasos.', { cause: error });
+      throw new RepositoryError('No se pudo leer tu reto diario de pasos.', { cause: error });
     }
 
     return data;
+  }
+
+  async setDailyStepGoal(goal: number): Promise<number> {
+    const { data, error } = await this.client.rpc('set_daily_step_goal', { p_goal: goal });
+
+    if (error) {
+      throw new RepositoryError('No se pudo guardar tu reto diario.', { cause: error });
+    }
+
+    return data;
+  }
+
+  async getStepGoalBounds(): Promise<StepGoalBounds> {
+    // Las dos en paralelo: son dos constantes del servidor y encadenarlas
+    // pagaría dos idas y vueltas donde basta una espera.
+    const [min, max] = await Promise.all([
+      this.client.rpc('min_daily_step_goal'),
+      this.client.rpc('max_daily_step_goal'),
+    ]);
+
+    if (min.error || max.error) {
+      throw new RepositoryError('No se pudieron leer los límites del reto diario.', {
+        cause: min.error ?? max.error ?? undefined,
+      });
+    }
+
+    return { min: min.data, max: max.data };
   }
 
   async getTotalSteps(): Promise<number> {

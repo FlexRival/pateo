@@ -246,7 +246,7 @@ function ResultRow({ match, relation, busy, onSend }: ResultRowProps) {
 
   return (
     <Card style={styles.row}>
-      <ProfilePhoto avatarUrl={match.avatarUrl} style={styles.avatar} fallbackVariant="sunken" />
+      <ProfilePhoto avatarUrl={match.avatarUrl} seed={match.userId} style={styles.avatar} />
 
       <View style={styles.rowBody}>
         <ThemedText type="bodyBold">{match.username}</ThemedText>

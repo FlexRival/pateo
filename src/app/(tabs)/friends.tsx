@@ -223,7 +223,7 @@ function RequestRow({ request, busy, onRespond }: RequestRowProps) {
   return (
     <Card style={styles.row}>
       {/* Foto de quien te mandó la solicitud. */}
-      <ProfilePhoto avatarUrl={request.avatarUrl} style={styles.avatar} fallbackVariant="sunken" />
+      <ProfilePhoto avatarUrl={request.avatarUrl} seed={request.userId} style={styles.avatar} />
 
       <View style={styles.rowBody}>
         <ThemedText type="bodyBold">{request.username}</ThemedText>
@@ -249,7 +249,7 @@ function FriendRow({ friend }: { friend: Friend }) {
   return (
     <Card style={styles.row}>
       {/* Foto del amigo. */}
-      <ProfilePhoto avatarUrl={friend.avatarUrl} style={styles.avatar} fallbackVariant="sunken" />
+      <ProfilePhoto avatarUrl={friend.avatarUrl} seed={friend.userId} style={styles.avatar} />
 
       {/*
         Solo el cuerpo abre el perfil, no la card entera: si la fila completa

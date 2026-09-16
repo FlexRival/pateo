@@ -1,4 +1,4 @@
-# Prooffit — Estructura de la base de datos
+# Pateo — Estructura de la base de datos
 
 Referencia de la capa de datos (Supabase / Postgres). Léela antes de tocar
 `supabase/migrations/`.
@@ -24,6 +24,7 @@ Referencia de la capa de datos (Supabase / Postgres). Léela antes de tocar
 
 | `migrations/20260907130000_account_deletion.sql` | Borrado de cuenta (requisito de tienda): RPC `prepare_account_deletion()`, que traspasa el liderazgo de clan **antes** de que el borrado de `auth.users` dispare el `CASCADE` — sin ella, borrar a un líder borraría su clan entero y a todos sus miembros. El borrado en sí lo hace la Edge Function `delete-account`. Ver §17. |
 | `migrations/20260915120000_steps_xp_progressive_level.sql` | Reabre "el XP solo se gana en duelos": redefine `level_for_xp` con una curva progresiva (nuevo helper `xp_for_level`, coste por nivel creciente, no exponencial) y redefine `sync_daily_steps` para otorgar XP por pasos en vivo, además del de duelos (que no cambia). Columna `step_logs.xp_granted`. Ver §7. |
+| `migrations/20260916120000_daily_goal_streaks_bonus.sql` | El reto diario deja de ser global y pasa a `profiles.daily_step_goal` (RPCs `my_daily_step_goal` / `set_daily_step_goal`, límites `min_daily_step_goal` / `max_daily_step_goal`). `step_logs.goal_steps` sella la meta de cada día para que bajar el reto no reescriba rachas pasadas. Bonus de XP al cumplirlo (`daily_goal_bonus_xp`, hipérbola que satura). Cron diario `recompute-all-streaks`: hasta ahora la racha solo se recalculaba al sincronizar pasos, así que se quedaba congelada en quien dejaba de abrir la app. Columna `profiles.onboarded_at` + RPC `complete_onboarding` para el alta guiada. Ver §8 y §19. |
 
 Estado de aplicación:
 
@@ -138,7 +139,9 @@ usuario de auth borra el perfil y todo lo que cuelga de él).
 | `xp` | `CHECK >= 0`, solo servidor |
 | `streak_days` | `CHECK >= 0`, solo servidor |
 | `is_pro` | flag de RevenueCat, solo servidor |
-| `avatar_url` | `NULL` hasta que el usuario suba una foto; el cliente la escribe directo (`GRANT UPDATE`), igual que `username` — no es un dato anti-cheat. Ver §14. |
+| `avatar_url` | `NULL` hasta que el usuario suba una foto; el cliente la escribe directo (`GRANT UPDATE`), igual que `username` — no es un dato anti-cheat. Ver §14. **Que sea `NULL` ya no significa "sin avatar"**: la app genera uno determinista a partir del id (`src/lib/avatar.ts`). |
+| `daily_step_goal` | El reto diario del usuario. `NOT NULL DEFAULT 6000`, `CHECK BETWEEN 2000 AND 30000`. **Solo servidor**: no tiene `GRANT UPDATE`, se escribe por `set_daily_step_goal()` — cambiarlo obliga a recalcular la racha en la misma operación. Ver §19. |
+| `onboarded_at` | Cuándo terminó el alta guiada. `NULL` = no la ha hecho, y el layout raíz de la app enseña `/onboarding` en vez de las pestañas. Lo sella `complete_onboarding()`. Ver §19. |
 | `created_at` / `updated_at` | `updated_at` lo mantiene un trigger `moddatetime` en cada UPDATE |
 
 No hay clases de personaje: el enum `user_class` y la columna `avatar_class` se
@@ -156,7 +159,13 @@ El registro crudo de pasos diarios.
 - `CHECK (steps_count >= 0)`.
 - índice en `date` para consultas tipo ranking.
 - `xp_granted` (desde `20260915120000_steps_xp_progressive_level.sql`):
-  cuánto XP ya se le dio a ese día — ver §7.
+  cuánto XP ya se le dio a ese día — ver §7. Desde
+  `20260916120000_daily_goal_streaks_bonus.sql` incluye también el bonus del
+  reto, no solo el XP por pasos.
+- `goal_steps` (desde `20260916120000_daily_goal_streaks_bonus.sql`): la meta
+  que estaba **en vigor ese día**. Se sella al insertar la fila y el
+  `ON CONFLICT` no la toca. Sin ella, la racha se mediría siempre contra la
+  meta de hoy y bajarla reescribiría el pasado — ver §19.
 
 ### `duels`
 
@@ -352,20 +361,41 @@ duplicándola a propósito en `src/lib/xp.ts`, comparada por
 
 ---
 
-## 8. Rachas (`20260903141500_streaks.sql`)
+## 8. Rachas (`20260903141500_streaks.sql`, `20260916120000_daily_goal_streaks_bonus.sql`)
 
-`streak_days` = días consecutivos en que el usuario alcanzó la meta diaria de
-pasos.
+`streak_days` = días consecutivos en que el usuario alcanzó **su** reto diario
+de pasos.
 
-- `daily_step_goal()` → `6000` (placeholder).
+- `daily_step_goal()` → `6000`. Desde 2026-09-16 ya no es la meta de nadie en
+  concreto: es el **valor por defecto** de `profiles.daily_step_goal` y el
+  respaldo de las filas de `step_logs` anteriores a esa migración.
 - `recompute_streak(user_id)`: cuenta hacia atrás desde hoy los días que cumplen
-  la meta. Hoy cuenta en cuanto se cumple; si hoy aún no se cumple, la cuenta
-  empieza desde ayer — un **día de gracia** para que un día en curso no rompa la
-  racha. Escribe el resultado en `profiles.streak_days` (omite la escritura si no
-  cambia).
+  su meta. Compara contra `step_logs.goal_steps` —la meta sellada en cada
+  fila—, **no** contra la meta de hoy: ver §19. Hoy cuenta en cuanto se cumple;
+  si hoy aún no se cumple, la cuenta empieza desde ayer — un **día de gracia**
+  para que un día en curso no rompa la racha. Escribe el resultado en
+  `profiles.streak_days` (omite la escritura si no cambia).
 - El trigger `step_logs_streak` corre `AFTER INSERT OR UPDATE OF steps_count` y
-  recalcula para ese usuario. Así la racha se mantiene correcta automáticamente
-  según la app hace upsert de los pasos — sin intervención del cliente.
+  recalcula para ese usuario, según la app hace upsert de los pasos.
+
+### La racha también baja sola (cron diario)
+
+El trigger por sí solo tiene un agujero que estuvo abierto hasta 2026-09-16:
+**solo corre cuando el usuario sincroniza pasos.** Quien dejaba de abrir la app
+se quedaba con su última racha congelada en el perfil —la veían sus amigos, y
+desbloqueaba marcos (§18)— y solo bajaba si volvía. Justo al revés de lo que
+significa una racha.
+
+- `recompute_all_streaks()` recorre a quien tiene `streak_days > 0` o pasos en
+  los dos últimos días (recalcular una cuenta a cero y sin pasos no puede
+  cambiar nada) y llama a `recompute_streak` para cada uno. Solo
+  `service_role`.
+- Job de `pg_cron` `recompute-all-streaks`, **03:00 UTC diario**. Esa hora no
+  es arbitraria: el público de la v1 es España (UTC+1/+2), así que a las 03:00
+  UTC el día local ya cambió con seguridad y `CURRENT_DATE` coincide con la
+  fecha local que usa `step_logs.date`. El día de gracia absorbe el resto.
+- Sin `pg_net` ni secretos en Vault, como el cron de suscripciones: la lógica
+  es SQL. **No se puede validar en PGlite** (no trae `pg_cron`).
 
 ---
 
@@ -963,6 +993,92 @@ a mano — no hay generación automática.
 
 Estado: aplicada al Postgres local de este proyecto. Aún sin
 `supabase db push` al proyecto vinculado.
+
+---
+
+## 19. Reto diario por usuario y bonus de XP (`20260916120000_daily_goal_streaks_bonus.sql`)
+
+### Por qué la meta salió de una función y entró en una columna
+
+`daily_step_goal()` devolvía `6000` para todo el mundo. Ahora cada usuario
+tiene la suya en `profiles.daily_step_goal`, entre `min_daily_step_goal()`
+(2.000) y `max_daily_step_goal()` (30.000).
+
+La columna **no** tiene `GRANT UPDATE` para el cliente, al revés que
+`username` y `avatar_url`. Dos motivos: cambiar la meta obliga a recalcular la
+racha en la misma operación, y los límites tienen que comprobarse en un solo
+sitio. Por eso se escribe solo por RPC.
+
+### `step_logs.goal_steps`: la meta se sella por día
+
+Es la pieza que impide una escalada real, no un detalle de contabilidad.
+
+Si la racha se midiera siempre contra la meta de HOY, bajar el reto reescribiría
+el pasado: alguien con 30 días de 3.000 pasos y meta 6.000 (racha 0) se pondría
+meta 2.000 y despertaría con una racha de 30 días — que además desbloquea
+marcos de foto (§18).
+
+`goal_steps` guarda la meta que estaba en vigor cuando ese día se registró. Se
+sella al INSERTAR la fila y **el `ON CONFLICT` no la toca**, así que un sync de
+los últimos 7 días no puede resellar días ya cerrados. La única forma de
+cambiarla es `set_daily_step_goal()`, y solo para el día en curso.
+
+### Bonus de XP al cumplir el reto
+
+`sync_daily_steps` otorga, además del `floor(pasos/10)` de siempre, un bonus
+cuando los pasos de ese día llegan a `goal_steps`:
+
+    bonus(meta) = floor(300 * meta / (meta + 10000))
+
+Entra en la misma cuenta idempotente que el XP por pasos (`xp_granted` guarda
+lo ya otorgado y solo se suma la diferencia cuando es positiva), así que cruzar
+la meta a media tarde lo paga al instante y volver a sincronizar no lo repite.
+Subir el reto tampoco puede quitar XP ya dado: la diferencia saldría negativa y
+no se resta.
+
+La forma de la curva importa más que los números, y responde literalmente al
+encargo: **crece** con la meta (ponerse un reto mayor nunca renta menos, así
+que no compensa lowballear) y **satura** (un reto enorme no se convierte en una
+segunda fuente de progresión).
+
+| meta | bonus | XP base por andarla | bonus / base |
+|---|---|---|---|
+| 2.000 | 50 | 200 | 25 % |
+| 6.000 | 112 | 600 | 19 % |
+| 10.000 | 150 | 1.000 | 15 % |
+| 20.000 | 200 | 2.000 | 10 % |
+| 30.000 | 225 | 3.000 | 7,5 % |
+
+Los dos literales son placeholders tuneables, con espejo en `src/lib/xp.ts`
+(`GOAL_BONUS_MAX_XP`, `GOAL_BONUS_HALF_STEPS`). `scripts/check-xp-formula.mjs`
+(`pnpm check:xp`) compara los dos lados, evalúa la curva entera sobre el rango
+real y **además comprueba las dos propiedades de producto**: que crezca y que
+sature. Si alguien tunea los números a algo que invierta el incentivo, falla.
+
+### RPCs
+
+| RPC | Quién | Qué hace |
+|---|---|---|
+| `my_daily_step_goal()` | `authenticated` | El reto del usuario de la sesión. |
+| `set_daily_step_goal(goal)` | `authenticated` | Valida límites (`ERRCODE 'STP03'`), guarda, **resella la meta de hoy** y recalcula la racha. |
+| `min_daily_step_goal()` / `max_daily_step_goal()` | `authenticated` | Límites, para que el cliente construya el selector sin duplicarlos. |
+| `daily_goal_bonus_xp(goal)` | `authenticated` | La curva del bonus. |
+| `complete_onboarding()` | `authenticated` | Sella `profiles.onboarded_at`. Idempotente: solo avanza de `NULL` a `NOW()`. |
+| `recompute_all_streaks()` | `service_role` | La pasada diaria del cron (§8). |
+
+Todas nacen privadas: `20260909110000_rpc_execute_hardening.sql` dejó cerrados
+los default privileges del esquema `public`, así que cada `GRANT` de arriba
+está escrito explícitamente en la migración.
+
+### Alta guiada (`onboarded_at`)
+
+`profiles.onboarded_at` es `NULL` mientras el usuario no haya pasado por
+`/onboarding` (foto, nombre y reto). Es `TIMESTAMPTZ` y no un booleano por el
+mismo criterio que el resto del esquema: responde «¿lo hizo?» y además
+«¿cuándo?», que es lo que hará falta para medir el embudo de alta.
+
+Las cuentas que ya existían se marcaron con su propia `created_at`: no pueden
+despertar en una pantalla de alta que nunca pidieron.
 
 ---
 

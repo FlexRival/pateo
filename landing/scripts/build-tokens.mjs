@@ -52,7 +52,7 @@ const gradients = Object.entries(Gradients)
   .join('\n');
 
 const css = `/**
- * Tokens de color de Prooffit para web. FICHERO GENERADO.
+ * Tokens de color de Pateo para web. FICHERO GENERADO.
  *
  * Fuente: src/constants/colors.ts (la misma que corre en la app).
  * Referencia legible: docs/design.md.
@@ -68,7 +68,7 @@ const css = `/**
  *   --palette-*   valores en bruto (Palette). Solo para casos sin token.
  *   --gradient-*  rellenos con degradado (Gradients).
  *
- * Prooffit es de tema único y oscuro (docs/design.md): no hay bloque para
+ * Pateo es de tema único y oscuro (docs/design.md): no hay bloque para
  * prefers-color-scheme: light a propósito, no es un olvido.
  */
 

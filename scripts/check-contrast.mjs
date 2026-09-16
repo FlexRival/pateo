@@ -1,5 +1,5 @@
 /**
- * Verifica los tokens de color de ProofIt contra los mínimos de contraste de
+ * Verifica los tokens de color de Pateo contra los mínimos de contraste de
  * WCAG 2.1. Se ejecuta con `pnpm check:contrast`.
  *
  * Carga `src/constants/colors.ts` directamente: Node le quita los tipos, y por

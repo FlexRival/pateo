@@ -117,6 +117,24 @@ export class CachedProfileRepository implements ProfileRepository {
     this.cache.invalidate();
   }
 
+  /** Mismo caso que `updateAvatar`: no cambia la sesión, así que invalida a mano. */
+  async updateUsername(username: string): Promise<Profile> {
+    const profile = await this.inner.updateUsername(username);
+    this.invalidateAndNotify();
+    return profile;
+  }
+
+  /**
+   * Invalida igual que las otras mutaciones, y aquí importa especialmente: el
+   * layout raíz decide qué mitad del árbol existe mirando `onboardedAt`, así
+   * que un perfil cacheado con `null` dejaría al usuario atrapado en el alta
+   * después de haberla terminado.
+   */
+  async completeOnboarding(): Promise<void> {
+    await this.inner.completeOnboarding();
+    this.invalidateAndNotify();
+  }
+
   /** Mismo motivo que `updateAvatar`: no dispara cambio de sesión, así que invalida y avisa a mano. */
   async equipFrame(frameId: string | null): Promise<void> {
     await this.inner.equipFrame(frameId);

@@ -34,7 +34,7 @@ import {
  * `react-native-svg` documenta y prueba de verdad contra sus propios
  * componentes, en las tres plataformas.
  */
-export type FrameOverlayProps = Pick<ProfilePhotoProps, 'avatarUrl' | 'style' | 'fallbackVariant'> & {
+export type FrameOverlayProps = Pick<ProfilePhotoProps, 'avatarUrl' | 'seed' | 'style'> & {
   frame: FrameMeta | null;
   /**
    * Proporción ancho/alto real de la caja de la foto (la misma que su
@@ -90,9 +90,9 @@ CircleSansCollapsable.displayName = 'CircleSansCollapsable';
 const AnimatedRect = Animated.createAnimatedComponent(RectSansCollapsable);
 const AnimatedCircle = Animated.createAnimatedComponent(CircleSansCollapsable);
 
-export function FrameOverlay({ frame, avatarUrl, style, fallbackVariant, aspectRatio = 1 }: FrameOverlayProps) {
+export function FrameOverlay({ frame, avatarUrl, seed, style, aspectRatio = 1 }: FrameOverlayProps) {
   if (!frame) {
-    return <ProfilePhoto avatarUrl={avatarUrl} style={style} fallbackVariant={fallbackVariant} />;
+    return <ProfilePhoto avatarUrl={avatarUrl} seed={seed} style={style} />;
   }
 
   // Envuelto en un componente aparte (no un `if` a medio `FrameOverlay`) a
@@ -101,7 +101,7 @@ export function FrameOverlay({ frame, avatarUrl, style, fallbackVariant, aspectR
   // entre renders (se desequipa el marco), este componente entero se
   // desmonta y el otro `return` de arriba lo sustituye — nunca es el mismo
   // componente saltándose un hook.
-  return <FramedPhoto frame={frame} avatarUrl={avatarUrl} style={style} fallbackVariant={fallbackVariant} aspectRatio={aspectRatio} />;
+  return <FramedPhoto frame={frame} avatarUrl={avatarUrl} seed={seed} style={style} aspectRatio={aspectRatio} />;
 }
 
 /** Radio de la esquina exterior del marco, en unidades del `viewBox` (mismo valor que el `rx` de `FrameSvg`). */
@@ -110,8 +110,8 @@ const OUTER_CORNER_RADIUS = 15;
 function FramedPhoto({
   frame,
   avatarUrl,
+  seed,
   style,
-  fallbackVariant,
   aspectRatio,
 }: Required<Pick<FrameOverlayProps, 'aspectRatio'>> &
   Omit<FrameOverlayProps, 'aspectRatio'> & { frame: FrameMeta }) {
@@ -137,8 +137,8 @@ function FramedPhoto({
     <View style={[styles.rig, style]} onLayout={(e) => setRigHeight(e.nativeEvent.layout.height)}>
       <ProfilePhoto
         avatarUrl={avatarUrl}
+        seed={seed}
         style={[StyleSheet.absoluteFill, { borderRadius: photoRadius }]}
-        fallbackVariant={fallbackVariant}
       />
       <FrameSvg frame={frame} aspectRatio={aspectRatio} />
     </View>

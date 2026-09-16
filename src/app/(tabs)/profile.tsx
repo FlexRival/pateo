@@ -74,7 +74,7 @@ export default function ProfileScreen() {
     return <ThemedView style={styles.screen} />;
   }
 
-  const { username, xp, streakDays, avatarUrl, equippedFrameId } = profileState.data;
+  const { id: userId, username, xp, streakDays, avatarUrl, equippedFrameId } = profileState.data;
   const { level, xpIntoLevel, xpForNextLevel } = levelProgress(xp);
   const equippedFrame = frameById(equippedFrameId);
 
@@ -98,7 +98,7 @@ export default function ProfileScreen() {
             </View>
           </View>
 
-          <FrameOverlay frame={equippedFrame} avatarUrl={avatarUrl} style={styles.character} />
+          <FrameOverlay frame={equippedFrame} avatarUrl={avatarUrl} seed={userId} style={styles.character} />
 
           <ThemedText type="bodyBold" style={styles.identity}>
             {username}

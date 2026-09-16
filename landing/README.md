@@ -1,7 +1,7 @@
-# Landing pública de Prooffit
+# Landing pública de Pateo
 
 Página de descarga de la app. Dos trabajos y ninguno más: que quien llegue se
-instale Prooffit, y que Google la encuentre cuando alguien busque una app para
+instale Pateo, y que Google la encuentre cuando alguien busque una app para
 competir por pasos con sus amigos.
 
 Vive aquí dentro y no en `src/`: `src/app/` **es** el enrutado de Expo Router
@@ -150,8 +150,8 @@ Lo que ya está hecho:
 
 ## Antes de publicar
 
-1. **Dominio.** Resuelto el 15-sep-2026 (KAN-74): `https://prooffit.com` es el
-   dominio real y ya está puesto en los cuatro sitios — `index.html`
+1. **Dominio.** `https://pateo.es` desde el cambio de marca a Pateo
+   (15-sep-2026; sustituye a `prooffit.com`, KAN-74). Ya está puesto en los cuatro sitios — `index.html`
    (canonical, `og:*`, JSON-LD), `robots.txt`, `sitemap.xml` y la constante
    `SITE_ORIGIN` de `scripts/build-legal.mjs` —, y las tres páginas generadas
    se han vuelto a construir con `pnpm build:legal`. Es el mismo valor que

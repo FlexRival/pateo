@@ -1,13 +1,13 @@
 <!doctype html>
 <!--
-  Landing pública de Prooffit.
+  Landing pública de Pateo.
 
   HTML estático a propósito: es lo que mejor posiciona (el robot recibe el
   contenido ya renderizado, sin coste de JavaScript) y lo que menos se pelea
   con el repo, que es un proyecto Expo. Sin build, sin dependencias, sin
   node_modules: se sube la carpeta `landing/` a cualquier hosting y funciona.
 
-  Dominio real desde el 15-sep-2026: `https://prooffit.com` (KAN-74), el
+  Dominio: `https://pateo.es` (15-sep-2026, KAN-74), el
   mismo valor que `LEGAL_CONTACT.site` (src/lib/legal/types.ts) y que
   `SITE_ORIGIN` en `landing/scripts/build-legal.mjs`. Si algún día cambia, hay
   que actualizar los tres y volver a ejecutar `pnpm build:legal`. Ver
@@ -19,29 +19,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- ── SEO ─────────────────────────────────────────────────────────── -->
-    <title>Prooffit: duelos 1v1 de pasos contra tus amigos</title>
+    <title>Pateo: duelos 1v1 de pasos contra tus amigos</title>
     <meta
       name="description"
-      content="Prooffit convierte tus pasos reales en duelos 1v1 contra tus amigos. Sin pulsera, sin apuntar nada: gana quien más anda. Descarga gratis en Android."
+      content="Pateo convierte tus pasos reales en duelos 1v1 contra tus amigos. Sin pulsera, sin apuntar nada: gana quien más anda. Descarga gratis en Android."
     />
-    <link rel="canonical" href="https://prooffit.com/" />
+    <link rel="canonical" href="https://pateo.es/" />
     <meta name="theme-color" content="#08090C" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
 
     <!-- Tarjeta al compartir. La imagen la genera landing/scripts/render-og.sh -->
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Prooffit" />
+    <meta property="og:site_name" content="Pateo" />
     <meta property="og:locale" content="es_ES" />
-    <meta property="og:url" content="https://prooffit.com/" />
-    <meta property="og:title" content="Prooffit: duelos 1v1 de pasos contra tus amigos" />
+    <meta property="og:url" content="https://pateo.es/" />
+    <meta property="og:title" content="Pateo: duelos 1v1 de pasos contra tus amigos" />
     <meta
       property="og:description"
       content="Tus pasos reales, convertidos en duelos 1v1. Gana quien más anda."
     />
-    <meta property="og:image" content="https://prooffit.com/assets/brand/og-image.png" />
+    <meta property="og:image" content="https://pateo.es/assets/brand/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Prooffit. Tus pasos deciden quién gana." />
+    <meta property="og:image:alt" content="Pateo. Tus pasos deciden quién gana." />
     <meta name="twitter:card" content="summary_large_image" />
 
     <link rel="icon" href="assets/brand/favicon.png" type="image/png" />
@@ -95,12 +95,12 @@
         "@graph": [
           {
             "@type": "MobileApplication",
-            "@id": "https://prooffit.com/#app",
-            "name": "Prooffit",
+            "@id": "https://pateo.es/#app",
+            "name": "Pateo",
             "applicationCategory": "HealthApplication",
             "applicationSubCategory": "Fitness",
             "operatingSystem": "Android 8.0 o superior",
-            "url": "https://prooffit.com/",
+            "url": "https://pateo.es/",
             "installUrl": "https://play.google.com/store/apps/details?id=com.prooffit.app",
             "inLanguage": ["es", "en"],
             "description": "App de pasos con duelos 1v1 contra amigos. Los pasos reales del día deciden quién gana y dan XP para subir de nivel.",
@@ -112,11 +112,11 @@
           },
           {
             "@type": "FAQPage",
-            "@id": "https://prooffit.com/#faq",
+            "@id": "https://pateo.es/#faq",
             "mainEntity": [
               {
                 "@type": "Question",
-                "name": "¿Prooffit es gratis?",
+                "name": "¿Pateo es gratis?",
                 "acceptedAnswer": {
                   "@type": "Answer",
                   "text": "Sí. Descargar y jugar es gratis: pasos, amigos, rachas, niveles y láminas para compartir no cuestan nada. La cuenta gratuita puede crear un duelo nuevo al día; la suscripción Pro quita ese límite."
@@ -127,7 +127,7 @@
                 "name": "¿Necesito una pulsera o un reloj?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "No. Prooffit lee los pasos que tu teléfono ya está contando. Si además tienes una pulsera o un reloj que escriba en Health Connect, esos pasos también cuentan."
+                  "text": "No. Pateo lee los pasos que tu teléfono ya está contando. Si además tienes una pulsera o un reloj que escriba en Health Connect, esos pasos también cuentan."
                 }
               },
               {
@@ -181,7 +181,7 @@
 
     <header class="nav" id="nav">
       <div class="shell nav__inner">
-        <a class="nav__brand" href="#contenido" aria-label="Prooffit, inicio">
+        <a class="nav__brand" href="#contenido" aria-label="Pateo, inicio">
           <!--
             La marca: el anillo partido en Power y Rival (la barra del duelo
             curvada) con la P dentro. Geometría copiada de
@@ -230,7 +230,7 @@
               P
             </text>
           </svg>
-          <span class="nav__wordmark">Prooffit</span>
+          <span class="nav__wordmark">Pateo</span>
         </a>
 
         <nav class="nav__links" aria-label="Secciones">
@@ -273,7 +273,7 @@
               <span class="hero__line" data-reveal data-reveal-delay="1">quién gana</span>
             </h1>
             <p class="lead" data-reveal data-reveal-delay="2">
-              Prooffit convierte tus pasos reales en duelos 1v1 contra tus amigos. Gana el que más
+              Pateo convierte tus pasos reales en duelos 1v1 contra tus amigos. Gana el que más
               anda.
             </p>
             <div class="hero__actions" data-reveal data-reveal-delay="3">
@@ -305,7 +305,7 @@
                   src="assets/screenshots/home.png"
                   width="1080"
                   height="2400"
-                  alt="Pantalla principal de Prooffit: 8.742 pasos de hoy, nivel 12 y un duelo en curso contra nereasoler"
+                  alt="Pantalla principal de Pateo: 8.742 pasos de hoy, nivel 12 y un duelo en curso contra nereasoler"
                   fetchpriority="high"
                 />
               </div>
@@ -513,7 +513,7 @@
 
           <div class="faq__list">
             <details class="faq__item" data-reveal>
-              <summary>¿Prooffit es gratis?</summary>
+              <summary>¿Pateo es gratis?</summary>
               <p class="faq__answer">
                 Sí. Descargar y jugar no cuesta nada: pasos, amigos, rachas, niveles y láminas para
                 compartir van incluidos. La cuenta gratuita puede crear un duelo nuevo al día, y la
@@ -524,7 +524,7 @@
             <details class="faq__item" data-reveal>
               <summary>¿Necesito una pulsera o un reloj?</summary>
               <p class="faq__answer">
-                No. Prooffit usa los pasos que tu teléfono ya está contando. Si además tienes una
+                No. Pateo usa los pasos que tu teléfono ya está contando. Si además tienes una
                 pulsera o un reloj que escriba en Health Connect, esos pasos también cuentan.
               </p>
             </details>
@@ -620,7 +620,7 @@
               P
             </text>
           </svg>
-          <span class="nav__wordmark">Prooffit</span>
+          <span class="nav__wordmark">Pateo</span>
         </div>
 
         <nav class="footer__links" aria-label="Legal y contacto">
@@ -635,7 +635,7 @@
           <a href="mailto:porz4.shipaton@gmail.com">Contacto</a>
         </nav>
 
-        <p class="footer__legal label">Prooffit 2026. Hecho para la gente que no sabe perder.</p>
+        <p class="footer__legal label">Pateo 2026. Hecho para la gente que no sabe perder.</p>
       </div>
     </footer>
 

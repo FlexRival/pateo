@@ -12,25 +12,25 @@
 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://prooffit.com/</loc>
+    <loc>https://pateo.es/</loc>
     <lastmod>2026-09-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://prooffit.com/privacy.html</loc>
+    <loc>https://pateo.es/privacy.html</loc>
     <lastmod>2026-09-07</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://prooffit.com/terms.html</loc>
+    <loc>https://pateo.es/terms.html</loc>
     <lastmod>2026-09-07</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://prooffit.com/delete-account.html</loc>
+    <loc>https://pateo.es/delete-account.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>

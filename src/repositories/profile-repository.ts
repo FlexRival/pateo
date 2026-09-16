@@ -15,6 +15,19 @@ export type Profile = {
   avatarUrl: string | null;
   /** Marco de foto equipado (`supabase/SCHEMA.md` §18). `null` = sin marco. */
   equippedFrameId: string | null;
+  /**
+   * Reto diario de pasos: la cifra contra la que se mide su racha y la que
+   * decide su bonus de XP. Se cambia por `stepsRepository.setDailyStepGoal()`,
+   * no escribiendo el perfil — cambiarla obliga a recalcular la racha.
+   */
+  dailyStepGoal: number;
+  /**
+   * Cuándo terminó el alta guiada, o `null` si todavía no la ha hecho.
+   *
+   * Lo mira el layout raíz para decidir si enseñar `/onboarding` en vez de las
+   * pestañas, así que es lo que separa "tiene sesión" de "tiene cuenta lista".
+   */
+  onboardedAt: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -132,6 +145,24 @@ export interface ProfileRepository {
    * usuario de la sesión actual. Devuelve el perfil ya actualizado.
    */
   updateAvatar(image: PickedImage): Promise<Profile>;
+
+  /**
+   * Cambia el nombre de usuario. Devuelve el perfil ya actualizado.
+   *
+   * El nombre es único en el servidor, así que un choque con otro existente
+   * llega como `RepositoryError` y hay que enseñarlo: es el error corriente de
+   * esta operación, no un fallo raro.
+   */
+  updateUsername(username: string): Promise<Profile>;
+
+  /**
+   * Marca el alta guiada como terminada, y con ello saca al usuario de
+   * `/onboarding` hacia la app.
+   *
+   * Es idempotente: volver a llamarla no reescribe la fecha ni puede devolver
+   * a nadie a la pantalla de alta.
+   */
+  completeOnboarding(): Promise<void>;
 
   /**
    * Borra la cuenta del usuario de la sesión actual: el perfil, sus pasos, sus

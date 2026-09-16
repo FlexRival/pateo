@@ -60,7 +60,7 @@ export const DuelShareCard = forwardRef<View, DuelShareCardProps>(function DuelS
       style={[styles.card, { backgroundColor: theme.background, borderColor: theme.primaryEdge }]}>
       <View style={styles.head}>
         <ThemedText type="smallBold" themeColor="primary">
-          PROOFFIT
+          PATEO
         </ThemedText>
         <ThemedText type="label" themeColor="textDim">
           {t('duelResult.dayDuel', { days: durationInDays(duel) })}

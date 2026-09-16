@@ -109,6 +109,59 @@ export function xpForDuelWin(winnerSteps: number): number {
 }
 
 /**
+ * XP que dan los pasos de un día por sí solos, sin contar el reto.
+ *
+ * Mismo ratio que el XP de duelos y misma división entera que hace
+ * `sync_daily_steps` (`steps_count / 10` en Postgres trunca, y con pasos
+ * siempre positivos truncar es el suelo).
+ */
+export function xpForDailySteps(steps: number): number {
+  return Math.floor(normalizeXp(steps) / STEPS_PER_XP);
+}
+
+/**
+ * Curva del bonus por cumplir el reto diario. Espeja `daily_goal_bonus_xp()`
+ * de `20260916120000_daily_goal_streaks_bonus.sql`, y se duplica por el mismo
+ * motivo que la curva de nivel: la pantalla principal enseña lo que vas a
+ * ganar hoy sin poder pagar una ida y vuelta de red por fotograma.
+ *
+ * `GOAL_BONUS_MAX_XP` es la asíntota —el bonus nunca la alcanza, por alto que
+ * pongas el reto— y `GOAL_BONUS_HALF_STEPS`, la meta a la que se cobra la
+ * mitad de esa asíntota. Las dos son placeholders tuneables, marcadas con
+ * esos mismos nombres en el SQL para que `scripts/check-xp-formula.mjs` las
+ * compare (`pnpm check:xp`).
+ *
+ * La forma importa más que los números: crece con la meta (ponerse un reto
+ * mayor nunca renta menos) pero satura (un reto enorme no se convierte en una
+ * segunda fuente de progresión). Ver la tabla de la cabecera de la migración.
+ */
+export const GOAL_BONUS_MAX_XP = 300;
+export const GOAL_BONUS_HALF_STEPS = 10000;
+
+export function dailyGoalBonusXp(goal: number): number {
+  const steps = Math.max(0, Math.floor(goal));
+
+  if (steps <= 0) return 0;
+
+  return Math.floor((GOAL_BONUS_MAX_XP * steps) / (steps + GOAL_BONUS_HALF_STEPS));
+}
+
+/**
+ * Todo el XP que deja un día: lo que dan los pasos, más el bonus si esos
+ * pasos llegaron al reto.
+ *
+ * Es la misma suma que hace `sync_daily_steps` antes de compararla con
+ * `step_logs.xp_granted`, así que sirve para que la pantalla anticipe la
+ * cifra sin volver a preguntar al servidor.
+ */
+export function xpForDay(steps: number, goal: number): number {
+  const walked = normalizeXp(steps);
+  const base = xpForDailySteps(walked);
+
+  return walked >= goal ? base + dailyGoalBonusXp(goal) : base;
+}
+
+/**
  * Si un delta de XP hizo subir de nivel, comparando el nivel antes y después.
  *
  * Compartido entre duelos (`src/lib/duel-result.ts`) y pasos

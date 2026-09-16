@@ -42,7 +42,7 @@ export default function FramesScreen() {
     return <ThemedView style={styles.screen} />;
   }
 
-  const { level, streakDays, avatarUrl, equippedFrameId } = profileState.data;
+  const { id: userId, level, streakDays, avatarUrl, equippedFrameId } = profileState.data;
   const stats = { level, streakDays };
 
   async function handleEquip(frameId: string | null) {
@@ -82,6 +82,7 @@ export default function FramesScreen() {
           <View style={styles.grid}>
             <NoneCard
               avatarUrl={avatarUrl}
+              seed={userId}
               equipped={equippedFrameId === null}
               busy={busyId === NONE_BUSY_KEY}
               onPress={() => void handleEquip(null)}
@@ -93,6 +94,7 @@ export default function FramesScreen() {
             frames={bronze}
             stats={stats}
             avatarUrl={avatarUrl}
+            seed={userId}
             equippedFrameId={equippedFrameId}
             busyId={busyId}
             onEquip={(id) => void handleEquip(id)}
@@ -103,6 +105,7 @@ export default function FramesScreen() {
             frames={silver}
             stats={stats}
             avatarUrl={avatarUrl}
+            seed={userId}
             equippedFrameId={equippedFrameId}
             busyId={busyId}
             onEquip={(id) => void handleEquip(id)}
@@ -130,6 +133,7 @@ function Tier({
   title,
   frames,
   stats,
+  seed,
   avatarUrl,
   equippedFrameId,
   busyId,
@@ -138,6 +142,8 @@ function Tier({
   title: string;
   frames: readonly FrameMeta[];
   stats: { level: number; streakDays: number };
+  /** Id del usuario: el avatar de la vista previa es el suyo. */
+  seed: string;
   avatarUrl: string | null;
   equippedFrameId: string | null;
   busyId: string | null;
@@ -156,6 +162,7 @@ function Tier({
             frame={frame}
             eligible={isFrameEligible(frame, stats)}
             avatarUrl={avatarUrl}
+            seed={seed}
             equipped={frame.id === equippedFrameId}
             busy={busyId === frame.id}
             onPress={() => onEquip(frame.id)}
@@ -170,6 +177,7 @@ function FrameCard({
   frame,
   eligible,
   avatarUrl,
+  seed,
   equipped,
   busy,
   onPress,
@@ -177,6 +185,7 @@ function FrameCard({
   frame: FrameMeta;
   eligible: boolean;
   avatarUrl: string | null;
+  seed: string;
   equipped: boolean;
   busy: boolean;
   onPress: () => void;
@@ -190,7 +199,7 @@ function FrameCard({
 
   return (
     <Card variant={equipped ? 'highlight' : 'default'} style={[styles.card, !eligible && styles.cardLocked]}>
-      <FrameOverlay frame={frame} avatarUrl={avatarUrl} style={styles.preview} />
+      <FrameOverlay frame={frame} avatarUrl={avatarUrl} seed={seed} style={styles.preview} />
       <ThemedText type="smallBold">{name}</ThemedText>
       <Chip label={unlockLabel} tone={frame.unlockType === 'level' ? 'primary' : 'rival'} />
       <Button
@@ -206,11 +215,13 @@ function FrameCard({
 
 function NoneCard({
   avatarUrl,
+  seed,
   equipped,
   busy,
   onPress,
 }: {
   avatarUrl: string | null;
+  seed: string;
   equipped: boolean;
   busy: boolean;
   onPress: () => void;
@@ -219,7 +230,7 @@ function NoneCard({
 
   return (
     <Card variant={equipped ? 'highlight' : 'default'} style={styles.card}>
-      <FrameOverlay frame={null} avatarUrl={avatarUrl} style={styles.preview} />
+      <FrameOverlay frame={null} avatarUrl={avatarUrl} seed={seed} style={styles.preview} />
       <ThemedText type="smallBold">{t('frames.none')}</ThemedText>
       <Button
         label={equipped ? t('frames.equipped') : t('frames.equip')}

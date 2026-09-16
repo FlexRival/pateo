@@ -10,7 +10,7 @@
  *
  * Las variables se escriben `%{nombre}` (formato de i18n-js).
  *
- * **PROOFFIT no está aquí**: es la marca, y una marca no se traduce.
+ * **PATEO no está aquí**: es la marca, y una marca no se traduce.
  */
 export const en = {
   common: {
@@ -35,7 +35,7 @@ export const en = {
    */
   levelUpNotification: {
     title: 'Level %{level}!',
-    body: 'Your daily steps just leveled you up. Open Prooffit to see it.',
+    body: 'Your daily steps just leveled you up. Open Pateo to see it.',
   },
 
   nav: {
@@ -64,6 +64,31 @@ export const en = {
     show: 'SHOW',
     hide: 'HIDE',
     forgotPassword: 'I forgot my password',
+    points1: 'Your real steps level up your character. No manual logging.',
+    points2: 'Challenge a friend to a 1v1 duel and settle it by walking.',
+    points3: 'Keep your streak alive and share the result.',
+    legalIntro: 'By creating an account you accept:',
+    terms: 'Terms',
+    privacy: 'Privacy',
+  },
+
+  /** Selector del reto diario: se usa en el alta y en Ajustes. */
+  goal: {
+    title: 'DAILY CHALLENGE',
+    stepsPerDay: 'steps a day',
+    bonus: '+%{xp} XP when you hit it',
+    note: 'A bigger challenge is worth more, but the bonus levels off — the steps themselves are what really add up.',
+  },
+
+  onboarding: {
+    eyebrow: 'ALMOST THERE',
+    title: 'Set up your player',
+    subtitle: 'Three things and you are in. You can change all of them later.',
+    choosePhoto: 'Choose a photo',
+    uploading: 'Uploading…',
+    photoOptional: 'Optional — we already picked a robot for you.',
+    start: 'Start walking',
+    saving: 'Saving…',
   },
 
   forgotPassword: {
@@ -268,7 +293,9 @@ export const en = {
     logOutFailed: 'Could not log out.',
     activitySource: 'ACTIVITY SOURCE',
     stepTracking: 'Step tracking',
-    dailyStepGoal: 'Daily step goal',
+    dailyStepGoal: 'Daily step challenge',
+    saveGoal: 'Save',
+    savingGoal: 'Saving…',
     connected: 'CONNECTED',
     notConnected: 'NOT CONNECTED',
     unavailable: 'UNAVAILABLE',
@@ -276,9 +303,9 @@ export const en = {
     notifications: 'NOTIFICATIONS',
     levelUpAlerts: 'Level-up alerts (background)',
     levelUpAlertsNotificationsDenied:
-      'Allow notifications for Prooffit in your device settings to enable this.',
+      'Allow notifications for Pateo in your device settings to enable this.',
     levelUpAlertsBackgroundDenied:
-      'Allow Health Connect background access for Prooffit in your device settings to enable this.',
+      'Allow Health Connect background access for Pateo in your device settings to enable this.',
     leadChanges: 'Lead changes',
     duelInvites: 'Duel invites',
     dailyStepSummary: 'Daily step summary',
@@ -319,8 +346,8 @@ export const en = {
     withoutAppBody:
       'Write to us from the email address of your account and we will delete it for you, within 30 days at most.',
     emailButton: 'Email us to delete my account',
-    emailSubject: 'Delete my Prooffit account',
-    emailBody: 'Hi, I would like to delete my Prooffit account associated with this email address.',
+    emailSubject: 'Delete my Pateo account',
+    emailBody: 'Hi, I would like to delete my Pateo account associated with this email address.',
   },
 } as const;
 

@@ -315,7 +315,7 @@ function FriendOption({ friend, selected, onSelect }: FriendOptionProps) {
     <Pressable accessibilityRole="radio" accessibilityState={{ selected }} onPress={onSelect}>
       <Card variant={selected ? 'highlight' : 'default'} style={styles.option}>
         {/* Foto del amigo al que puedes retar. */}
-        <ProfilePhoto avatarUrl={friend.avatarUrl} style={styles.avatar} fallbackVariant="sunken" />
+        <ProfilePhoto avatarUrl={friend.avatarUrl} seed={friend.userId} style={styles.avatar} />
 
         <View style={styles.optionBody}>
           <ThemedText type="bodyBold">{friend.username}</ThemedText>
@@ -350,7 +350,7 @@ function SetDuelStep({ opponent, duration, onChangeDuration, onChangeOpponent }:
 
       <Card style={styles.option}>
         {/* Foto del rival elegido. */}
-        <ProfilePhoto avatarUrl={opponent.avatarUrl} style={styles.avatar} fallbackVariant="rival" />
+        <ProfilePhoto avatarUrl={opponent.avatarUrl} seed={opponent.userId} style={styles.avatar} />
 
         <View style={styles.optionBody}>
           <ThemedText type="bodyBold">{opponent.username}</ThemedText>

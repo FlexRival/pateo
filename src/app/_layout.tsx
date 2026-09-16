@@ -55,13 +55,19 @@ export default function RootLayout() {
   }
 
   const isSignedIn = profileState.status === 'ready';
+  // Tener sesión no es lo mismo que tener la cuenta lista: hasta que
+  // `complete_onboarding()` sella `onboarded_at`, lo que existe es el alta
+  // guiada y no las pestañas. Se decide aquí, con el mismo `Stack.Protected`
+  // que el login, para que no haya forma de esquivarla con un `back` ni un
+  // enlace profundo.
+  const needsOnboarding = profileState.status === 'ready' && profileState.data.onboardedAt === null;
 
   return (
     <ThemeProvider value={DarkTheme}>
       <AnimatedSplashOverlay />
 
       <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Protected guard={isSignedIn}>
+        <Stack.Protected guard={isSignedIn && !needsOnboarding}>
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="settings" />
           {/*
@@ -93,6 +99,10 @@ export default function RootLayout() {
             haciendo cuando algo pide Pro, y su `✕` te devuelve justo ahí.
           */}
           <Stack.Screen name="paywall" options={{ presentation: 'modal' }} />
+        </Stack.Protected>
+
+        <Stack.Protected guard={needsOnboarding}>
+          <Stack.Screen name="onboarding" />
         </Stack.Protected>
 
         <Stack.Protected guard={!isSignedIn}>

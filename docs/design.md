@@ -1,4 +1,4 @@
-# Sistema de diseño de Prooffit
+# Sistema de diseño de Pateo
 
 Referencia autoritativa del lenguaje visual de la app: paleta, tokens
 semánticos y las reglas para usarlos. Es la contraparte legible de
@@ -47,7 +47,7 @@ hueco a ojo.
 
 ## Decisión: tema único, oscuro
 
-Prooffit no tiene modo claro. `Colors` es un solo objeto (con la clave
+Pateo no tiene modo claro. `Colors` es un solo objeto (con la clave
 `dark` conservada por compatibilidad con `check-contrast.mjs`, que itera
 `Object.entries(Colors)`; no implica que vaya a haber una clave `light`).
 Si algún día se añade un tema claro, es ampliar esa clave, no rediseñar el
@@ -297,6 +297,8 @@ sin volver a escribir a mano un `borderRadius` ni un `borderColor`.
 | `Notice`            | `molecules/notice.tsx`               | `primary`, `rival`, `info` |
 | `XpBar`             | `molecules/xp-bar.tsx`               | Rótulo + `2,450 / 3,000` + pista con degradado XP |
 | `LevelUpBadge`      | `molecules/level-up-badge.tsx`       | Transición `11 → 12` animada de la subida de nivel |
+| `ProfilePhoto`      | `molecules/profile-photo.tsx`        | Foto de perfil. Sin variantes: **nunca sale vacía** — ver § Avatar por defecto |
+| `StepGoalPicker`    | `molecules/step-goal-picker.tsx`     | Elegir el reto diario, con el bonus de XP debajo de la cifra |
 
 Superficies medidas en la lámina, por si se rehacen estos componentes:
 `Notice` y el segmento activo de `SegmentedControl` van sobre `#1B1E27`
@@ -320,10 +322,47 @@ sistema** (`useReducedMotion()` de Reanimated): con esa preferencia activada
 la cifra aparece ya asentada, sin rebote ni flash. Cualquier celebración
 nueva a pantalla completa debería hacer lo mismo.
 
-Todavía no es primitivo el render del avatar (KAN-19). La pantalla de subida
-de nivel (`src/app/level-up.tsx`) ya le reserva el sitio con una `Card`
-cuadrada vacía, para que al llegar KAN-19 sea rellenar el hueco y no rehacer
-el layout.
+Todavía no es primitivo el render del personaje (KAN-19). La pantalla de
+subida de nivel (`src/app/level-up.tsx`) ya le reserva el sitio con una
+`Card` cuadrada vacía, para que al llegar KAN-19 sea rellenar el hueco y no
+rehacer el layout. **Ojo, eso es el personaje, no el avatar de la cuenta**:
+la foto de perfil sí está resuelta, y es lo que cuenta la sección siguiente.
+
+## Avatar por defecto (2026-09-16)
+
+**Ningún usuario se pinta sin avatar.** Quien no ha subido foto recibe un
+robot del estilo **bottts-neutral** de DiceBear, generado en el dispositivo a
+partir de su id de usuario (`src/lib/avatar.ts`, `@dicebear/core`).
+
+Esto **sustituye** a la decisión anterior, que era dejar el hueco vacío
+(`ProfilePhoto` pintaba una `Card` de la variante que le pasaran). Aquella
+decisión venía de haber descartado el personaje RPG y los cosméticos: sin
+personaje que dibujar, el hueco se dejaba en blanco. En pantalla se leía como
+una ausencia — listas de amigos llenas de rectángulos grises.
+
+Consecuencias concretas para quien escriba UI:
+
+- **`ProfilePhoto` exige `seed`**, y tiene que ser **el id del usuario**, no
+  su nombre: así el robot no cambia al cambiarse el nombre y es el mismo que
+  ven los demás. Es obligatorio a propósito — es lo que impide que vuelva a
+  colarse un hueco anónimo.
+- **`fallbackVariant` ya no existe.** Cubría solo el estado vacío, que ha
+  desaparecido; en particular, el tinte Rival del hueco del rival en un duelo
+  y el `sunken` de las filas de lista se han retirado por eso, no por
+  descuido.
+- El fondo del robot es `Palette.raised` — el mismo valor que tenía el hueco
+  que sustituye, para no mover la superficie sobre la que se recorta el
+  círculo.
+- Se genera **en local, sin red**. No es una preferencia estética: pedirlo a
+  `api.dicebear.com` mandaría el id de cada usuario a un tercero en cada
+  lista de amigos (declarable en la política de privacidad) y dejaría huecos
+  en blanco en la lámina 4:5 que `react-native-view-shot` captura de golpe.
+
+Atribución: bottts-neutral es un remix de **Bottts, de Pablo Stanley**,
+libre para uso personal y comercial. DiceBear incrusta esa atribución como un
+bloque `<metadata>` RDF en cada SVG; `src/lib/avatar.ts` lo quita al pintar
+(`react-native-svg` lo ignora igualmente) y la conserva en su cabecera y
+aquí.
 
 ## Huecos y decisiones que tomé sin dato explícito
 
@@ -358,9 +397,16 @@ No hizo falta inventar nada: los valores salen de muestrear los píxeles de
 - **Fondo del icono adaptativo de Android** — `app.json` sigue con
   `#E6F4FE`, el azul claro del scaffold de Expo, que no está en la paleta y
   no aparece en ninguna captura. **Hace falta el valor de marca.**
-- **Textura rayada del avatar** — el placeholder del personaje son rayas
+- **Textura rayada del avatar** — el placeholder del **personaje** son rayas
   diagonales (medidas: base `#181C1D`, raya `#2C3622`). No es un token de
-  color, es un patrón; se resuelve en KAN-19.
+  color, es un patrón; se resuelve en KAN-19. No confundir con la foto de
+  perfil, que ya está resuelta (§ Avatar por defecto).
+- **Paleta de los robots de DiceBear** — los colores del robot los elige el
+  propio estilo a partir de la seed, así que **no salen del sistema de
+  diseño**. Es la única superficie de la app con color ajeno a la paleta.
+  Solo se le impone el fondo (`Palette.raised`). Si algún día chirría, la
+  salida es pasarle `baseColor` a DiceBear con tonos de la paleta, no
+  repintar el SVG.
 - **Power Bright vs Power Bright (alt)** — ver tabla de Acentos.
 
 ## Ejemplo de uso en un componente

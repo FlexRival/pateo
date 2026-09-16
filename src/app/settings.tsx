@@ -1,6 +1,6 @@
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Pressable, ScrollView, StyleSheet, Switch, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -8,6 +8,7 @@ import { Button } from '@/components/atoms/button';
 import { Card } from '@/components/atoms/card';
 import { Notice } from '@/components/molecules/notice';
 import { ProfilePhoto } from '@/components/molecules/profile-photo';
+import { StepGoalPicker } from '@/components/molecules/step-goal-picker';
 import { ThemedText } from '@/components/atoms/themed-text';
 import { ThemedView } from '@/components/atoms/themed-view';
 import { ROUTES } from '@/constants/routes';
@@ -20,7 +21,12 @@ import { useTranslation } from '@/hooks/use-translation';
 import { LANGUAGE_NAMES, LANGUAGES, type Language } from '@/lib/i18n';
 import { formatCount, formatJoinDate } from '@/lib/format';
 import { levelProgress } from '@/lib/xp';
-import { profileRepository, RepositoryError } from '@/repositories';
+import {
+  profileRepository,
+  RepositoryError,
+  stepsRepository,
+  type StepGoalBounds,
+} from '@/repositories';
 
 /**
  * Ajustes.
@@ -137,7 +143,7 @@ export default function SettingsScreen() {
     return <ThemedView style={styles.screen} />;
   }
 
-  const { username, xp, createdAt, avatarUrl, isPro } = profileState.data;
+  const { id: userId, username, xp, createdAt, avatarUrl, isPro } = profileState.data;
   const { level } = levelProgress(xp);
 
   return (
@@ -155,8 +161,8 @@ export default function SettingsScreen() {
             <Pressable onPress={handleChangePhoto} disabled={avatarUploading}>
               <ProfilePhoto
                 avatarUrl={avatarUrl}
+                seed={userId}
                 style={styles.avatarImage}
-                fallbackVariant="sunken"
               />
             </Pressable>
 
@@ -297,21 +303,21 @@ export default function SettingsScreen() {
 }
 
 /**
- * Origen de la actividad: si los pasos están conectados y contra qué meta se
+ * Origen de la actividad: si los pasos están conectados y contra qué reto se
  * miden.
  *
  * Las dos filas dicen la verdad del sistema desde KAN-50: el estado sale del
- * permiso real del teléfono y la meta, de `daily_step_goal()` en el servidor —
- * la misma cifra que decide la racha. Antes las dos estaban escritas a mano en
+ * permiso real del teléfono y el reto, del perfil en el servidor — la misma
+ * cifra que decide la racha. Antes las dos estaban escritas a mano en
  * `demo-data.ts`, y la meta local (10.000) ni siquiera coincidía con la del
  * servidor (6.000).
  *
- * La meta todavía **no se puede cambiar** desde aquí: no hay ninguna columna
- * donde guardar una meta por usuario, así que la fila informa y no edita.
+ * Desde `20260916120000_daily_goal_streaks_bonus.sql` el reto **sí** se cambia
+ * desde aquí: ya hay una columna por usuario donde guardarlo.
  */
 function ActivitySourceRows() {
   const { t } = useTranslation();
-  const { state } = useSteps();
+  const { state, reload } = useSteps();
 
   const steps = state.status === 'ready' ? state.data : null;
   const tracking = !steps
@@ -330,11 +336,121 @@ function ActivitySourceRows() {
         </ThemedText>
       </SettingRow>
 
-      <SettingRow label={t('settings.dailyStepGoal')}>
-        <ThemedText type="smallBold" themeColor="textMuted">
-          {steps ? formatCount(steps.goal) : '—'}
+      <DailyGoalRow goal={steps?.goal ?? null} onSaved={reload} />
+    </>
+  );
+}
+
+type DailyGoalRowProps = {
+  /** El reto que hay guardado, o `null` mientras los pasos todavía cargan. */
+  goal: number | null;
+  /** Vuelve a leer los pasos: el reto que enseña la pantalla sale de ahí. */
+  onSaved: () => Promise<void>;
+};
+
+/**
+ * El reto diario, y el único sitio de la app donde se cambia después del alta.
+ *
+ * Se despliega al pulsar la fila en vez de vivir siempre abierto: Ajustes es
+ * una lista de filas de una línea, y un selector permanentemente desplegado
+ * rompería esa retícula por algo que se toca una vez cada muchas semanas.
+ *
+ * Los límites se piden **al abrir**, no al montar la pantalla: son dos RPC que
+ * no hacen falta mientras nadie vaya a editar nada.
+ */
+function DailyGoalRow({ goal, onSaved }: DailyGoalRowProps) {
+  const { t } = useTranslation();
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState<number | null>(null);
+  const [bounds, setBounds] = useState<StepGoalBounds | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!editing || bounds) return;
+
+    let subscribed = true;
+
+    void stepsRepository
+      .getStepGoalBounds()
+      .then((next) => {
+        if (subscribed) setBounds(next);
+      })
+      .catch((caught: unknown) => {
+        if (!subscribed) return;
+        // Sin límites no se puede pintar el selector, así que esto sí tiene que
+        // verse: al revés que en el alta, aquí no hay nada más que hacer en la
+        // pantalla y un fallo mudo parecería que la fila no responde.
+        setError(
+          caught instanceof RepositoryError ? caught.message : t('common.somethingWentWrong'),
+        );
+      });
+
+    return () => {
+      subscribed = false;
+    };
+  }, [editing, bounds, t]);
+
+  async function handleSave() {
+    if (draft === null) return;
+
+    setError(null);
+    setSaving(true);
+
+    try {
+      await stepsRepository.setDailyStepGoal(draft);
+      // El servidor acaba de recalcular la racha con el criterio nuevo, así que
+      // lo que había en pantalla ya no es verdad.
+      await onSaved();
+      setEditing(false);
+    } catch (caught) {
+      setError(caught instanceof RepositoryError ? caught.message : t('common.somethingWentWrong'));
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <>
+      <SettingRow
+        label={t('settings.dailyStepGoal')}
+        onPress={
+          goal === null
+            ? undefined
+            : () => {
+                setDraft(goal);
+                setError(null);
+                setEditing((open) => !open);
+              }
+        }>
+        <ThemedText type="smallBold" themeColor={editing ? 'primary' : 'textMuted'}>
+          {goal === null ? '—' : formatCount(goal)}
         </ThemedText>
       </SettingRow>
+
+      {editing && bounds && draft !== null ? (
+        <>
+          <StepGoalPicker value={draft} onChange={setDraft} min={bounds.min} max={bounds.max} />
+
+          <View style={styles.goalActions}>
+            <Button
+              label={t('common.cancel')}
+              variant="secondary"
+              onPress={() => setEditing(false)}
+              disabled={saving}
+              style={styles.goalAction}
+            />
+            <Button
+              label={saving ? t('settings.savingGoal') : t('settings.saveGoal')}
+              onPress={() => void handleSave()}
+              disabled={saving || draft === goal}
+              style={styles.goalAction}
+            />
+          </View>
+        </>
+      ) : null}
+
+      {error ? <Notice tone="rival" message={error} /> : null}
     </>
   );
 }
@@ -488,6 +604,8 @@ function Toggle({ value, onChange, label }: ToggleProps) {
 const AVATAR_SIZE = 44;
 
 const styles = StyleSheet.create({
+  goalActions: { flexDirection: 'row', gap: Spacing.two },
+  goalAction: { flex: 1 },
   screen: { flex: 1 },
   safeArea: { flex: 1 },
   content: {

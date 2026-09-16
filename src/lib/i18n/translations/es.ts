@@ -29,7 +29,7 @@ export const es: Translations = {
 
   levelUpNotification: {
     title: '¡Nivel %{level}!',
-    body: 'Tus pasos de hoy te han subido de nivel. Abre Prooffit para verlo.',
+    body: 'Tus pasos de hoy te han subido de nivel. Abre Pateo para verlo.',
   },
 
   nav: {
@@ -58,6 +58,31 @@ export const es: Translations = {
     show: 'VER',
     hide: 'OCULTAR',
     forgotPassword: 'He olvidado mi contraseña',
+    points1: 'Tus pasos reales suben de nivel a tu personaje. Sin apuntar nada.',
+    points2: 'Reta a un amigo a un duelo 1v1 y resuélvelo andando.',
+    points3: 'Mantén tu racha y comparte el resultado.',
+    legalIntro: 'Al crear una cuenta aceptas:',
+    terms: 'Términos',
+    privacy: 'Privacidad',
+  },
+
+  /** Selector del reto diario: se usa en el alta y en Ajustes. */
+  goal: {
+    title: 'RETO DIARIO',
+    stepsPerDay: 'pasos al día',
+    bonus: '+%{xp} XP al cumplirlo',
+    note: 'Un reto más alto vale más, pero el bonus se va aplanando — lo que de verdad suma son los pasos.',
+  },
+
+  onboarding: {
+    eyebrow: 'YA CASI',
+    title: 'Monta tu jugador',
+    subtitle: 'Tres cosas y estás dentro. Puedes cambiarlas luego.',
+    choosePhoto: 'Elegir foto',
+    uploading: 'Subiendo…',
+    photoOptional: 'Opcional — ya te hemos puesto un robot.',
+    start: 'Empezar a patear',
+    saving: 'Guardando…',
   },
 
   forgotPassword: {
@@ -259,7 +284,9 @@ export const es: Translations = {
     logOutFailed: 'No se pudo cerrar sesión.',
     activitySource: 'ORIGEN DE LA ACTIVIDAD',
     stepTracking: 'Conteo de pasos',
-    dailyStepGoal: 'Meta diaria de pasos',
+    dailyStepGoal: 'Reto diario de pasos',
+    saveGoal: 'Guardar',
+    savingGoal: 'Guardando…',
     connected: 'CONECTADO',
     notConnected: 'SIN CONECTAR',
     unavailable: 'NO DISPONIBLE',
@@ -267,9 +294,9 @@ export const es: Translations = {
     notifications: 'NOTIFICACIONES',
     levelUpAlerts: 'Avisos de subida de nivel (en segundo plano)',
     levelUpAlertsNotificationsDenied:
-      'Permite las notificaciones de Prooffit en los ajustes del sistema para activar esto.',
+      'Permite las notificaciones de Pateo en los ajustes del sistema para activar esto.',
     levelUpAlertsBackgroundDenied:
-      'Permite el acceso en segundo plano de Health Connect para Prooffit en los ajustes del sistema para activar esto.',
+      'Permite el acceso en segundo plano de Health Connect para Pateo en los ajustes del sistema para activar esto.',
     leadChanges: 'Cambios de líder',
     duelInvites: 'Invitaciones a duelo',
     dailyStepSummary: 'Resumen diario de pasos',
@@ -309,7 +336,7 @@ export const es: Translations = {
     withoutAppBody:
       'Escríbenos desde el correo de tu cuenta y te la borraremos nosotros, en un plazo máximo de 30 días.',
     emailButton: 'Escríbenos para borrar mi cuenta',
-    emailSubject: 'Borrar mi cuenta de Prooffit',
-    emailBody: 'Hola, quiero borrar mi cuenta de Prooffit asociada a este correo.',
+    emailSubject: 'Borrar mi cuenta de Pateo',
+    emailBody: 'Hola, quiero borrar mi cuenta de Pateo asociada a este correo.',
   },
 };

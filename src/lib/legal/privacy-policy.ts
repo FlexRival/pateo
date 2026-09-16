@@ -1,9 +1,9 @@
 import { LEGAL_CONTACT, type LocalizedLegalDocument } from '@/lib/legal/types';
 
 /**
- * Política de privacidad de Prooffit.
+ * Política de privacidad de Pateo.
  *
- * NO ES UN TEXTO GENÉRICO, y no puede serlo: Prooffit lee datos de salud
+ * NO ES UN TEXTO GENÉRICO, y no puede serlo: Pateo lee datos de salud
  * (pasos), y eso activa tres regímenes a la vez que exigen cosas concretas y
  * comprobables:
  *
@@ -29,7 +29,7 @@ export const privacyPolicy: LocalizedLegalDocument = {
     title: 'Política de privacidad',
     lastUpdated: '2026-09-15',
     intro: [
-      'Prooffit convierte tus pasos diarios en progreso: subes de nivel, retas a tus amigos y compites por clanes. Para eso necesitamos algunos datos tuyos. Esta página explica exactamente cuáles, para qué, y cómo deshacerte de ellos.',
+      'Pateo convierte tus pasos diarios en progreso: subes de nivel, retas a tus amigos y compites por clanes. Para eso necesitamos algunos datos tuyos. Esta página explica exactamente cuáles, para qué, y cómo deshacerte de ellos.',
       'Está escrita para que se entienda. Si algo no se entiende, escríbenos y lo arreglamos.',
     ],
     sections: [
@@ -62,10 +62,10 @@ export const privacyPolicy: LocalizedLegalDocument = {
         heading: '4. Tus datos de salud: los compromisos que sí importan',
         body: [
           'Leemos únicamente el recuento de pasos: en iPhone, del sensor de movimiento del propio teléfono (el permiso «Movimiento y forma física»); en Android, de Health Connect. Ningún otro tipo de dato de salud, aunque tu teléfono lo tenga.',
-          'No usamos tus datos de salud para publicidad, ni segmentada ni de ningún tipo, y no los cedemos a ninguna red publicitaria, agregador de datos ni broker. Prooffit no tiene anuncios.',
+          'No usamos tus datos de salud para publicidad, ni segmentada ni de ningún tipo, y no los cedemos a ninguna red publicitaria, agregador de datos ni broker. Pateo no tiene anuncios.',
           'No vendemos tus datos de salud. A nadie. Nunca.',
           'No los usamos para tomar decisiones sobre seguros, empleo, crédito ni nada parecido, ni los compartimos con quien lo haga.',
-          'Prooffit no es un producto sanitario y no da consejo médico. Es un juego.',
+          'Pateo no es un producto sanitario y no da consejo médico. Es un juego.',
           'Cuando borras tu cuenta, tus datos de salud se borran con ella. No guardamos copia.',
         ],
       },
@@ -113,13 +113,13 @@ export const privacyPolicy: LocalizedLegalDocument = {
       {
         heading: '10. Menores de edad',
         body: [
-          'Prooffit no está dirigida a menores de 16 años y no recogemos datos de forma consciente de personas de esa edad. Si detectamos una cuenta de un menor de 16, la borraremos.',
+          'Pateo no está dirigida a menores de 16 años y no recogemos datos de forma consciente de personas de esa edad. Si detectamos una cuenta de un menor de 16, la borraremos.',
         ],
       },
       {
         heading: '11. Cambios en esta política',
         body: [
-          'Si cambiamos algo relevante, actualizaremos la fecha de arriba y te avisaremos dentro de la app antes de que el cambio te afecte. Seguir usando Prooffit después de un cambio significa que lo aceptas.',
+          'Si cambiamos algo relevante, actualizaremos la fecha de arriba y te avisaremos dentro de la app antes de que el cambio te afecte. Seguir usando Pateo después de un cambio significa que lo aceptas.',
         ],
       },
     ],
@@ -129,7 +129,7 @@ export const privacyPolicy: LocalizedLegalDocument = {
     title: 'Privacy Policy',
     lastUpdated: '2026-09-15',
     intro: [
-      'Prooffit turns your daily steps into progress: you level up, challenge your friends and compete for clans. That needs some data from you. This page explains exactly what we collect, what for, and how to get rid of it.',
+      'Pateo turns your daily steps into progress: you level up, challenge your friends and compete for clans. That needs some data from you. This page explains exactly what we collect, what for, and how to get rid of it.',
       "It is written to be understood. If something isn't clear, write to us and we will fix it.",
     ],
     sections: [
@@ -162,10 +162,10 @@ export const privacyPolicy: LocalizedLegalDocument = {
         heading: '4. Your health data: the commitments that actually matter',
         body: [
           "We read step counts only: on iPhone, from the phone's own motion sensor (the \"Motion & Fitness\" permission); on Android, from Health Connect. No other kind of health data, even if your phone has it.",
-          'We do not use your health data for advertising of any kind, targeted or otherwise, and we do not pass it to any ad network, data aggregator or broker. Prooffit has no ads.',
+          'We do not use your health data for advertising of any kind, targeted or otherwise, and we do not pass it to any ad network, data aggregator or broker. Pateo has no ads.',
           'We do not sell your health data. To anyone. Ever.',
           'We do not use it for decisions about insurance, employment or credit, and we do not share it with anyone who does.',
-          'Prooffit is not a medical device and gives no medical advice. It is a game.',
+          'Pateo is not a medical device and gives no medical advice. It is a game.',
           'When you delete your account, your health data is deleted with it. We keep no copy.',
         ],
       },
@@ -213,13 +213,13 @@ export const privacyPolicy: LocalizedLegalDocument = {
       {
         heading: '10. Minors',
         body: [
-          'Prooffit is not aimed at people under 16 and we do not knowingly collect their data. If we find an account belonging to someone under 16, we will delete it.',
+          'Pateo is not aimed at people under 16 and we do not knowingly collect their data. If we find an account belonging to someone under 16, we will delete it.',
         ],
       },
       {
         heading: '11. Changes to this policy',
         body: [
-          'If we change anything material we will update the date above and tell you inside the app before the change affects you. Continuing to use Prooffit after a change means you accept it.',
+          'If we change anything material we will update the date above and tell you inside the app before the change affects you. Continuing to use Pateo after a change means you accept it.',
         ],
       },
     ],

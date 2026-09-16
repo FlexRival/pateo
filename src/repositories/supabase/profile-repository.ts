@@ -46,6 +46,8 @@ function toProfile(row: ProfileRow): Profile {
     isPro: row.is_pro,
     avatarUrl: row.avatar_url,
     equippedFrameId: row.equipped_frame_id,
+    dailyStepGoal: row.daily_step_goal,
+    onboardedAt: row.onboarded_at,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -235,6 +237,44 @@ export class SupabaseProfileRepository implements ProfileRepository {
     }
 
     return toProfile(data);
+  }
+
+  async updateUsername(username: string): Promise<Profile> {
+    const { data: userData, error: userError } = await this.client.auth.getUser();
+    if (userError || !userData.user) {
+      throw new RepositoryError('Necesitas iniciar sesión para cambiar tu nombre.', {
+        cause: userError,
+      });
+    }
+
+    const { data, error } = await this.client
+      .from('profiles')
+      .update({ username })
+      .eq('id', userData.user.id)
+      .select('*')
+      .single();
+
+    if (error) {
+      // `23505` es la violación de unicidad de Postgres. Es el único error
+      // que el usuario puede arreglar por su cuenta, así que se traduce en vez
+      // de enseñarle el mensaje del motor.
+      throw new RepositoryError(
+        error.code === '23505'
+          ? 'Ese nombre ya está cogido. Prueba con otro.'
+          : 'No se pudo guardar tu nombre.',
+        { cause: error },
+      );
+    }
+
+    return toProfile(data);
+  }
+
+  async completeOnboarding(): Promise<void> {
+    const { error } = await this.client.rpc('complete_onboarding');
+
+    if (error) {
+      throw new RepositoryError('No se pudo terminar de configurar tu cuenta.', { cause: error });
+    }
   }
 
   async deleteAccount(): Promise<void> {

@@ -73,14 +73,11 @@ export default function FriendProfileScreen() {
             <View style={styles.headerSpacer} />
           </View>
 
-          {/*
-            La foto del amigo, igual que Perfil enseña la tuya. El hueco, si no
-            subió ninguna, va en Rival: aquí el amigo es el oponente, no tú.
-          */}
+          {/* La foto del amigo, igual que Perfil enseña la tuya. */}
           <ProfilePhoto
             avatarUrl={friend.avatarUrl}
+            seed={friend.userId}
             style={styles.character}
-            fallbackVariant="rival"
           />
 
           <View style={styles.identity}>

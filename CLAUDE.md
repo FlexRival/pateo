@@ -1,9 +1,9 @@
 @AGENTS.md
 
-# Prooffit — Contexto del Proyecto
+# Pateo — Contexto del Proyecto
 
 ## Visión General
-Prooffit es una app RPG móvil desarrollada con Expo (React Native) donde los pasos reales diarios del usuario suben de nivel a su personaje y le permiten retar a sus amigos en duelos 1v1 basados en su actividad física real.
+Pateo es una app RPG móvil desarrollada con Expo (React Native) donde los pasos reales diarios del usuario suben de nivel a su personaje y le permiten retar a sus amigos en duelos 1v1 basados en su actividad física real.
 
 ## Core Loop & Funcionalidades Principales
 - **Conteo de Pasos & XP:** Tracking de pasos diarios (mediante Podómetro / sensores del dispositivo) convertidos automáticamente en XP para subir de nivel al personaje.
@@ -49,6 +49,16 @@ Prooffit es una app RPG móvil desarrollada con Expo (React Native) donde los pa
   sistema de diseño, patrón repositorio).
 
 ## Notas de implementación (estado actual)
+- **Nombre: Pateo (antes Prooffit), desde el 15-sep-2026.** Textos de la app,
+  legal, web (`https://pateo.es`) y vídeos dicen Pateo. **Conservan el nombre
+  viejo a propósito**, porque cambiarlos rompe algo: el paquete
+  `com.prooffit.app` (atado a Play, RevenueCat y la firma de EAS), el `slug`
+  `prooffit` (atado al `projectId` de EAS), el esquema `proof://` (redirects
+  de Supabase Auth), la clave `proofit.language` de AsyncStorage (el usuario
+  perdería su idioma), el marcador de `plugins/with-health-connect-privacy-link.js`
+  y las cabeceras de las migraciones ya aplicadas. No los "corrijas".
+  **Público objetivo: España, en español** — el contenido de marketing
+  (TikTok en `reels/`) se escribe en español.
 - **⚠️ Permisos de RPC: `REVOKE ... FROM PUBLIC` NO BASTA.** Supabase trae un
   `ALTER DEFAULT PRIVILEGES ... GRANT EXECUTE ON FUNCTIONS TO anon,
   authenticated` sobre el esquema `public`, así que cada función nace con el
@@ -77,11 +87,18 @@ Prooffit es una app RPG móvil desarrollada con Expo (React Native) donde los pa
   leaderboard de clanes.** El backend de todo eso está desplegado y se queda
   ahí inerte — no hay que revertir nada, porque los clanes **nunca llegaron a
   tener UI**. No construyas pantallas de clan sin que se reabra esa decisión.
-- **XP:** dos fuentes aditivas desde el 15-sep-2026 (reabre la decisión
-  anterior de "solo duelos"). Duelos: `floor(pasos_ganador / 10)`, sin
+- **XP:** tres fuentes aditivas. Duelos: `floor(pasos_ganador / 10)`, sin
   cambios. Pasos diarios: `floor(pasos_del_día / 10)`, otorgado en vivo desde
-  `sync_daily_steps` (`step_logs.xp_granted` evita duplicar). La curva de
-  nivel dejó de ser plana: `level_for_xp`/`xp_for_level` ahora crecen en
+  `sync_daily_steps` (`step_logs.xp_granted` evita duplicar). Y, desde el
+  16-sep-2026, un **bonus por cumplir el reto diario**:
+  `floor(300 * meta / (meta + 10000))` — una hipérbola que **crece** con la
+  meta (ponerse un reto mayor nunca renta menos) pero **satura** (50 XP con el
+  reto mínimo de 2.000, 225 con el máximo de 30.000, frente a los 200–3.000
+  que ya dan esos mismos pasos). Entra en el mismo `xp_granted`, así que
+  cruzar la meta a media tarde lo paga al instante sin repetirse.
+  `pnpm check:xp` comprueba que SQL y TypeScript coinciden **y** que la curva
+  sigue creciendo y saturando.
+  Aparte de las fuentes, la curva de nivel dejó de ser plana: `level_for_xp`/`xp_for_level` ahora crecen en
   progresiva (coste por nivel lineal, acumulado cuadrático), no exponencial.
   Migración `20260915120000_steps_xp_progressive_level.sql`, espejo en
   `src/lib/xp.ts`. Ver `supabase/SCHEMA.md` §7. Notificación de subida de
@@ -118,7 +135,7 @@ Prooffit es una app RPG móvil desarrollada con Expo (React Native) donde los pa
   `user_equipped_cosmetics`, sus RPC y un trigger sobre `profiles` siguen
   vivos en el servidor sin ninguna migración en el repo que los declare. Es
   deriva de esquema y está abierto en KAN-80 (ver `supabase/SCHEMA.md`, nota
-  al principio). Los recuadros de avatar/personaje
+  al principio). Los recuadros de **personaje**
   de las pantallas son huecos reservados del diseño (comentarios "KAN-19"),
   no un render real. La foto de perfil real (Ajustes) es un dato de cuenta
   aparte, sin relación con esto.
@@ -130,9 +147,19 @@ Prooffit es una app RPG móvil desarrollada con Expo (React Native) donde los pa
   La familia es el peso: no hay Space Grotesk Bold, lo que sería negrita sube
   a Chakra. Se cargan en `src/app/_layout.tsx` desde `src/constants/fonts.ts`.
 - **Primitivos de UI:** `Button`, `Card`, `Chip`, `SegmentedControl`, `XpBar`,
-  `Notice`, `SearchField` (filtro de listas) y `TextField` (campo de
-  formulario genérico: login, altas). Monta las pantallas con ellos antes de
-  escribir un `borderRadius` a mano.
+  `Notice`, `SearchField` (filtro de listas), `TextField` (campo de
+  formulario genérico: login, altas), `ProfilePhoto` y `StepGoalPicker`.
+  Monta las pantallas con ellos antes de escribir un `borderRadius` a mano.
+- **Avatar por defecto: nadie sale sin foto (16-sep-2026).** Quien no ha
+  subido ninguna recibe un robot **bottts-neutral de DiceBear**, generado en
+  el móvil con `@dicebear/core` a partir de su **id de usuario**
+  (`src/lib/avatar.ts`). Sin red a propósito: pedirlo a `api.dicebear.com`
+  mandaría el id de cada usuario a un tercero en cada lista de amigos —
+  declarable en la política de privacidad— y dejaría huecos en blanco en la
+  lámina que `react-native-view-shot` captura de golpe. `ProfilePhoto` exige
+  ahora `seed` (el id, **no** el nombre: así el robot sobrevive a un cambio
+  de nombre) y ya no tiene `fallbackVariant`, que solo cubría el hueco vacío
+  que ha desaparecido. Ver `docs/design.md` § Avatar por defecto.
 - **Componentes por diseño atómico.** `src/components/` está partido en
   `atoms/` (indivisibles: `ThemedText`, `ThemedView`, `Button`, `Card`,
   `Chip`, `MeterBar`, `AnimatedSplashOverlay`), `molecules/` (un puñado de
@@ -150,7 +177,11 @@ Prooffit es una app RPG móvil desarrollada con Expo (React Native) donde los pa
   `src/app/_layout.tsx` usa `Stack.Protected` para mostrar `login` o el
   resto de la app según haya sesión — nunca `router.replace` a mano tras un
   login/logout, el guard reacciona solo a `onAuthStateChange` vía
-  `useProfile()`. `ProfileRepository` expone `signInWithPassword`/`signUp`/
+  `useProfile()`. **Tener sesión no es tener la cuenta lista**: mientras
+  `profiles.onboarded_at` sea `null`, el mismo guard enseña el alta guiada
+  (`src/app/onboarding.tsx`: foto, nombre y reto diario) en lugar de las
+  pestañas, y se sale de ahí con `complete_onboarding()`, no navegando.
+  `ProfileRepository` expone `signInWithPassword`/`signUp`/
   `signOut`; ninguna pantalla llama a `supabase.auth` directamente.
 - **Clanes:** un usuario pertenece como mucho a **un** clan (`UNIQUE` en
   `clan_members.user_id`). Roles `LEADER` / `OFFICER` / `MEMBER`. Toda mutación
@@ -188,21 +219,28 @@ Prooffit es una app RPG móvil desarrollada con Expo (React Native) donde los pa
   publicar** (KAN-74). El cuarto, `hostingRegion`, ya está: UE / Fráncfort
   (`eu-central-1`, verificado), y va por idioma porque se interpola dentro de
   una frase de la política.
-- **Estado de migraciones: desplegado.** Comprobado el 9-sep-2026 contra el
-  proyecto vinculado (`tirhukkivndhmlknvbfr`, región `eu-central-1`): las **16
-  migraciones del repo están aplicadas** —incluidas las de clanes, guerras,
-  amistades, suscripciones, anti-cheat de pasos, email y borrado de cuenta— y
-  las **4 Edge Functions están ACTIVE** (`resolve-expired-competitions`,
+- **⚠️ Migración escrita pero SIN desplegar: 1.**
+  `20260916120000_daily_goal_streaks_bonus.sql` está en el repo y **no** en el
+  servidor. Hasta que se haga `db push`, la app pedirá RPCs que no existen
+  (`my_daily_step_goal`, `set_daily_step_goal`, `complete_onboarding`) y
+  fallará nada más arrancar.
+- **Estado de migraciones: comprobado el 16-sep-2026** contra el proyecto
+  vinculado (`tirhukkivndhmlknvbfr`, región `eu-central-1`) con
+  `list_migrations`: hay **19 aplicadas**, que son todas las del repo salvo la
+  del reto diario. Entre ellas `20260915120000_steps_xp_progressive_level`, que
+  sí está desplegada. Además el historial **ya no está desalineado**: el
+  borrado de cuenta figura en el servidor como `20260907130000`, el mismo sello
+  que tiene en el repo — el desajuste con `20260908201735` que avisaba esta
+  nota está resuelto. Entre las aplicadas están las de clanes, guerras,
+  amistades, suscripciones, anti-cheat de pasos, email y borrado de cuenta.
+  Lo de abajo NO se ha vuelto a comprobar hoy, viene del repaso del 9-sep: las
+  **4 Edge Functions estaban ACTIVE** (`resolve-expired-competitions`,
   `revenuecat-webhook` con `verify_jwt=false`, `revenuecat-reconcile` y
   `delete-account`). De KAN-48 solo quedan los secretos, que no se ven por
   API: `project_url` y `service_role_key` en el Vault, y
   `REVENUECAT_WEBHOOK_AUTH` / `REVENUECAT_SECRET_API_KEY` por
   `supabase secrets set`. Sin ellos el cron y el webhook fallan **en
-  silencio**. ⚠️ Además el historial local y el remoto **no coinciden**: el
-  borrado de cuenta está en el repo como `20260907130000_account_deletion.sql`
-  pero en el servidor figura como `20260908201735` (se aplicó por MCP con otro
-  sello). Hay que `supabase migration repair` antes del siguiente `db push`, o
-  intentará aplicarla dos veces.
+  silencio**.
 - **Suscripciones (RevenueCat):** un solo entitlement `pro` (Free vs Pro, sin
   tiers). RevenueCat es la fuente de verdad; el backend sincroniza el estado
   vía webhook. Tabla `subscriptions` + `subscription_events` (idempotencia);

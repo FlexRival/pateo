@@ -3,6 +3,8 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "dependencies": {
+    "@dicebear/core": "^10.7.0",
+    "@dicebear/styles": "^10.6.0",
     "@expo-google-fonts/chakra-petch": "^0.4.1",
     "@expo-google-fonts/space-grotesk": "^0.4.1",
     "@expo/ui": "~57.0.15",

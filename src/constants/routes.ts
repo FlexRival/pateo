@@ -25,6 +25,7 @@ export type RouteKey =
   | 'findFriends'
   | 'friendProfile'
   | 'paywall'
+  | 'onboarding'
   | 'login'
   | 'forgotPassword'
   | 'resetPassword'
@@ -109,6 +110,12 @@ export const ROUTES: Record<RouteKey, RouteDefinition> = {
    * sitio nuevo que la ofrezca es una línea, y sigue estando tipado.
    */
   paywall: { key: 'paywall', href: '/paywall', label: 'Go Pro', tab: false },
+  /**
+   * Alta guiada, justo después de crear la cuenta. Tampoco se navega a mano:
+   * `_layout.tsx` la pone en lugar de las pestañas mientras `onboarded_at`
+   * siga a `null`, igual que hace con el login según haya sesión.
+   */
+  onboarding: { key: 'onboarding', href: '/onboarding', label: 'Welcome', tab: false },
   /**
    * Puerta de entrada sin sesión. No se navega a mano: `src/app/_layout.tsx`
    * la muestra u oculta con `Stack.Protected` según haya sesión o no.

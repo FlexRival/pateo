@@ -42,7 +42,11 @@ export type {
   Duels,
 } from '@/repositories/duel-repository';
 export { DEFAULT_DUEL_DAYS, DuelLimitReachedError } from '@/repositories/duel-repository';
-export type { StepSyncOutcome, StepsRepository } from '@/repositories/steps-repository';
+export type {
+  StepGoalBounds,
+  StepSyncOutcome,
+  StepsRepository,
+} from '@/repositories/steps-repository';
 export { SYNC_WINDOW_DAYS } from '@/repositories/steps-repository';
 export type {
   PurchaseOutcome,

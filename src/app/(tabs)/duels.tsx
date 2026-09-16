@@ -23,6 +23,14 @@ import { frameById, type FrameMeta } from '@/lib/frames';
 import type { Duel, Duels } from '@/repositories';
 
 /**
+ * Semilla de respaldo mientras el perfil todavía carga: sin ella habría que
+ * elegir entre no pintar nada (un hueco que parpadea) o reutilizar el id del
+ * rival, que enseñaría el robot de otro como si fuera el tuyo. Al ser una
+ * cadena fija, el robot provisional es siempre el mismo y no baila.
+ */
+const UNKNOWN_SEED = '';
+
+/**
  * Duelos, con sus tres filtros: activos, pendientes e historial.
  *
  * Datos reales desde KAN-32 (`useDuels` → `duelRepository`). Cada vez que se
@@ -67,6 +75,7 @@ export default function DuelsScreen() {
   const { t } = useTranslation();
   const { state, respond } = useDuels();
   const { state: profileState } = useProfile();
+  const userId = profileState.status === 'ready' ? profileState.data.id : null;
   const avatarUrl = profileState.status === 'ready' ? profileState.data.avatarUrl : null;
   const frame = profileState.status === 'ready' ? frameById(profileState.data.equippedFrameId) : null;
 
@@ -91,6 +100,7 @@ export default function DuelsScreen() {
               duels={state.data}
               onRespond={respond}
               avatarUrl={avatarUrl}
+              seed={userId}
               frame={frame}
             />
           ) : null}
@@ -115,18 +125,21 @@ function DuelLists({
   duels,
   onRespond,
   avatarUrl,
+  seed,
   frame,
 }: {
   filter: DuelFilter;
   duels: Duels;
   onRespond: RespondFn;
   avatarUrl: string | null;
+  /** Tu id, para tu avatar por defecto. `null` mientras carga el perfil. */
+  seed: string | null;
   frame: FrameMeta | null;
 }) {
   return (
     <>
       {filter === 'active' ? (
-        <ActiveDuels duels={duels.active} avatarUrl={avatarUrl} frame={frame} />
+        <ActiveDuels duels={duels.active} avatarUrl={avatarUrl} seed={seed} frame={frame} />
       ) : null}
       {filter === 'pending' ? (
         <PendingDuels incoming={duels.incoming} outgoing={duels.outgoing} onRespond={onRespond} />
@@ -139,10 +152,13 @@ function DuelLists({
 function ActiveDuels({
   duels,
   avatarUrl,
+  seed,
   frame,
 }: {
   duels: Duel[];
   avatarUrl: string | null;
+  /** Tu id, para tu avatar por defecto. `null` mientras carga el perfil. */
+  seed: string | null;
   frame: FrameMeta | null;
 }) {
   const { t } = useTranslation();
@@ -154,7 +170,7 @@ function ActiveDuels({
 
   return (
     <>
-      <FeaturedDuelCard duel={featured} avatarUrl={avatarUrl} frame={frame} />
+      <FeaturedDuelCard duel={featured} avatarUrl={avatarUrl} seed={seed} frame={frame} />
 
       {duels
         .filter((duel) => duel.id !== featured.id)
@@ -180,10 +196,13 @@ const STANDING_NOTICE = { leading: 'duels.leading', behind: 'duels.behind', tied
 function FeaturedDuelCard({
   duel,
   avatarUrl,
+  seed,
   frame,
 }: {
   duel: Duel;
   avatarUrl: string | null;
+  /** Tu id, para tu avatar por defecto. `null` mientras carga el perfil. */
+  seed: string | null;
   frame: FrameMeta | null;
 }) {
   const { t } = useTranslation();
@@ -204,14 +223,14 @@ function FeaturedDuelCard({
 
       <View style={styles.versusRow}>
         {/* Las dos caras del duelo: tu foto (con su marco) y la del rival. */}
-        <FrameOverlay frame={frame} avatarUrl={avatarUrl} style={styles.versusCharacter} />
+        <FrameOverlay frame={frame} avatarUrl={avatarUrl} seed={seed ?? UNKNOWN_SEED} style={styles.versusCharacter} />
         <ThemedText type="smallBold" themeColor="textMuted">
           {t('duels.versus')}
         </ThemedText>
         <ProfilePhoto
           avatarUrl={duel.opponent.avatarUrl}
+          seed={duel.opponent.userId}
           style={styles.versusCharacter}
-          fallbackVariant="rival"
         />
       </View>
 
@@ -282,8 +301,8 @@ function DuelRow({ duel }: { duel: Duel }) {
       {/* Foto del rival; el hueco se tiñe de Rival si vas por detrás. */}
       <ProfilePhoto
         avatarUrl={duel.opponent.avatarUrl}
+        seed={duel.opponent.userId}
         style={styles.rowAvatar}
-        fallbackVariant={ahead ? 'default' : 'rival'}
       />
 
       <View style={styles.rowBody}>
@@ -431,7 +450,7 @@ function PendingHead({ duel, note, badge }: { duel: Duel; note: string; badge?: 
   return (
     <View style={styles.rowHead}>
       {/* Foto de quien tienes el duelo pendiente. */}
-      <ProfilePhoto avatarUrl={duel.opponent.avatarUrl} style={styles.rowAvatar} />
+      <ProfilePhoto avatarUrl={duel.opponent.avatarUrl} seed={duel.opponent.userId} style={styles.rowAvatar} />
 
       <View style={styles.rowBody}>
         <ThemedText type="bodyBold">
@@ -480,7 +499,7 @@ function FinishedRow({ duel }: { duel: Duel }) {
     <Card style={styles.pendingRow}>
       <View style={styles.rowHead}>
         {/* Foto del rival de este duelo ya cerrado. */}
-        <ProfilePhoto avatarUrl={duel.opponent.avatarUrl} style={styles.rowAvatar} />
+        <ProfilePhoto avatarUrl={duel.opponent.avatarUrl} seed={duel.opponent.userId} style={styles.rowAvatar} />
 
         <View style={styles.rowBody}>
           <ThemedText type="bodyBold">

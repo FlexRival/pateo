@@ -52,6 +52,17 @@ export type ProfileRow = {
   streak_days: number;
   is_pro: boolean;
   avatar_url: string | null;
+  /**
+   * Reto diario de pasos del usuario, entre `min_daily_step_goal()` y
+   * `max_daily_step_goal()`. Es la cifra contra la que se mide su racha y la
+   * que decide su bonus de XP. Solo la escribe `set_daily_step_goal()`.
+   */
+  daily_step_goal: number;
+  /**
+   * Cuándo terminó el alta guiada. `null` = no la ha hecho, y el layout raíz
+   * le enseña `/onboarding` en vez de las pestañas.
+   */
+  onboarded_at: string | null;
   /** Marco de foto equipado (§18 SCHEMA.md). `null` = sin marco. */
   equipped_frame_id: string | null;
   created_at: string;
@@ -92,6 +103,14 @@ export type StepLogRow = {
    */
   reported_steps: number | null;
   synced_at: string | null;
+  /**
+   * Meta que estaba en vigor el día que se registró esta fila. Se sella al
+   * insertarla y no se reescribe: es lo que impide que bajar el reto hoy
+   * reescriba las rachas de la semana pasada.
+   */
+  goal_steps: number | null;
+  /** Cuánto XP se otorgó ya por este día (pasos + bonus), para no duplicarlo. */
+  xp_granted: number;
 };
 
 export type DuelRow = {
@@ -317,7 +336,18 @@ export type Database = {
 
       // ---- XP y rachas ----
       level_for_xp: { Args: { p_xp: number }; Returns: number };
+      /** Meta GLOBAL por defecto. La del usuario es `my_daily_step_goal`. */
       daily_step_goal: { Args: Record<never, never>; Returns: number };
+      /** El reto diario del usuario de la sesión. */
+      my_daily_step_goal: { Args: Record<never, never>; Returns: number };
+      /** Cambia el reto, resella el de hoy y recalcula la racha. */
+      set_daily_step_goal: { Args: { p_goal: number }; Returns: number };
+      min_daily_step_goal: { Args: Record<never, never>; Returns: number };
+      max_daily_step_goal: { Args: Record<never, never>; Returns: number };
+      /** Bonus de XP que da cumplir un reto de ese tamaño. */
+      daily_goal_bonus_xp: { Args: { p_goal: number }; Returns: number };
+      /** Marca el alta guiada como terminada. Devuelve la fecha. */
+      complete_onboarding: { Args: Record<never, never>; Returns: string };
 
       // ---- Pasos (`20260906130000_step_sync_anticheat.sql`) ----
       /** Tope diario que aplica el servidor antes de guardar. */

@@ -42,6 +42,15 @@ export type StepSyncOutcome = {
   capped: boolean;
 };
 
+/**
+ * Entre qué dos cifras puede moverse el reto diario. Las dicta el servidor;
+ * ver `getStepGoalBounds`.
+ */
+export type StepGoalBounds = {
+  min: number;
+  max: number;
+};
+
 export interface StepsRepository {
   /**
    * Sube un rango de días ya leídos del teléfono.
@@ -64,15 +73,38 @@ export interface StepsRepository {
   getStoredSteps(from: string, to: string): Promise<StepSyncOutcome[]>;
 
   /**
-   * Meta diaria de pasos, la del servidor.
+   * El reto diario de pasos **del usuario de la sesión**.
    *
-   * Se pregunta en vez de escribirla en la app porque es **la misma cifra que
+   * Se pregunta en vez de calcularla en la app porque es **la misma cifra que
    * decide la racha** (`recompute_streak`, `supabase/SCHEMA.md` §8): una meta
    * local distinta enseñaría un objetivo cumplido junto a una racha que no
-   * sube. Es un placeholder tuneable en el servidor (`daily_step_goal()`, hoy
-   * `6000`), así que cambiarla no puede exigir publicar una versión de la app.
+   * sube.
+   *
+   * Desde `20260916120000_daily_goal_streaks_bonus.sql` ya no es una constante
+   * global: cada usuario elige la suya entre los límites que da
+   * `getStepGoalBounds()`.
    */
   getDailyStepGoal(): Promise<number>;
+
+  /**
+   * Cambia el reto diario y devuelve el que quedó guardado.
+   *
+   * No es solo un `UPDATE`: el servidor resella además la meta de hoy y
+   * recalcula la racha en la misma operación, porque acaba de cambiar el
+   * criterio con el que se mide. Una meta fuera de los límites llega como
+   * `RepositoryError`.
+   */
+  setDailyStepGoal(goal: number): Promise<number>;
+
+  /**
+   * Entre qué dos cifras puede moverse el reto.
+   *
+   * Los decide el servidor (`min_daily_step_goal()` / `max_daily_step_goal()`)
+   * por lo mismo que la meta: son placeholders tuneables, y si la app los
+   * duplicara, subirlos obligaría a publicar una versión nueva para que el
+   * selector dejara de rechazar lo que el servidor ya acepta.
+   */
+  getStepGoalBounds(): Promise<StepGoalBounds>;
 
   /**
    * Todos los pasos que el servidor tiene guardados del usuario, sumados.
