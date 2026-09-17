@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import type { AsyncState, AuthedAsyncState } from '@/hooks/async-state';
+import { useRefreshOnReturn } from '@/hooks/use-refresh-on-return';
 import { hasEnded } from '@/lib/duel';
 import { duelRepository, profileRepository, type Duel, type Duels } from '@/repositories';
 
@@ -104,6 +105,10 @@ export function useDuels() {
       unsubscribe();
     };
   }, []);
+
+  // Un reto que llega con la app abierta no se entera solo: hay que volver a
+  // preguntar al regresar a la pantalla o a la app.
+  useRefreshOnReturn(reload);
 
   const request = useCallback(
     async (opponentId: string, durationDays: number): Promise<Duel> => {

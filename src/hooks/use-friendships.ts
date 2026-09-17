@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { friendshipRepository, profileRepository, type Friendships } from '@/repositories';
 
 import type { AuthedAsyncState } from '@/hooks/async-state';
+import { useRefreshOnReturn } from '@/hooks/use-refresh-on-return';
 
 export type FriendshipsState = AuthedAsyncState<Friendships>;
 
@@ -58,6 +59,10 @@ export function useFriendships() {
       unsubscribe();
     };
   }, []);
+
+  // Una solicitud que llega con la app abierta no se entera sola: hay que
+  // volver a preguntar al regresar a la pantalla o a la app.
+  useRefreshOnReturn(reload);
 
   const sendRequest = useCallback(
     async (userId: string) => {

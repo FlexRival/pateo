@@ -219,16 +219,21 @@ Pateo es una app RPG móvil desarrollada con Expo (React Native) donde los pasos
   publicar** (KAN-74). El cuarto, `hostingRegion`, ya está: UE / Fráncfort
   (`eu-central-1`, verificado), y va por idioma porque se interpola dentro de
   una frase de la política.
-- **⚠️ Migración escrita pero SIN desplegar: 1.**
-  `20260916120000_daily_goal_streaks_bonus.sql` está en el repo y **no** en el
-  servidor. Hasta que se haga `db push`, la app pedirá RPCs que no existen
-  (`my_daily_step_goal`, `set_daily_step_goal`, `complete_onboarding`) y
-  fallará nada más arrancar.
-- **Estado de migraciones: comprobado el 16-sep-2026** contra el proyecto
+- **Migraciones pendientes de desplegar: ninguna (17-sep-2026).**
+  `20260916120000_daily_goal_streaks_bonus.sql` ya está en el servidor, así que
+  `my_daily_step_goal`, `set_daily_step_goal` y `complete_onboarding` existen y
+  la app arranca. Se aplicó vía MCP y **no** con `db push` (esta máquina no
+  tiene ni token de Supabase ni contraseña de la BD), así que se registró con
+  el sello de hoy y hubo que corregir a mano la fila de
+  `supabase_migrations.schema_migrations` a `20260916120000` para que el
+  historial siga coincidiendo con el nombre del fichero. Si vuelves a aplicar
+  una migración por esa vía, repite la corrección o `db push` intentará
+  reaplicarla.
+- **Estado de migraciones: comprobado el 17-sep-2026** contra el proyecto
   vinculado (`tirhukkivndhmlknvbfr`, región `eu-central-1`) con
-  `list_migrations`: hay **19 aplicadas**, que son todas las del repo salvo la
-  del reto diario. Entre ellas `20260915120000_steps_xp_progressive_level`, que
-  sí está desplegada. Además el historial **ya no está desalineado**: el
+  `list_migrations`: hay **20 aplicadas**, que son exactamente todas las del
+  repo, incluida la del reto diario. Además el historial **ya no está
+  desalineado**: el
   borrado de cuenta figura en el servidor como `20260907130000`, el mismo sello
   que tiene en el repo — el desajuste con `20260908201735` que avisaba esta
   nota está resuelto. Entre las aplicadas están las de clanes, guerras,
